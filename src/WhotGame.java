@@ -10,6 +10,9 @@ public class WhotGame {
 
     public WhotGame() {
         whots = new NaijaWhots();
+        computerCardPile = new ArrayList<>();
+        playerCardPile = new ArrayList<>();
+        drawPile = new ArrayList<>();
         cards = whots.getWhots();
         for (Card card : cards) {
             drawPile.add(card);
