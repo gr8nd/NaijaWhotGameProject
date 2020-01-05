@@ -20,7 +20,7 @@ public class WhotGame {
     }
 
     public void deal(int number) {
-        for (int index = 0; index < number * 2; index++) {
+        for (int index = 0; index < number; index++) {
             computerCardPile.add(drawPile.get(0));
             drawPile.remove(0);
             playerCardPile.add(drawPile.get(0));
@@ -30,11 +30,10 @@ public class WhotGame {
 
     public void play() {
         ArrayList<Card> cards = new ArrayList<>(54);
-        NaijaWhots whots = new NaijaWhots();
-        for (Card card : whots.getWhots()) {
+        for (Card card : this.drawPile) {
             System.out.println(card.toString());
         }
-        System.out.println(whots.getWhots().length);
+        System.out.println(drawPile.size());
     }
 
     public void rule(Card card) {
@@ -43,5 +42,37 @@ public class WhotGame {
 
     public void checkWinner() {
 
+    }
+
+    public boolean isThereWinner() {
+        return isThereWinner;
+    }
+
+    public void setThereWinner(boolean thereWinner) {
+        isThereWinner = thereWinner;
+    }
+
+    public ArrayList<Card> getDrawPile() {
+        return drawPile;
+    }
+
+    public void setDrawPile(ArrayList<Card> drawPile) {
+        this.drawPile = drawPile;
+    }
+
+    public ArrayList<Card> getComputerCardPile() {
+        return computerCardPile;
+    }
+
+    public void setComputerCardPile(ArrayList<Card> computerCardPile) {
+        this.computerCardPile = computerCardPile;
+    }
+
+    public ArrayList<Card> getPlayerCardPile() {
+        return playerCardPile;
+    }
+
+    public void setPlayerCardPile(ArrayList<Card> playerCardPile) {
+        this.playerCardPile = playerCardPile;
     }
 }
