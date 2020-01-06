@@ -14,6 +14,9 @@ public class WhotGame {
     private boolean isPickTwo = false;
     private boolean isPickThree = false;
     private boolean isWhot = false;
+    private boolean isNormalCard = false;
+    private boolean isComputerTurn = false;
+    private boolean isPlayerTurn = false;
 
     public WhotGame() {
         whots = new NaijaWhots();
@@ -27,20 +30,31 @@ public class WhotGame {
     }
 
     public void deal(int number) {
-        for (int index = 0; index < number; index++) {
-            computerCardPile.add(drawPile.get(0));
-            drawPile.remove(0);
-            playerCardPile.add(drawPile.get(0));
-            drawPile.remove(0);
+        if (number <= 27) {
+            for (int index = 0; index < number; index++) {
+                computerCardPile.add(drawPile.get(0));
+                drawPile.remove(0);
+                playerCardPile.add(drawPile.get(0));
+                drawPile.remove(0);
+            }
         }
     }
 
-    public void play() {
-        ArrayList<Card> cards = new ArrayList<>(54);
-        for (Card card : this.drawPile) {
-            System.out.println(card.toString());
+    public void play(Card card) {
+        System.out.printf("**** %s ****%n", card.toString());
+        if (computerCardPile.contains(card)) {
+            computerCardPile.remove(card);
+        } else if (playerCardPile.contains(card)) {
+            playerCardPile.remove(card);
         }
-        System.out.println(drawPile.size());
+    }
+
+    public void draw() {
+        if (isComputerTurn) {
+            computerCardPile.add(drawPile.remove(0));
+        } else {
+            playerCardPile.add(drawPile.remove(0));
+        }
     }
 
     public void rule(Card card) {
@@ -60,6 +74,20 @@ public class WhotGame {
             case 20:
                 isWhot = true;
                 break;
+            default:
+                isNormalCard = true;
+                break;
+        }
+        if (isHoldOn) {
+            System.out.println("Hold on!");
+        } else if (isPickTwo) {
+            System.out.println("Pick two!");
+        } else if (isPickThree) {
+            System.out.println("Pick three!");
+        } else if (isSuspension) {
+            System.out.println("Suspension!");
+        } else if (isWhot) {
+            System.out.println("Select a card you need");
         }
     }
 
@@ -174,5 +202,29 @@ public class WhotGame {
 
     public void setWhot(boolean whot) {
         isWhot = whot;
+    }
+
+    public boolean isNormalCard() {
+        return isNormalCard;
+    }
+
+    public void setNormalCard(boolean normalCard) {
+        isNormalCard = normalCard;
+    }
+
+    public boolean isComputerTurn() {
+        return isComputerTurn;
+    }
+
+    public void setComputerTurn(boolean computerTurn) {
+        isComputerTurn = computerTurn;
+    }
+
+    public boolean isPlayerTurn() {
+        return isPlayerTurn;
+    }
+
+    public void setPlayerTurn(boolean playerTurn) {
+        isPlayerTurn = playerTurn;
     }
 }
