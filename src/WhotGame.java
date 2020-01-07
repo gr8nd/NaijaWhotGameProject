@@ -12,11 +12,15 @@ public class WhotGame {
     private boolean isHoldOn = false;
     private boolean isSuspension = false;
     private boolean isPickTwo = false;
+    private boolean isGeneralMarket = false;
     private boolean isPickThree = false;
     private boolean isWhot = false;
     private boolean isNormalCard = false;
     private boolean isComputerTurn = false;
     private boolean isPlayerTurn = false;
+
+
+    private Card startCard;
 
     public WhotGame() {
         whots = new NaijaWhots();
@@ -37,6 +41,7 @@ public class WhotGame {
                 playerCardPile.add(drawPile.get(0));
                 drawPile.remove(0);
             }
+            startCard = drawPile.remove(0);
         }
     }
 
@@ -71,6 +76,9 @@ public class WhotGame {
             case 8:
                 isSuspension = true;
                 break;
+            case 14:
+                isGeneralMarket = true;
+                break;
             case 20:
                 isWhot = true;
                 break;
@@ -87,7 +95,9 @@ public class WhotGame {
         } else if (isSuspension) {
             System.out.println("Suspension!");
         } else if (isWhot) {
-            System.out.println("Select a card you need");
+            System.out.println("Whot! Select a card you need");
+        } else if (isGeneralMarket) {
+            System.out.println("General market!");
         }
     }
 
@@ -226,5 +236,13 @@ public class WhotGame {
 
     public void setPlayerTurn(boolean playerTurn) {
         isPlayerTurn = playerTurn;
+    }
+
+    public Card getStartCard() {
+        return startCard;
+    }
+
+    public void setStartCard(Card startCard) {
+        this.startCard = startCard;
     }
 }
