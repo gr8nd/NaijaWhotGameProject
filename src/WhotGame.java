@@ -46,7 +46,6 @@ public class WhotGame {
     }
 
     public void play(Card card) {
-        System.out.printf("**** %s ****%n", card.toString());
         if (computerCardPile.contains(card)) {
             computerCardPile.remove(card);
         } else if (playerCardPile.contains(card)) {
@@ -95,7 +94,7 @@ public class WhotGame {
         } else if (isSuspension) {
             System.out.println("Suspension!");
         } else if (isWhot) {
-            System.out.println("Whot! Select a card you need");
+            System.out.println("Whot! Select a card you need >> ");
         } else if (isGeneralMarket) {
             System.out.println("General market!");
         }
@@ -198,6 +197,7 @@ public class WhotGame {
         isPickTwo = pickTwo;
     }
 
+
     public boolean isPickThree() {
         return isPickThree;
     }
@@ -244,5 +244,13 @@ public class WhotGame {
 
     public void setStartCard(Card startCard) {
         this.startCard = startCard;
+    }
+
+    public boolean isGeneralMarket() {
+        return isGeneralMarket;
+    }
+
+    public void setGeneralMarket(boolean generalMarket) {
+        isGeneralMarket = generalMarket;
     }
 }
