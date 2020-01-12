@@ -1,9 +1,9 @@
 
 public class Card {
     private int face;
-    private String suit;
+    private Suit suit;
 
-    public Card(String suit, int face) {
+    public Card(Suit suit, int face) {
         this.suit = suit;
         this.face = face;
     }
@@ -16,11 +16,11 @@ public class Card {
         this.face = face;
     }
 
-    public String getSuit() {
+    public Suit getSuit() {
         return suit;
     }
 
-    public void setSuit(String suit) {
+    public void setSuit(Suit suit) {
         this.suit = suit;
     }
 

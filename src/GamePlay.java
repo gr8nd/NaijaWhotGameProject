@@ -16,23 +16,23 @@ public class GamePlay {
         Scanner input = new Scanner(System.in);
         ArrayList<Card> playerCards = game.getPlayerCardPile();
         ArrayList<Card> computerCards = game.getComputerCardPile();
-        Card startcard = game.getStartCard();
+        Card startCard = game.getStartCard();
         while (!game.isThereWinner()) {
             try {
                 if (isComputerTurn) {
                     game.setComputerTurn(true);
-                    System.out.printf("*****%s*****%n", startcard.toString());
-                    game.rule(startcard);
+                    System.out.printf("*****%s*****%n", startCard.toString());
+                    game.rule(startCard);
                     while (!game.isNormalCard()) {
                         if (game.isHoldOn()) {
                             game.setHoldOn(false);
                             for (Card card : computerCards) {
-                                if (card.getFace() == startcard.getFace() || card.getSuit().equals(startcard.getSuit()))
-                                    startcard = card;
-                                System.out.printf("*****%s*****%n", startcard.toString());
+                                if (card.getFace() == startCard.getFace() || card.getSuit().equals(startCard.getSuit()))
+                                    startCard = card;
+                                System.out.printf("*****%s*****%n", startCard.toString());
                                 {
-                                    game.rule(startcard);
-                                    game.play(startcard);
+                                    game.rule(startCard);
+                                    game.play(startCard);
                                 }
                             }
                             game.setHoldOn(false);
@@ -54,7 +54,6 @@ public class GamePlay {
                                 game.setComputerTurn(true);
                             }
                             game.setPickTwo(false);
-
                         } else if (game.isPickThree()) {
                             System.out.print("Hit 'Enter' to see all cards");
                             String yes = input.nextLine();
@@ -79,8 +78,7 @@ public class GamePlay {
                             for (index = 0; index < playerCards.size(); index++) {
                                 System.out.println(index + 1 + ".  " + playerCards.get(index).toString());
                             }
-                            System.out.println("Hit 'Enter' to go to market");
-                            System.out.print("Select a card to play >> ");
+                            System.out.print("Hit 'Enter' to go to market");
                             String userInput = input.nextLine();
                             game.setComputerTurn(false);
                             game.setPlayerTurn(true);
@@ -103,13 +101,14 @@ public class GamePlay {
                             int userInput = input.nextInt();
                             game.setWhot(false);
                         } else if (game.isSuspension()) {
+                            game.setSuspension(false);
                             for (Card card : computerCards) {
-                                if (card.getFace() == startcard.getFace() || card.getSuit().equals(startcard.getSuit()))
-                                    startcard = card;
-                                System.out.printf("*****%s*****%n", startcard.toString());
+                                if (card.getFace() == startCard.getFace() || card.getSuit().equals(startCard.getSuit()))
+                                    startCard = card;
+                                System.out.printf("*****%s*****%n", startCard.toString());
                                 {
-                                    game.rule(startcard);
-                                    game.play(startcard);
+                                    game.rule(startCard);
+                                    game.play(startCard);
                                 }
                             }
                             game.setSuspension(false);

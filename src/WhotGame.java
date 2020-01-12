@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class WhotGame {
     private boolean isThereWinner = false;
     private NaijaWhots whots;
-    private Card[] cards;
+    private Card[] pack;
     private ArrayList<Card> drawPile;
     private ArrayList<Card> computerCardPile;
     private ArrayList<Card> playerCardPile;
@@ -27,8 +27,8 @@ public class WhotGame {
         computerCardPile = new ArrayList<>();
         playerCardPile = new ArrayList<>();
         drawPile = new ArrayList<>();
-        cards = whots.getWhots();
-        for (Card card : cards) {
+        pack = whots.getPack();
+        for (Card card : pack) {
             drawPile.add(card);
         }
     }
@@ -110,7 +110,7 @@ public class WhotGame {
                 return "*****Game Over*****\n\nYou win!";
             } else {
                 for (Card card : computerCardPile) {
-                    if (card.getSuit().equals("Star")) {
+                    if (card.getSuit().equals(Suit.STAR)) {
                         computerCount += card.getFace() * 2;
                     } else {
                         computerCount += card.getFace();
@@ -118,7 +118,7 @@ public class WhotGame {
 
                 }
                 for (Card card : playerCardPile) {
-                    if (card.getSuit().equals("Star")) {
+                    if (card.getSuit().equals(Suit.STAR)) {
                         playerCount += card.getFace() * 2;
                     } else {
                         playerCount += card.getFace();
