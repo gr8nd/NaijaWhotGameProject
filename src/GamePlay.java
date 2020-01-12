@@ -15,7 +15,7 @@ public class GamePlay {
         System.out.println();
         Scanner input = new Scanner(System.in);
         try {
-            game.deal(0);
+            game.deal(6);
         } catch (WhotGameException e) {
             validDeal = false;
             System.out.println(e.getMessage());
