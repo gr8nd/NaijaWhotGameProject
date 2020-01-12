@@ -33,8 +33,8 @@ public class WhotGame {
         }
     }
 
-    public void deal(int number) {
-        if (number <= 27) {
+    public void deal(int number) throws WhotGameException {
+        if (number >= 2 && number <= 27 && number % 2 == 0) {
             for (int index = 0; index < number; index++) {
                 computerCardPile.add(drawPile.get(0));
                 drawPile.remove(0);
@@ -42,6 +42,14 @@ public class WhotGame {
                 drawPile.remove(0);
             }
             startCard = drawPile.remove(0);
+        } else if (number < 0) {
+            throw new WhotGameException("You cannot deal a negative number of cards");
+        } else if (number > 27) {
+            throw new WhotGameException("You can only deal between 2 to 27 cards");
+        } else if (number % 2 != 0) {
+            throw new WhotGameException("You cannot deal an odd number of cards");
+        } else if (number >= 0 && number < 2) {
+            throw new WhotGameException("You can only deal 2 or more cards");
         }
     }
 
