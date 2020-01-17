@@ -61,12 +61,12 @@ public class WhotGame {
         }
     }
 
-    public void draw() {
-        if (isComputerTurn) {
-            computerCardPile.add(drawPile.remove(0));
-        } else {
-            playerCardPile.add(drawPile.remove(0));
-        }
+    public void computerDraw() {
+        computerCardPile.add(drawPile.remove(0));
+    }
+
+    public void playerDraw() {
+        playerCardPile.add(drawPile.remove(0));
     }
 
     public void rule(Card card) {
@@ -91,7 +91,6 @@ public class WhotGame {
                 break;
             default:
                 isNormalCard = true;
-                break;
         }
         if (isHoldOn) {
             System.out.println("Hold on!");
