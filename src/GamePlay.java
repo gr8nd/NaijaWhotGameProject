@@ -218,7 +218,7 @@ public class GamePlay {
                             } else if (startCard.isPickTwo()) {
                                 if (computerCards.size() >= 10) {
                                     for (Card card : computerCards) {
-                                        if (card.getFace() == 2) {
+                                        if (card.isPickTwo()) {
                                             Card computerDefendCard = card;
                                             startCard = computerDefendCard;
                                             System.out.printf("*****%s*****%n", startCard.toString());
@@ -233,7 +233,7 @@ public class GamePlay {
                             } else if (startCard.isPickThree()) {
                                 if (computerCards.size() >= 9) {
                                     for (Card card : computerCards) {
-                                        if (card.getFace() == 5) {
+                                        if (card.isPickThree()) {
                                             Card computerDefendCard = card;
                                             startCard = computerDefendCard;
                                             System.out.printf("*****%s*****%n", startCard.toString());
