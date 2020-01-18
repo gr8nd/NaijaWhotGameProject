@@ -60,7 +60,7 @@ public class GamePlay {
                                         break;
                                     } else {
                                         Card defendCard = playerCards.get(userInput - 1);
-                                        if (defendCard.getFace() == 2) {
+                                        if (defendCard.isPickTwo()) {
                                             game.setComputerTurn(false);
                                             game.setPlayerTurn(true);
                                             game.play(defendCard);
@@ -97,7 +97,7 @@ public class GamePlay {
                                         break;
                                     } else {
                                         Card defendCard = playerCards.get(userInput - 1);
-                                        if (defendCard.getFace() == 3) {
+                                        if (defendCard.isPickThree()) {
                                             game.setComputerTurn(false);
                                             game.setPlayerTurn(true);
                                             game.play(defendCard);
