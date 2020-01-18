@@ -9,16 +9,8 @@ public class WhotGame {
     private ArrayList<Card> playerCardPile;
     private int computerCount = 0;
     private int playerCount = 0;
-    private boolean isHoldOn = false;
-    private boolean isSuspension = false;
-    private boolean isPickTwo = false;
-    private boolean isGeneralMarket = false;
-    private boolean isPickThree = false;
-    private boolean isWhot = false;
-    private boolean isNormalCard = false;
     private boolean isComputerTurn = false;
     private boolean isPlayerTurn = false;
-
 
     private Card startCard;
 
@@ -70,39 +62,17 @@ public class WhotGame {
     }
 
     public void rule(Card card) {
-        switch (card.getFace()) {
-            case 1:
-                isHoldOn = true;
-                break;
-            case 2:
-                isPickTwo = true;
-                break;
-            case 5:
-                isPickThree = true;
-                break;
-            case 8:
-                isSuspension = true;
-                break;
-            case 14:
-                isGeneralMarket = true;
-                break;
-            case 20:
-                isWhot = true;
-                break;
-            default:
-                isNormalCard = true;
-        }
-        if (isHoldOn) {
+        if (card.isHoldOn()) {
             System.out.println("Hold on!");
-        } else if (isPickTwo) {
+        } else if (card.isPickTwo()) {
             System.out.println("Pick two!");
-        } else if (isPickThree) {
+        } else if (card.isPickThree()) {
             System.out.println("Pick three!");
-        } else if (isSuspension) {
+        } else if (card.isSuspension()) {
             System.out.println("Suspension!");
-        } else if (isWhot) {
+        } else if (card.isWhot()) {
             System.out.println("Whot! Select a card you need >> ");
-        } else if (isGeneralMarket) {
+        } else if (card.isGeneralMarket()) {
             System.out.println("General market!");
         }
     }
@@ -180,55 +150,6 @@ public class WhotGame {
         this.playerCardPile = playerCardPile;
     }
 
-    public boolean isHoldOn() {
-        return isHoldOn;
-    }
-
-    public void setHoldOn(boolean holdOn) {
-        isHoldOn = holdOn;
-    }
-
-    public boolean isSuspension() {
-        return isSuspension;
-    }
-
-    public void setSuspension(boolean suspension) {
-        isSuspension = suspension;
-    }
-
-    public boolean isPickTwo() {
-        return isPickTwo;
-    }
-
-    public void setPickTwo(boolean pickTwo) {
-        isPickTwo = pickTwo;
-    }
-
-
-    public boolean isPickThree() {
-        return isPickThree;
-    }
-
-    public void setPickThree(boolean pickThree) {
-        isPickThree = pickThree;
-    }
-
-    public boolean isWhot() {
-        return isWhot;
-    }
-
-    public void setWhot(boolean whot) {
-        isWhot = whot;
-    }
-
-    public boolean isNormalCard() {
-        return isNormalCard;
-    }
-
-    public void setNormalCard(boolean normalCard) {
-        isNormalCard = normalCard;
-    }
-
     public boolean isComputerTurn() {
         return isComputerTurn;
     }
@@ -251,13 +172,5 @@ public class WhotGame {
 
     public void setStartCard(Card startCard) {
         this.startCard = startCard;
-    }
-
-    public boolean isGeneralMarket() {
-        return isGeneralMarket;
-    }
-
-    public void setGeneralMarket(boolean generalMarket) {
-        isGeneralMarket = generalMarket;
     }
 }

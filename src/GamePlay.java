@@ -31,9 +31,8 @@ public class GamePlay {
                         System.out.println("Computer has played:");
                         System.out.printf("*****%s*****%n", startCard.toString());
                         game.rule(startCard);
-                        while (!game.isNormalCard()) {
-                            if (game.isHoldOn()) {
-                                game.setHoldOn(false);
+                        while (!startCard.isNormalCard()) {
+                            if (startCard.isHoldOn()) {
                                 for (Card card : computerCards) {
                                     if (card.getFace() == startCard.getFace() || card.getSuit().equals(startCard.getSuit())) {
                                         startCard = card;
@@ -44,8 +43,7 @@ public class GamePlay {
                                     }
                                 }
                                 game.play(startCard);
-                                game.setHoldOn(false);
-                            } else if (game.isPickTwo()) {
+                            } else if (startCard.isPickTwo()) {
                                 System.out.print("Hit 'Enter' to see all cards");
                                 String yes = input.nextLine();
                                 for (index = 0; index < playerCards.size(); index++) {
@@ -59,7 +57,6 @@ public class GamePlay {
                                         game.playerDraw();
                                         game.playerDraw();
                                         game.playerDraw();
-                                        game.setPickTwo(false);
                                         break;
                                     } else {
                                         Card defendCard = playerCards.get(userInput - 1);
@@ -83,7 +80,7 @@ public class GamePlay {
 
                                     }
                                 }
-                            } else if (game.isPickThree()) {
+                            } else if (startCard.isPickThree()) {
                                 System.out.print("Hit 'Enter' to see all cards");
                                 String yes = input.nextLine();
                                 for (index = 0; index < playerCards.size(); index++) {
@@ -97,7 +94,6 @@ public class GamePlay {
                                         game.playerDraw();
                                         game.playerDraw();
                                         game.playerDraw();
-                                        game.setPickThree(false);
                                         break;
                                     } else {
                                         Card defendCard = playerCards.get(userInput - 1);
@@ -123,17 +119,15 @@ public class GamePlay {
                                 }
 
 
-
-                            } else if (game.isGeneralMarket()) {
+                            } else if (startCard.isGeneralMarket()) {
                                 for (index = 0; index < playerCards.size(); index++) {
                                     System.out.println(index + 1 + ".  " + playerCards.get(index).toString());
                                 }
                                 System.out.print("Hit 'Enter' to go to market");
                                 String userInput = input.nextLine();
                                 game.playerDraw();
-                                game.setGeneralMarket(false);
 
-                            } else if (game.isWhot()) {
+                            } else if (startCard.isWhot()) {
                                 int randomIndex = rand.nextInt(computerCards.size());
                                 Card wantedCard = computerCards.get(randomIndex);
                                 System.out.printf("Computer needs *****%s*****%n", wantedCard.getSuit());
@@ -145,9 +139,7 @@ public class GamePlay {
                                 System.out.println("-1. to draw from the pile");
                                 System.out.println("Select a card to play >> ");
                                 int userInput = input.nextInt();
-                                game.setWhot(false);
-                            } else if (game.isSuspension()) {
-                                game.setSuspension(false);
+                            } else if (startCard.isSuspension()) {
                                 for (Card card : computerCards) {
                                     if (card.getFace() == startCard.getFace() || card.getSuit().equals(startCard.getSuit())) {
                                         startCard = card;
@@ -161,14 +153,7 @@ public class GamePlay {
                             }
                         }
 
-                        game.setHoldOn(false);
-                        game.setNormalCard(false);
-                        game.setPickTwo(false);
-                        game.setPickThree(false);
-                        game.setSuspension(false);
-                        game.setGeneralMarket(false);
                         game.setComputerTurn(false);
-                        game.setWhot(false);
 
                         isComputerTurn = false;
                         game.setPlayerTurn(true);
@@ -226,11 +211,11 @@ public class GamePlay {
                                     }
                                 }
                             }
-                            if (game.isSuspension()) {
+                            if (startCard.isSuspension()) {
 
-                            } else if (game.isHoldOn()) {
+                            } else if (startCard.isHoldOn()) {
 
-                            } else if (game.isPickTwo()) {
+                            } else if (startCard.isPickTwo()) {
                                 if (computerCards.size() >= 10) {
                                     for (Card card : computerCards) {
                                         if (card.getFace() == 2) {
@@ -245,7 +230,7 @@ public class GamePlay {
                                     game.computerDraw();
                                 }
 
-                            } else if (game.isPickThree()) {
+                            } else if (startCard.isPickThree()) {
                                 if (computerCards.size() >= 9) {
                                     for (Card card : computerCards) {
                                         if (card.getFace() == 5) {
@@ -260,9 +245,9 @@ public class GamePlay {
                                     game.computerDraw();
                                     game.computerDraw();
                                 }
-                            } else if (game.isWhot()) {
+                            } else if (startCard.isWhot()) {
 
-                            } else if (game.isGeneralMarket()) {
+                            } else if (startCard.isGeneralMarket()) {
                                 game.computerDraw();
                             }
                             game.setThereWinner(true);
