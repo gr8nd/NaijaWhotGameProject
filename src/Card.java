@@ -50,8 +50,8 @@ public class Card {
                 this.face != 2 &&
                 this.face != 5 &&
                 this.face != 8 &&
-                this.face != 20 &&
-                this.face != 14;
+                this.face != 14 &&
+                this.face != 20;
     }
 
     public String toString() {
