@@ -15,10 +15,10 @@ public class Card {
         this.face = face;
     }
     public int getFace() {
-        return face;
+        return this.face;
     }
     public Suit getSuit() {
-        return suit;
+        return this.suit;
     }
 
     public boolean isHoldOn() {
