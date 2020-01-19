@@ -2,13 +2,6 @@
 public class Card {
     private int face;
     private Suit suit;
-    private boolean isHoldOn;
-    private boolean isSuspension;
-    private boolean isPickTwo;
-    private boolean isGeneralMarket;
-    private boolean isPickThree;
-    private boolean isWhot;
-    private boolean isNormalCard;
 
     public Card(Suit suit, int face) {
         this.suit = suit;
