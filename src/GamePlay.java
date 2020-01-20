@@ -37,12 +37,12 @@ public class GamePlay {
                                     if (card.getFace() == startCard.getFace() || card.getSuit().equals(startCard.getSuit())) {
                                         startCard = card;
                                     System.out.printf("*****%s*****%n", startCard.toString());
-                                        game.checkWinner();
+                                        game.play(startCard);
                                         game.rule(startCard);
+                                        game.checkWinner();
                                         break;
                                     }
                                 }
-                                game.play(startCard);
                             } else if (startCard.isPickTwo()) {
                                 System.out.print("Hit 'Enter' to see all cards");
                                 String yes = input.nextLine();
@@ -57,7 +57,25 @@ public class GamePlay {
                                         game.playerDraw();
                                         game.playerDraw();
                                         game.playerDraw();
-                                        break;
+                                        boolean isComputerDrawingFromPile = true;
+                                        for (Card card : computerCards) {
+                                            if (card.getFace() == startCard.getFace() || card.getSuit().equals(startCard.getSuit())) {
+                                                startCard = card;
+                                                System.out.printf("*****%s*****%n", startCard.toString());
+                                                game.checkWinner();
+                                                game.rule(startCard);
+                                                isComputerDrawingFromPile = false;
+                                                break;
+                                            }
+                                            }
+                                        if (isComputerDrawingFromPile)
+                                        {
+                                            game.computerDraw();
+                                            isComputerTurn = false;
+                                            game.setComputerTurn(false);
+                                            game.setPlayerTurn(true);
+                                            break;
+                                        }
                                     } else {
                                         Card defendCard = playerCards.get(userInput - 1);
                                         if (defendCard.isPickTwo()) {
@@ -94,7 +112,25 @@ public class GamePlay {
                                         game.playerDraw();
                                         game.playerDraw();
                                         game.playerDraw();
-                                        break;
+                                        boolean isComputerDrawingFromPile = true;
+                                        for (Card card : computerCards) {
+                                            if (card.getFace() == startCard.getFace() || card.getSuit().equals(startCard.getSuit())) {
+                                                startCard = card;
+                                                System.out.printf("*****%s*****%n", startCard.toString());
+                                                game.checkWinner();
+                                                game.rule(startCard);
+                                                isComputerDrawingFromPile = false;
+                                                break;
+                                            }
+                                        }
+                                        if (isComputerDrawingFromPile)
+                                        {
+                                            game.computerDraw();
+                                            isComputerTurn = false;
+                                            game.setComputerTurn(false);
+                                            game.setPlayerTurn(true);
+                                            break;
+                                        }
                                     } else {
                                         Card defendCard = playerCards.get(userInput - 1);
                                         if (defendCard.isPickThree()) {
@@ -126,6 +162,24 @@ public class GamePlay {
                                 System.out.print("Hit 'Enter' to go to market");
                                 String userInput = input.nextLine();
                                 game.playerDraw();
+                                boolean isComputerDrawingFromPile = true;
+                                for (Card card : computerCards) {
+                                    if (card.getFace() == startCard.getFace() || card.getSuit().equals(startCard.getSuit())) {
+                                        startCard = card;
+                                        System.out.printf("*****%s*****%n", startCard.toString());
+                                        game.checkWinner();
+                                        game.rule(startCard);
+                                        isComputerDrawingFromPile = false;
+                                        break;
+                                    }
+                                }
+                                if (isComputerDrawingFromPile)
+                                {
+                                    game.computerDraw();
+                                    isComputerTurn = false;
+                                    game.setComputerTurn(false);
+                                    game.setPlayerTurn(true);
+                                }
 
                             } else if (startCard.isWhot()) {
                                 int randomIndex = rand.nextInt(computerCards.size());
@@ -150,11 +204,14 @@ public class GamePlay {
                                     }
                                 }
                                 game.play(startCard);
+                            }else
+                            {
+                                game.setComputerTurn(false);
+                                isComputerTurn = false;
+                                game.setPlayerTurn(true);
                             }
                         }
-
                         game.setComputerTurn(false);
-
                         isComputerTurn = false;
                         game.setPlayerTurn(true);
                     } else {
@@ -223,6 +280,8 @@ public class GamePlay {
                                             startCard = computerDefendCard;
                                             System.out.printf("*****%s*****%n", startCard.toString());
                                             game.play(computerDefendCard);
+                                            game.rule(computerDefendCard);
+                                            break;
                                         }
                                     }
                                 } else {
@@ -238,6 +297,8 @@ public class GamePlay {
                                             startCard = computerDefendCard;
                                             System.out.printf("*****%s*****%n", startCard.toString());
                                             game.play(computerDefendCard);
+                                            game.rule(computerDefendCard);
+                                            break;
                                         }
                                     }
                                 } else {
