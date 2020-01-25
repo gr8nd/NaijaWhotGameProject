@@ -9,8 +9,6 @@ public class WhotGame {
     private ArrayList<Card> playerCardPile;
     private int computerCount = 0;
     private int playerCount = 0;
-    private boolean isComputerTurn = false;
-    private boolean isPlayerTurn = false;
 
     private Card startCard;
 
@@ -54,11 +52,17 @@ public class WhotGame {
     }
 
     public void computerDraw() {
+        if(drawPile.size() > 0)
         computerCardPile.add(drawPile.remove(0));
+        else
+            isThereWinner = true;
     }
 
     public void playerDraw() {
+        if(drawPile.size() > 0)
         playerCardPile.add(drawPile.remove(0));
+        else
+            isThereWinner = true;
     }
 
     public void rule(Card card) {
@@ -148,22 +152,6 @@ public class WhotGame {
 
     public void setPlayerCardPile(ArrayList<Card> playerCardPile) {
         this.playerCardPile = playerCardPile;
-    }
-
-    public boolean isComputerTurn() {
-        return isComputerTurn;
-    }
-
-    public void setComputerTurn(boolean computerTurn) {
-        isComputerTurn = computerTurn;
-    }
-
-    public boolean isPlayerTurn() {
-        return isPlayerTurn;
-    }
-
-    public void setPlayerTurn(boolean playerTurn) {
-        isPlayerTurn = playerTurn;
     }
 
     public Card getStartCard() {
