@@ -4,17 +4,22 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class GamePlay {
-    private static boolean isComputerTurn = true;
-    private static boolean isPlayerTurn = false;
-    private static WhotGame game = new WhotGame();
-    private static  boolean validDeal = true;
-    private static ArrayList<Card> playerCards = game.getPlayerCardPile();
-    private static ArrayList<Card> computerCards = game.getComputerCardPile();
-    private static int index;
-    private static Card previousCard;
-    private static Random rand = new Random();
-    private static Scanner input = new Scanner(System.in);
-    public static void main(String[] args)
+    private boolean isComputerTurn = true;
+    private WhotGame game;
+    private boolean validDeal = true;
+    private ArrayList<Card> playerCards;
+    private ArrayList<Card> computerCards;
+    private int index;
+    private Card previousCard;
+    private Random rand = new Random();
+    private Scanner input = new Scanner(System.in);
+    public GamePlay()
+    {
+        game = new WhotGame();
+        playerCards = game.getPlayerCardPile();
+        computerCards = game.getComputerCardPile();
+    }
+    public void start()
     {
         System.out.println();
        deal(6);
@@ -33,7 +38,7 @@ public class GamePlay {
         }
     }
 
-    public static void computer() {
+    public void computer() {
         game.setComputerTurn(true);
         System.out.println("Computer has played:");
         System.out.printf("*****%s*****%n", previousCard.toString());
@@ -224,7 +229,7 @@ public class GamePlay {
 
     }
 
-    public static void player() {
+    public void player() {
         try {
             System.out.print("Hit 'Enter' to see all your cards");
             String yes = input.nextLine();
@@ -332,7 +337,7 @@ public class GamePlay {
         }
 
     }
-    public static void deal(int number)
+    public void deal(int number)
     {
         try {
             game.deal(number);
