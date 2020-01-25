@@ -398,7 +398,6 @@ public class GamePlay {
                 }
 
                 if (previousCard.isWhot()) {
-                    game.rule(previousCard);
                     System.out.printf("1. %s%n2. %s%n3. %s%n4. %s%n5. %s%n", Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE);
                     int playerInput = input.nextInt();
                     Suit wantedSuit = null;
