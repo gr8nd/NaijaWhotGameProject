@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.Scanner;
 
 public class GamePlay {
@@ -11,7 +11,7 @@ public class GamePlay {
     private ArrayList<Card> computerCards;
     private int index;
     private Card previousCard;
-    private Random rand = new Random();
+    private SecureRandom rand = new SecureRandom();
     private Scanner input = new Scanner(System.in);
     public GamePlay()
     {
@@ -36,21 +36,23 @@ public class GamePlay {
             {
                     if (isComputerTurn)
                     {
-                        computer();
+                        computerPlay();
                     } else
                         {
-                        player();
+                        playerPlay();
                     }
             }
         }
     }
 
-    public void computer() {
+    public void computerPlay() {
         System.out.println("Computer has played:");
         System.out.printf("*****%s*****%n", previousCard.toString());
         game.rule(previousCard);
         try {
+            boolean isLoopEntered = false;
             while (!previousCard.isNormalCard()) {
+                isLoopEntered = true;
                 if (previousCard.isHoldOn()) {
                     for (Card card : computerCards) {
                         if (card.isHoldOn() || card.getSuit().equals(previousCard.getSuit())) {
@@ -214,12 +216,10 @@ public class GamePlay {
                     } else {
                         Card playedCard = playerCards.get(userInput - 1);
                         while (true) {
-                            if(playedCard.getSuit().equals(wantedCard.getSuit()))
-                            {
+                            if (playedCard.getSuit().equals(wantedCard.getSuit())) {
                                 previousCard = playedCard;
                                 break;
-                            }else
-                            {
+                            } else {
                                 System.out.printf("Computer needs *****%s*****%n", wantedCard.getSuit());
                                 System.out.print("Hit 'Enter' to see all your cards");
                                 System.out.println();
@@ -263,7 +263,20 @@ public class GamePlay {
                     isComputerTurn = false;
                 }
             }
-            isComputerTurn = false;
+            if(!isLoopEntered)
+            {
+                for (Card card : computerCards)
+                {
+                    if(card.getFace() == previousCard.getFace() || card.getSuit().equals(previousCard.getSuit()))
+                    {
+                        previousCard = card;
+                        game.rule(previousCard);
+                        game.play(previousCard);
+                        isComputerTurn = false;
+                        break;
+                    }
+                }
+            }
         } catch(InputMismatchException e){
             System.out.println("Select a valid card number");
         } catch(NumberFormatException e){
@@ -274,7 +287,7 @@ public class GamePlay {
         }
     }
 
-    public void player() {
+    public void playerPlay() {
         try {
             System.out.print("Hit 'Enter' to see all your cards");
             System.out.println();
