@@ -1,9 +1,9 @@
-import java.util.Random;
+import java.security.SecureRandom;
 
 public class NaijaWhots {
     private final int WHOT_NUMBER = 5;
     private final int WHOT_FACE = 20;
-    private Random rand = new Random();
+    private SecureRandom rand = new SecureRandom();
     private Card[] pack = new Card[54];
 
     public NaijaWhots() {

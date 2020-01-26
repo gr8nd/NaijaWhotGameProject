@@ -85,7 +85,7 @@ public class WhotGame {
         if (drawPile.isEmpty() || computerCardPile.isEmpty() || playerCardPile.isEmpty()) {
             if (computerCardPile.isEmpty()) {
                 isThereWinner = true;
-                return "*****Game Over*****\n\nYou lost!";
+                return "*****Game Over*****\n\nYou lose!";
             } else if (playerCardPile.isEmpty()) {
                 isThereWinner = true;
                 return "*****Game Over*****\n\nYou win!";
@@ -108,7 +108,7 @@ public class WhotGame {
                 }
                 if (computerCount > playerCount) {
                     isThereWinner = true;
-                    return "*****Game Over*****\n\nYou lost!";
+                    return "*****Game Over*****\n\nYou lose!";
                 } else if (computerCount < playerCount) {
                     isThereWinner = true;
                     return "*****Game Over*****\n\nYou win!";
@@ -119,7 +119,7 @@ public class WhotGame {
             }
 
         }
-        return "No winner";
+        return "No winner";//will never return
     }
 
     public boolean isThereWinner() {
