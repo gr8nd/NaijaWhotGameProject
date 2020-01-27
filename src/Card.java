@@ -2,7 +2,7 @@
 public class Card {
     private int face;
     private Suit suit;
-
+    private boolean isDefendCard;
     public Card(Suit suit, int face) {
         this.suit = suit;
         this.face = face;
@@ -45,6 +45,14 @@ public class Card {
                 this.face != 8 &&
                 this.face != 14 &&
                 this.face != 20;
+    }
+
+    public boolean isDefendCard() {
+        return isDefendCard;
+    }
+
+    public void setDefendCard(boolean defendCard) {
+        isDefendCard = defendCard;
     }
 
     public String toString() {
