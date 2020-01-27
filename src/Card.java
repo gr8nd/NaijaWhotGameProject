@@ -3,6 +3,7 @@ public class Card {
     private int face;
     private Suit suit;
     private boolean isDefendCard;
+    private boolean isPlayerWhot;
     public Card(Suit suit, int face) {
         this.suit = suit;
         this.face = face;
@@ -53,6 +54,14 @@ public class Card {
 
     public void setDefendCard(boolean defendCard) {
         isDefendCard = defendCard;
+    }
+
+    public boolean isPlayerWhot() {
+        return isPlayerWhot;
+    }
+
+    public void setPlayerWhot(boolean playerWhot) {
+        isPlayerWhot = playerWhot;
     }
 
     public String toString() {
