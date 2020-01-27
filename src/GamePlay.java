@@ -57,7 +57,7 @@ public class GamePlay {
         {
             boolean isComputerDrawingFromPile = true;
             for (Card card : computerCards) {
-                if (card.isHoldOn() || card.getSuit().equals(previousCard.getSuit()) || card.isWhot()) {
+                if (card.getFace() == previousCard.getFace() || card.getSuit().equals(previousCard.getSuit()) || card.isWhot()) {
                     previousCard = card;
                     System.out.println("Computer has played:");
                     System.out.printf("*****%s*****%n", previousCard.toString());
