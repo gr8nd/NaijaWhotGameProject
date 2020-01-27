@@ -560,6 +560,7 @@ public class GamePlay {
                         default:
                             System.out.println("You made an invalid selection");
                     }
+                    System.out.printf("You need %s%n", wantedSuit);
                     boolean isComputerDrawingFromPile = true;
                     for (Card card : computerCards) {
                         if (card.getSuit().equals(wantedSuit)) {
