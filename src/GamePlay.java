@@ -574,7 +574,7 @@ public class GamePlay {
                             break;
                         }
                     }
-                    if (!isComputerDrawingFromPile) {
+                    if (isComputerDrawingFromPile) {
                         game.computerDraw();
                         isComputerTurn = false;
                         System.out.println("Computer has drawn from pile");
