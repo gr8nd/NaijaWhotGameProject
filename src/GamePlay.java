@@ -405,7 +405,7 @@ public class GamePlay {
                         isComputerTurn = true;
                     } else {
                         while (!validPlay) {
-                            System.out.println("You selected and invalid card, draw from pile or play a fitting card");
+                            System.out.println("You selected an invalid card, draw from pile or play a fitting card");
                             System.out.print("Hit 'Enter' to see all your cards");
                             yes = input.nextLine();
                             for (index = 0; index < playerCards.size(); index++) {
