@@ -4,6 +4,8 @@ public class Card {
     private Suit suit;
     private boolean isDefendCard;
     private boolean isPlayerWhot;
+    private boolean isPlayerPickTwo;
+    private boolean isPlayerPickThree;
     public Card(Suit suit, int face) {
         this.suit = suit;
         this.face = face;
@@ -62,6 +64,22 @@ public class Card {
 
     public void setPlayerWhot(boolean playerWhot) {
         isPlayerWhot = playerWhot;
+    }
+
+    public boolean isPlayerPickTwo() {
+        return isPlayerPickTwo;
+    }
+
+    public void setPlayerPickTwo(boolean playerPickTwo) {
+        isPlayerPickTwo = playerPickTwo;
+    }
+
+    public boolean isPlayerPickThree() {
+        return isPlayerPickThree;
+    }
+
+    public void setPlayerPickThree(boolean playerPickThree) {
+        isPlayerPickThree = playerPickThree;
     }
 
     public String toString() {
