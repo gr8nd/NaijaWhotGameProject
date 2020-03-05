@@ -13,11 +13,11 @@ public class GamePlay {
     private boolean isComputerTurn = true;//Used for relinquishing control between computer and human, initially it is
     //computer turn
     private WhotGame game;
-    private boolean validDeal = true;//Used checking if a valid deal number is provided.
+    private boolean validDeal = true;//Used in checking if a valid deal number is provided.
     private ArrayList<Card> playerCards;
     private ArrayList<Card> computerCards;
     private int index;
-    private Card previousCard;//Initially the previous is the startCard in the WhotGame game class. Thereafter it takes
+    private Card previousCard;//Initially the previousCard is the startCard in the WhotGame game class. Thereafter it takes
     //the most recent card played during the game.
     private SecureRandom rand = new SecureRandom();
     private Scanner input = new Scanner(System.in);
