@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /**
  * The logic of the Whot game starts here in the WhotGame class
  * drawPile: this is where computer and player can draw a card from when they run out of a fitting card or
- * when instructed to do so by the game rule such as the GENERAL MARKET
+ * when instructed to do so by the game rule such as the GENERAL MARKET.
  * computerCardPile: a list containing all the computer cards
  * playerDrawPile: a list containing all the player cards
  * computerCount and playerCount: keep record of the total face values of all the computer cards and the player
@@ -36,7 +36,7 @@ public class WhotGame {
     /**
      *
      * @param number the total number of cards each player will receive at the start of the game, usually 6 but can
-     *               be any number as weell.
+     * be any number as weell.
      * @throws WhotGameException an exception that will be thrown when an invalid deal number is provided
      */
     public void deal(int number) throws WhotGameException {

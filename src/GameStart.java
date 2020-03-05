@@ -1,5 +1,5 @@
 /**
- * The GameStart class is where the main method resides, the game started from this class by the start method of
+ * The GameStart class is where the main method resides, the game is started from this class by calling the start method of
  *  GamePlay class.
  */
 public class GameStart {
