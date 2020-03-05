@@ -14,22 +14,23 @@ public class WhotGame {
     private boolean isThereWinner = false;
     private NaijaWhots whots;
     private Card[] pack;
-    private ArrayList<Card> drawPile;
-    private ArrayList<Card> computerCardPile;
-    private ArrayList<Card> playerCardPile;
-    private int computerCount = 0;
-    private int playerCount = 0;
+    private ArrayList<Card> drawPile;//this is where computer and player can draw a card from when they run out of a fitting card or
+    //when instructed to do so by the game rule such as the GENERAL MARKET.
+    private ArrayList<Card> computerCardPile;//a list containing all the computer cards
+    private ArrayList<Card> playerCardPile;//a list containing all the player cards
+    private int computerCount = 0;//keeps record of the computer's face count when scoring by counting faces.
+    private int playerCount = 0;//keeps record of the player's face count when scoring by counting faces.
 
     private Card startCard;//This is first card that is used to start the game
 
     public WhotGame() {
-        whots = new NaijaWhots();
+        whots = new NaijaWhots();//creates a NaijaWhots object
         computerCardPile = new ArrayList<>();
         playerCardPile = new ArrayList<>();
         drawPile = new ArrayList<>();
-        pack = whots.getPack();
+        pack = whots.getPack();//gets the initialised and shuffled pack from the NaijaWhots class
         for (Card card : pack) {
-            drawPile.add(card);
+            drawPile.add(card);//adds all the cards in pack to the draw pile.
         }
     }
 
@@ -117,7 +118,12 @@ public class WhotGame {
 
     /**
      * The method checks for a winner and therefore should be called each time a card is played either by the computer
-     * or by human
+     * or by human. There is a winner when any of the following occurs during the game play:
+     * 1. The drawPile runs out of cards (i.e when it becomes empty).
+     * 2. The computerDrawPile runs of cards or
+     * 3. The playerDrawPile runs out of cards
+     * If it is the drawPile that runs out of card, a winner is decided by counting the face values of each player's
+     * cards. Any player that has the lowest count wins.
      * @return a string to indicate a winner
      */
     public String checkWinner() {

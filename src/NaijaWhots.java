@@ -57,13 +57,30 @@ public class NaijaWhots {
     }
 
     /**
+     * This is a private method that shuffles the pack behind the scene when the NaijaWhot object is instantiated
+     * @return return the shuffled pack
+     */
+    private void shuffle() {
+        if (this.pack.length > 1) {
+            Card oldCard;//holds a temporary card object used for swapping
+            for (int index = 0; index < this.pack.length; index++) {
+                int randomIndex = rand.nextInt(this.pack.length);//generates a random integer in the range 0 - 53
+                oldCard = this.pack[index];//oldCard holds the card at the index
+                //Then swap the card at the index with the card at the randomly generated integer index
+                this.pack[index] = this.pack[randomIndex];
+                this.pack[randomIndex] = oldCard;
+            }
+        }
+    }
+
+    /**
      *
      * @param cards the pack to be shuffled, an array containing card objects
      * @return return the shuffled pack
      */
     public Card[] shuffle(Card[] cards) {
         if (cards.length > 1) {
-            Card oldCard;
+            Card oldCard;//holds a temporary card object used for swapping
             for (int index = 0; index < cards.length; index++) {
                 int randomIndex = rand.nextInt(cards.length + 1);//generates a random integer in the range 0 - 53
                 oldCard = cards[index];//oldCard holds the card at the index
@@ -73,22 +90,6 @@ public class NaijaWhots {
             }
         }
         return cards;
-    }
-
-    /**
-     * This is a private method that shuffles the pack behind the scene when the NaijaWhot object is instantiated
-     * @return return the shuffled pack
-     */
-    private void shuffle() {
-        if (this.pack.length > 1) {
-            Card oldCard;
-            for (int index = 0; index < this.pack.length; index++) {
-                int randomIndex = rand.nextInt(this.pack.length);
-                oldCard = this.pack[index];
-                this.pack[index] = this.pack[randomIndex];
-                this.pack[randomIndex] = oldCard;
-            }
-        }
     }
 
     /**
