@@ -3,6 +3,12 @@ import java.util.InputMismatchException;
 import java.security.SecureRandom;
 import java.util.Scanner;
 
+/**
+ * This class has the highest number of lines and also the most difficult to implement. It contains the whole logic of
+ * the Whot game. Computer and human take turn to play, after playing computer relinquishes control to the human and like
+ * wise human. This turn continues until the drawPile runs out or either the computerDrawPile or playerDrawPile run out
+ * thereafter a winner will be decided.
+ */
 public class GamePlay {
     private boolean isComputerTurn = true;
     private WhotGame game;
