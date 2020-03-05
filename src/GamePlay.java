@@ -10,16 +10,22 @@ import java.util.Scanner;
  * thereafter a winner will be decided.
  */
 public class GamePlay {
-    private boolean isComputerTurn = true;
+    private boolean isComputerTurn = true;//Used for relinquishing control between computer and human, initially it is
+    //computer turn
     private WhotGame game;
-    private boolean validDeal = true;
+    private boolean validDeal = true;//Used checking if a valid deal number is provided.
     private ArrayList<Card> playerCards;
     private ArrayList<Card> computerCards;
     private int index;
-    private Card previousCard;
+    private Card previousCard;//Initially the previous is the startCard in the WhotGame game class. Thereafter it takes
+    //the most recent card played during the game.
     private SecureRandom rand = new SecureRandom();
     private Scanner input = new Scanner(System.in);
     private static int counter = 0;
+    /**
+     * The GamePlay has two overloaded constructors. This constructor without a parameter is used when no deal number
+     * is provided, it therefore uses the default deal number of 6.
+     */
     public GamePlay()
     {
         game = new WhotGame();
@@ -27,6 +33,11 @@ public class GamePlay {
         computerCards = game.getComputerCardPile();
         deal(6);
     }
+
+    /**
+     *
+     * @param number a deal number
+     */
     public GamePlay(int number)
     {
         game = new WhotGame();
@@ -34,6 +45,11 @@ public class GamePlay {
         computerCards = game.getComputerCardPile();
         deal(number);
     }
+
+    /**
+     * The start method checks whether a valid deal was done and thereafter starts the game, the game runs until
+     * there is a winner, rotating turn between computer and human.
+     */
     public void start()
     {
         System.out.println();
@@ -52,6 +68,10 @@ public class GamePlay {
         }
     }
 
+    /**
+     * computerPlay method handles the computer card play simulation, after finish playing computer should hand over
+     * turn to the human.
+     */
     public void computerPlay() {
         if(counter == 0)
         {
@@ -385,7 +405,10 @@ public class GamePlay {
             isComputerTurn = false;
         counter = 1;
     }
-
+    /**
+     * playerPlay method handles the player card play simulation, after finish playing this method should hand over
+     * turn to the computer.
+     */
     public void playerPlay() {
         while (!isComputerTurn) {
             try {
@@ -631,6 +654,12 @@ public class GamePlay {
             }
         }
         }
+
+    /**
+     * previousCard is initially the startCard in the WhotGame
+     * @param number a deal number that is provided, if no valid deal number was provided a WhotGameException is thrown
+     * and appropriate message is issued to the user.
+     */
     public void deal(int number)
     {
         try {
