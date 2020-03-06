@@ -459,11 +459,25 @@ public class GamePlay {
                                 System.out.println("You made an invalid selection");
                         }
                         System.out.printf("You need %s%n", wantedSuit);
-                        if (!computerSelectCard()) {
-                            game.computerDraw();
-                            System.out.println("Computer has drawn from pile");
-                            isComputerTurn = false;
-                        }
+                        boolean computerPlayed = false;
+                       for(Card card : computerCards)
+                       {
+                           if(card.getSuit().equals(wantedSuit) || card.isWhot())
+                           {
+                               previousCard = card;
+                               System.out.println("Computer has played:");
+                               System.out.printf("*****%s*****%n", previousCard.toString());
+                               game.rule(previousCard);
+                               game.play(previousCard);
+                               game.checkWinner();
+                               computerPlayed = true;
+                           }
+                       }
+                       if(!computerPlayed)
+                       {
+                           game.computerDraw();
+                           System.out.println("Computer has drawn from pile");
+                       }
                     }
                 }
             } catch (InputMismatchException e) {
