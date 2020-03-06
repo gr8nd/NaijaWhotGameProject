@@ -20,7 +20,7 @@ public class NaijaWhots {
 
     /**
      * The private method initialise() instantiates 54 card objects and adds them to the pack.
-     * Each suit has an allowed faces on them as described in the ReadMe.md, for instance Whot card only
+     * Each suit has an allowed faces on them as described in the README.md, for instance Whot card only
      * has one face value on it which is 20.
      */
     private void initialize() {
@@ -58,7 +58,7 @@ public class NaijaWhots {
 
     /**
      * This is a private method that shuffles the pack behind the scene when the NaijaWhot object is instantiated
-     * @return return the shuffled pack
+     *
      */
     private void shuffle() {
         if (this.pack.length > 1) {

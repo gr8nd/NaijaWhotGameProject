@@ -37,7 +37,7 @@ public class WhotGame {
     /**
      *
      * @param number the total number of cards each player will receive at the start of the game, usually 6 but can
-     * be any number as weell.
+     * be any number as well.
      * @throws WhotGameException an exception that will be thrown when an invalid deal number is provided
      */
     public void deal(int number) throws WhotGameException {
