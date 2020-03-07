@@ -6,7 +6,7 @@ import java.util.Scanner;
 /**
  * This class has the highest number of lines and also the most difficult to implement. It contains the whole logic of
  * the Whot game. Computer and human take turn to play, after playing computer relinquishes control to the human and like
- * wise human. This turn continues until the drawPile runs out or either the computerDrawPile or playerDrawPile run out
+ * wise human. This turn continues until the drawPile runs out or either the computerDrawPile or playerDrawPile runs out
  * thereafter a winner will be decided.
  */
 public class GamePlay {
@@ -18,7 +18,9 @@ public class GamePlay {
     private ArrayList<Card> computerCards;//A list containing all computer's cards
     private int index;
     private Card previousCard;//Initially the previousCard is the startCard in the WhotGame game class. Thereafter it takes
-    //the most recent card played during the game.
+    //the most recent card played during the game. Each player's play must be valid if the card played has the same
+    // Suit or the face(number) as the previousCard. The Whot card can be played at any time except during HOLDON,
+    //SUSPENSION, PICKTWO, PICKTHREE or GENERAL MARKET.
     private SecureRandom rand = new SecureRandom();
     private Scanner input = new Scanner(System.in);
     private static int counter = 0;
@@ -492,7 +494,7 @@ public class GamePlay {
 
     /**
      * previousCard is initially the startCard in the WhotGame
-     * @param number a deal number that is provided, if no valid deal number was provided a WhotGameException is thrown
+     * @param number a deal number that is provided, if no valid deal number is provided a WhotGameException is thrown
      * and appropriate message is issued to the user.
      */
     public void deal(int number)
