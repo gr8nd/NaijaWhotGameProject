@@ -27,8 +27,10 @@ public class WhotGame {
         computerCardPile = new ArrayList<>();
         playerCardPile = new ArrayList<>();
         drawPile = new ArrayList<>();
-        Card[] pack = whots.getPack();//gets the initialised and shuffled pack from the NaijaWhots class
+        Card[] pack = new Card[54];
+        pack = whots.getPack().toArray(pack);//gets the initialised and shuffled pack from the NaijaWhots class
         Collections.addAll(drawPile, pack);
+        startCard = drawPile.remove(0);//get the first card as the start card and remove it thereafter
     }
 
     /**
@@ -46,7 +48,6 @@ public class WhotGame {
                 playerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the playerPile and
                 //removes it afterward
             }
-            startCard = drawPile.remove(0);//get the first card as the start card and remove it thereafter
         } else if (number < 0) {
             throw new WhotGameException("You cannot deal a negative number of cards");
         } else if (number > 27) {

@@ -1,4 +1,7 @@
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * In this NaijaWhots class, the initialization of the cards to form a pack and the shuffling
@@ -9,7 +12,7 @@ import java.security.SecureRandom;
  */
 public class NaijaWhots {
     private final SecureRandom rand = new SecureRandom();//Ensures that the random number generated is truly unpredictable
-    private final Card[] pack = new Card[54];//The pack as an array containing 54 cards
+    private final List<Card> pack = new ArrayList<>(54);//The pack as an array containing 54 cards
 
     public NaijaWhots() {
         initializeCards();//The pack is initialised with 54 card objects at the  point of instantiation of NaijaWhot object
@@ -22,40 +25,33 @@ public class NaijaWhots {
      * has one face value on it which is 20.
      */
     private void initializeCards() {
-        int index = 0;
         int[] facesOfCirclesAndTriangles = {1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14};
         for (int face : facesOfCirclesAndTriangles) {
             Card circle = new Card(Suit.CIRCLE, face);
-            index++;
-            pack[index] = circle;
+            pack.add(circle);
             Card triangle = new Card(Suit.TRIANGLE, face);
-            pack[index] = triangle;
-            index++;
+            pack.add(triangle);
         }
 
         int[] facesOfCrossesAndSquares = {1, 2, 3, 5, 7, 10, 11, 13, 14};
         for (int face : facesOfCrossesAndSquares) {
             Card cross = new Card(Suit.CROSS, face);
-            index++;
-            pack[index] = cross;
+            pack.add(cross);
             Card square = new Card(Suit.SQUARE, face);
-            pack[index] = square;
-            index++;
+            pack.add(square);
         }
 
         int[] facesOfStars = {1, 2, 3, 4, 5, 7, 8};
         for (int facesOfStar : facesOfStars) {
             Card card = new Card(Suit.STAR, facesOfStar);
-            pack[index] = card;
-            index++;
+            pack.add(card);
         }
 
         int NUM_OF_WHOT = 5; //There will be 5 Whots in our pack
         int WHOT_FACE = 20; //The number on the Whot card is usually 20
         for (int i = 0; i < NUM_OF_WHOT; i++) {
             Card card = new Card(Suit.WHOT, WHOT_FACE);
-            pack[index] = card;
-            index++;
+            pack.add(card);
         }
     }
 
@@ -64,23 +60,14 @@ public class NaijaWhots {
      *
      */
     private void shuffleCards() {
-        if (this.pack.length > 1) {
-            Card oldCard;//holds a temporary card object used for swapping
-            for (int index = 0; index < this.pack.length; index++) {
-                int randomIndex = rand.nextInt(this.pack.length);//generates a random integer in the range 0 - 53
-                oldCard = this.pack[index];//oldCard holds the card at the index
-                //Then swap the card at the index with the card at the randomly generated integer index
-                this.pack[index] = this.pack[randomIndex];
-                this.pack[randomIndex] = oldCard;
-            }
-        }
+        Collections.shuffle(pack);
     }
 
     /**
      *
      * @return pack, the initialised and shuffled arrays containing card objects
      */
-    public Card[] getPack() {
+    public List<Card>  getPack() {
         return this.pack;
     }
 }
