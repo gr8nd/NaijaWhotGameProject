@@ -528,7 +528,7 @@ public class GamePlay {
     }
     public void playerSelectCard(String message)
     {
-        System.out.print("Hit 'Enter' to see all your cards >> ");
+        System.out.print("Hit 'Enter' to see all your cards: >> ");
         String yes = input.nextLine();
         int index;
         for (index = 0; index < playerCards.size(); index++) {
@@ -537,7 +537,7 @@ public class GamePlay {
         }
         System.out.println();
         System.out.println(message);
-        System.out.print("Select a card to play >> ");
+        System.out.print("Select a card to play: >> ");
     }
     public void checkComputerCards()
     {
