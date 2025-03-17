@@ -1,13 +1,13 @@
 /**
- * This Card class bundles the the suit and the face as a single object.
+ * This Card class bundles the suit and the face as a single object.
  * There are six special cards determined by their face viz: PICKTWO, PICKTHREE
  * HOLDON, SUSPENSION, GENERALMARKET AND WHOT.
  * Any card that is not a special card is a normal card, and there is no rule on it.
  * the toString method returns the String representation of the card object.
  */
 public class Card {
-    private int face;//an integer that represents the number on the card
-    private Suit suit;//an enumeration that represents the shape on the card
+    private final int face;//an integer that represents the number on the card
+    private final Suit suit;//an enumeration that represents the shape on the card
     private boolean isDefendCard;//Computer uses this to check if the PICK TWO/PICK THREE are defend card from the player
     private boolean isPlayerWhot;//Computer uses this to check if the whot card is player's.
     public Card(Suit suit, int face)
@@ -71,7 +71,16 @@ public class Card {
         isPlayerWhot = playerWhot;
     }
 
-    public String toString() {
-        return String.format("%d of %s", this.face, this.suit);
+    public String toString()
+    {
+        String display = ". . . . . . . . .\n" +
+                         ".               .\n" +
+                         ".               .\n" +
+        String.format("  %d %s          \n", this.face, this.suit) +
+                         ".               .\n" +
+                         ".               .\n" +
+                         ". . . . . . . . .\n";
+
+        return display;
     }
 }
