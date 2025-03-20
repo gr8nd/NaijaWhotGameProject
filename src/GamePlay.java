@@ -13,8 +13,6 @@ public class GamePlay {
     private boolean isComputerTurn = true;//Used for relinquishing control between computer and human, initially it is
     //computer turn
     private final WhotGame game;
-    private ArrayList<Card> playedCardList = new ArrayList<>(); //The list of cards that have been played. If the draw pile
-    //becomes empty and forceWinner is true, this playedCardList will be emptied into draw pile so the game will go on.
     private boolean validDeal = true;//Used in checking if a valid deal number is provided.
     private final ArrayList<Card> playerCards;//A list containing all player's cards
     private final ArrayList<Card> computerCards;//A list containing all computer's cards
@@ -35,7 +33,7 @@ public class GamePlay {
     {
         this.forceWinner = forceWinner;
         game = new WhotGame();
-        playerCards = game.getPlayerCardPile();
+        playerCards = game.getHumanCardPile();
         computerCards = game.getComputerCardPile();
         this.deal(6);
     }
@@ -46,7 +44,7 @@ public class GamePlay {
     {
         this.forceWinner = forceWinner;
         game = new WhotGame();
-        playerCards = game.getPlayerCardPile();
+        playerCards = game.getHumanCardPile();
         computerCards = game.getComputerCardPile();
         this.deal(number);
     }
@@ -58,10 +56,12 @@ public class GamePlay {
      */
     public void deal(int number)
     {
-        try {
+        try
+        {
             game.deal(number);
             previousCard = game.getStartCard();
-        } catch (WhotGameException e) {
+        } catch (WhotGameException e)
+        {
             validDeal = false;
             System.out.println(e.getMessage());
         }
@@ -90,7 +90,7 @@ public class GamePlay {
     }
 
     /**
-     * computerPlay method handles the computer card play simulation, after finish playing computer should hand over
+     * computerPlay method handles the computer card play simulation, after finish playing computer should relinquish
      * turn to the human.
      */
     public void computerPlay()
@@ -99,11 +99,11 @@ public class GamePlay {
         {
             System.out.println("Computer has played:");
             System.out.println(previousCard.toString());
-            game.rule(previousCard);
+            game.play(previousCard, forceWinner);
         }
         if((previousCard.isNormalCard() && counter != 0) || previousCard.isPlayerWhot())
         {
-            if (computerSelectCard())
+            if (computerSelectCardToPlay())
             {
                 game.computerDraw(forceWinner);
                 isComputerTurn = false;
@@ -117,11 +117,11 @@ public class GamePlay {
                 //This statement executes when the previous card is HOLDON
                 if (previousCard.isHoldOn())
                 {
-                   checkComputerCards();
+                    computerSelectCardToPlay();
                     //This statement executes when the previous card is PICKTWO
                 } else if (previousCard.isPickTwo() && !previousCard.isDefendCard())
                 {
-                    playerSelectCard("-1. to pick two from the pile or a card to defend");
+                    humanSelectCardToPlay("-1. to pick two from the pile or a card to defend");
                     int userInput = input.nextInt();
                     outer:while (true)
                     {
@@ -130,7 +130,7 @@ public class GamePlay {
                             game.playerDraw(forceWinner);
                             game.playerDraw(forceWinner);
                             System.out.println("You have picked two cards");
-                            if (computerSelectCard())
+                            if (computerSelectCardToPlay())
                             {
                                 game.computerDraw(forceWinner);
                                 isComputerTurn = false;
@@ -146,14 +146,12 @@ public class GamePlay {
                                 System.out.println("You defended the PICK TWO with: ");
                                 previousCard.setDefendCard(true);
                                 System.out.println(previousCard.toString());
-                                game.rule(previousCard);
                                 game.play(defendCard, forceWinner);
-                                game.checkWinner(this.forceWinner);
                                 break;
                             } else
                             {
                                 System.out.println("The card is not fit for defend, if you don't have a valid card pick from the draw pile");
-                                playerSelectCard("-1. to pick two from the pile or a card to defend");
+                                humanSelectCardToPlay("-1. to pick two from the pile or a card to defend");
                                 userInput = input.nextInt();
                             }
                         }
@@ -161,7 +159,7 @@ public class GamePlay {
                     //This statement executes when the previous card is PICKTHREE
                 } else if (previousCard.isPickThree() && !previousCard.isDefendCard())
                 {
-                    playerSelectCard("-1. to pick three from the pile or a card to defend");
+                    humanSelectCardToPlay("-1. to pick three from the pile or a card to defend");
                     int userInput = input.nextInt();
                     outer:while (true)
                     {
@@ -171,7 +169,7 @@ public class GamePlay {
                             game.playerDraw(forceWinner);
                             game.playerDraw(forceWinner);
                             System.out.println("You have picked three cards");
-                            if (computerSelectCard())
+                            if (computerSelectCardToPlay())
                             {
                                 game.computerDraw(forceWinner);
                                 isComputerTurn = false;
@@ -187,14 +185,12 @@ public class GamePlay {
                                 System.out.println("You defended the PICK THREE with: ");
                                 previousCard.setDefendCard(true);
                                 System.out.printf(previousCard.toString());
-                                game.rule(defendCard);
                                 game.play(defendCard, forceWinner);
-                                game.checkWinner(this.forceWinner);
                                 break;
                             } else
                             {
                                 System.out.println("The card is not fit for defend, if you don't have a valid card pick from the draw pile");
-                                playerSelectCard("-1. to pick three from the pile or a card to defend");
+                                humanSelectCardToPlay("-1. to pick three from the pile or a card to defend");
                                 userInput = input.nextInt();
                             }
 
@@ -203,11 +199,11 @@ public class GamePlay {
                     //This statement executes when the previous card is a GENERAL MARKET
                 } else if (previousCard.isGeneralMarket())
                 {
-                    playerSelectCard("Hit 'Enter' to go to market");
+                    humanSelectCardToPlay("Hit 'Enter' to go to market");
                     String userInput = input.nextLine();
                     game.playerDraw(forceWinner);
                     System.out.println("You have gone to market");
-                    if (computerSelectCard())
+                    if (computerSelectCardToPlay())
                     {
                         game.computerDraw(forceWinner);
                         isComputerTurn = false;
@@ -227,11 +223,11 @@ public class GamePlay {
                         wantedCard = computerCards.get(randomIndex);
                     }
                     System.out.printf("Computer needs *****%s*****%n", wantedCard.getSuit());
-                    playerSelectCard("-1. to draw from the pile");
+                    humanSelectCardToPlay("-1. to draw from the pile");
                     int userInput = input.nextInt();
                     if (userInput == -1)
                     {
-                        if (computerSelectCard())
+                        if (computerSelectCardToPlay())
                         {
                             game.computerDraw(forceWinner);
                             isComputerTurn = false;
@@ -248,9 +244,7 @@ public class GamePlay {
                                 previousCard = playedCard;
                                 System.out.println("You played:");
                                 System.out.println(previousCard);
-                                game.rule(playedCard);
                                 game.play(playedCard, forceWinner);
-                                game.checkWinner(this.forceWinner);
                                 if(playedCard.isWhot())
                                 {
                                     isComputerTurn = false;
@@ -260,7 +254,7 @@ public class GamePlay {
                             {
                                 System.out.print("The card you played didn't fit computer request");
                                 System.out.printf("Computer needs *****%s*****%n", wantedCard.getSuit());
-                                playerSelectCard("-1. to draw from the pile");
+                                humanSelectCardToPlay("-1. to draw from the pile");
                                 userInput = input.nextInt();
                                 if (userInput == -1)
                                 {
@@ -275,7 +269,7 @@ public class GamePlay {
                     //value of 8
                 } else if (previousCard.isSuspension())
                 {
-                    if (!computerSelectCard())
+                    if (!computerSelectCardToPlay())
                     {
                         game.computerDraw(forceWinner);
                         isComputerTurn = false;
@@ -285,13 +279,13 @@ public class GamePlay {
                     //This else statement executes when the previous card is normal card
                 } else
                 {
-                        checkComputerCards();
+                    computerSelectCardToPlay();
                 }
                 //This statement executes when the previous card is a defend card coming from the human player
                 //the only two cards that can be defended are PICKTWO and PICKTHREE
                 if(previousCard.isDefendCard())
                 {
-                    if (!computerSelectCard())
+                    if (!computerSelectCardToPlay())
                     {
                         game.computerDraw(forceWinner);
                         isComputerTurn = false;
@@ -320,7 +314,7 @@ public class GamePlay {
         while (!isComputerTurn)
         {
             try {
-                playerSelectCard("-1. to draw from the pile");
+                humanSelectCardToPlay("-1. to draw from the pile");
                 int userInput = input.nextInt();
                 if (userInput == -1)
                 {
@@ -337,16 +331,14 @@ public class GamePlay {
                         previousCard = playedCard;
                         System.out.println("You played:");
                         System.out.println(previousCard);
-                        game.rule(previousCard);
                         game.play(previousCard, forceWinner);
-                        game.checkWinner(this.forceWinner);
                         isComputerTurn = true;
                     } else
                     {
                         while (!validPlay)
                         {
                             System.out.println("You selected an invalid card, draw from pile or play a fitting card");
-                            playerSelectCard("-1. to draw from the pile");
+                            humanSelectCardToPlay("-1. to draw from the pile");
                             userInput = input.nextInt();
                             if (userInput == -1)
                             {
@@ -362,9 +354,7 @@ public class GamePlay {
                                     previousCard = playedCard;
                                     System.out.println("You played:");
                                     System.out.println(previousCard.toString());
-                                    game.rule(previousCard);
                                     game.play(previousCard, forceWinner);
-                                    game.checkWinner(this.forceWinner);
                                     validPlay = true;
                                 }
                             }
@@ -382,7 +372,7 @@ public class GamePlay {
 
                         while (!validPlay)
                         {
-                            playerSelectCard("-1. to draw from the pile");
+                            humanSelectCardToPlay("-1. to draw from the pile");
                             userInput = input.nextInt();
                             if (userInput == -1)
                             {
@@ -398,9 +388,7 @@ public class GamePlay {
                                     previousCard = playedCard;
                                     System.out.println("You played:");
                                     System.out.println(previousCard);
-                                    game.rule(previousCard);
                                     game.play(previousCard, forceWinner);
-                                    game.checkWinner(this.forceWinner);
                                     isComputerTurn = false;
                                     validPlay = true;
                                 }
@@ -418,7 +406,7 @@ public class GamePlay {
                     {
                         while (!validPlay)
                         {
-                            playerSelectCard("-1. to draw from the pile");
+                            humanSelectCardToPlay("-1. to draw from the pile");
                             userInput = input.nextInt();
                             if (userInput == -1)
                             {
@@ -434,9 +422,7 @@ public class GamePlay {
                                     previousCard = playedCard;
                                     System.out.println("You played:");
                                     System.out.println(previousCard.toString());
-                                    game.rule(previousCard);
                                     game.play(previousCard, forceWinner);
-                                    game.checkWinner(this.forceWinner);
                                     isComputerTurn = false;
                                     validPlay = true;
                                 }
@@ -463,9 +449,7 @@ public class GamePlay {
                                         previousCard = card;
                                         System.out.println("Computer has defended the PICK TWO with:");
                                         System.out.println(previousCard.toString());
-                                        game.rule(card);
                                         game.play(card, forceWinner);
-                                        game.checkWinner(this.forceWinner);
                                         break;
                                     }
                                 }
@@ -490,10 +474,8 @@ public class GamePlay {
                                     {
                                         previousCard = card;
                                         System.out.println("computer defended the PICK THREE with:");
-                                        System.out.println(previousCard.toString());
-                                        game.rule(card);
+                                        System.out.println(previousCard);
                                         game.play(card, forceWinner);
-                                        game.checkWinner(this.forceWinner);
                                         break;
                                     }
                                 }
@@ -510,14 +492,11 @@ public class GamePlay {
                     {
                         game.computerDraw(forceWinner);
                         game.play(previousCard, forceWinner);
-                        game.checkWinner(this.forceWinner);
                         System.out.println("computer has gone to market");
                         isComputerTurn = false;
                     } else if (previousCard.isNormalCard())
                     {
-                        game.rule(previousCard);
                         game.play(previousCard, forceWinner);
-                        game.checkWinner(this.forceWinner);
                         isComputerTurn = true;
                     }
 
@@ -558,9 +537,7 @@ public class GamePlay {
                                previousCard = card;
                                System.out.println("Computer has played:");
                                System.out.println(previousCard.toString());
-                               game.rule(previousCard);
                                game.play(previousCard, forceWinner);
-                               game.checkWinner(this.forceWinner);
                                computerPlayed = true;
                            }
                        }
@@ -581,20 +558,19 @@ public class GamePlay {
         }
         }
 
-    public boolean computerSelectCard()
+    public boolean computerSelectCardToPlay()
     {
         boolean isComputerDrawingFromPile = true;
         for(Card card:computerCards)
         {
             if(card.getFace() == previousCard.getFace() ||
-                    card.getSuit().equals(previousCard.getSuit()) || card.isWhot())
+                    card.getSuit().equals(previousCard.getSuit()) ||
+                    card.isWhot())
             {
                 previousCard = card;
                 System.out.println("Computer has played:");
-                System.out.println(previousCard.toString());
-                game.rule(previousCard);
+                System.out.println(previousCard);
                 game.play(previousCard, forceWinner);
-                game.checkWinner(this.forceWinner);
                 isComputerDrawingFromPile = false;
                 break;
             }
@@ -602,7 +578,7 @@ public class GamePlay {
         return  isComputerDrawingFromPile;
     }
 
-    public void playerSelectCard(String message)
+    public void humanSelectCardToPlay(String message)
     {
         System.out.print("Hit 'Enter' to see all your cards: >> ");
         String yes = input.nextLine();
@@ -617,37 +593,13 @@ public class GamePlay {
         System.out.print("Select a card to play: >> ");
     }
 
-    public void checkComputerCards()
+    public boolean isForceWinner()
     {
-        for (Card card : computerCards)
-        {
-            if(card.getFace() == previousCard.getFace() ||
-                    card.getSuit().equals(previousCard.getSuit()) || card.isWhot())
-            {
-                previousCard = card;
-                System.out.println("Computer has played:");
-                System.out.println(previousCard.toString());
-                game.rule(previousCard);
-                game.play(previousCard, forceWinner);
-                game.checkWinner(this.forceWinner);
-                break;
-            }
-        }
-    }
-
-    public boolean isForceWinner() {
         return forceWinner;
     }
 
-    public void setForceWinner(boolean forceWinner) {
+    public void setForceWinner(boolean forceWinner)
+    {
         this.forceWinner = forceWinner;
-    }
-
-    public ArrayList<Card> getPlayedCardList() {
-        return playedCardList;
-    }
-
-    public void setPlayedCardList(ArrayList<Card> playedCardList) {
-        this.playedCardList = playedCardList;
     }
 }

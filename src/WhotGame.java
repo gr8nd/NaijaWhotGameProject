@@ -18,7 +18,7 @@ public class WhotGame {
     private ArrayList<Card> drawPile;//this is where computer and player can draw a card from when they run out of a fitting card or
     //when instructed to do so by the game rule such as the GENERAL MARKET.
     private ArrayList<Card> computerCardPile;//a list containing all the computer cards
-    private ArrayList<Card> playerCardPile;//a list containing all the player cards
+    private ArrayList<Card> humanCardPile;//a list containing all the player cards
     private int computerCounter = 0;//keeps record of the computer's face count when scoring by counting faces.
     private int playerCounter = 0;//keeps record of the player's face count when scoring by counting faces.
     private ArrayList<Card> playedPile;
@@ -28,13 +28,13 @@ public class WhotGame {
     {
         NaijaWhots whots = new NaijaWhots();//creates a NaijaWhots object
         computerCardPile = new ArrayList<>();
-        playerCardPile = new ArrayList<>();
+        humanCardPile = new ArrayList<>();
         playedPile = new ArrayList<>();
         drawPile = new ArrayList<>();
         Card[] pack = new Card[54];
         pack = whots.getPack().toArray(pack);//gets the initialised and shuffled pack from the NaijaWhots class
         Collections.addAll(drawPile, pack);
-        startCard = drawPile.removeFirst();//get the first card as the start card and remove it thereafter
+        startCard = drawPile.getFirst();//get the first card as the start card
     }
 
     /**
@@ -52,7 +52,7 @@ public class WhotGame {
             {
                 computerCardPile.add(drawPile.removeFirst());//adds the first card in the drawPile to the computerPile
                 //and removes it afterward
-                playerCardPile.add(drawPile.removeFirst());//adds the first card in the drawPile to the playerPile and
+                humanCardPile.add(drawPile.removeFirst());//adds the first card in the drawPile to the playerPile and
                 //removes it afterward
             }
         } else if (number < 0) {
@@ -73,12 +73,15 @@ public class WhotGame {
      */
     public void play(Card card, boolean forceWinner)
     {
+        playedPile.add(card);
         computerCardPile.remove(card);
-        playerCardPile.remove(card);
-        if (computerCardPile.size() == 1 || playerCardPile.size() == 1)
+        humanCardPile.remove(card);
+        drawPile.remove(card); //Needed only for the start card
+        if (computerCardPile.size() == 1 || humanCardPile.size() == 1)
         {
             System.out.println("Last card!");
         }
+        rule(card);
         checkWinner(forceWinner);
     }
 
@@ -97,7 +100,7 @@ public class WhotGame {
      */
     public void playerDraw(boolean forceWinner)
     {
-        playerCardPile.add(drawPile.removeFirst());
+        humanCardPile.add(drawPile.removeFirst());
         checkWinner(forceWinner);
     }
 
@@ -134,32 +137,45 @@ public class WhotGame {
      */
     public void checkWinner(boolean forceWinner)
     {
-        if (!forceWinner && drawPile.isEmpty())
+        if(drawPile.isEmpty())
         {
-            countHumanCards();
-            countComputerCards();
-            if (computerCounter > playerCounter)
+            if (forceWinner)
             {
-                humanIsTheWinner = true;
-            } else if(playerCounter > computerCounter)
-            {
-                computerIsTheWinner = true;
+                drawPile.addAll(playedPile);
+                playedPile.clear();
             }else
             {
-                isTie = true;
+                countHumanCards();
+                countComputerCards();
+                if (computerCounter > playerCounter)
+                {
+                    humanIsTheWinner = true;
+                } else if(playerCounter > computerCounter)
+                {
+                    computerIsTheWinner = true;
+                }else
+                {
+                    isTie = true;
+                }
             }
-        }else if (forceWinner && drawPile.isEmpty())
+        }else
         {
-            drawPile.addAll(playedPile);
-            playedPile.clear();
+            if(computerCardPile.isEmpty())
+            {
+                computerIsTheWinner = true;
+            }else if(humanCardPile.isEmpty())
+            {
+                humanIsTheWinner = true;
+            }
         }
+
     }
     /***
      * Count the face values of human cards after the draw pile has been exhausted.
      */
     public void countHumanCards()
     {
-        for (Card card : playerCardPile)
+        for (Card card : humanCardPile)
         {
             if (card.getSuit().equals(Suit.STAR))
             {
@@ -168,7 +184,6 @@ public class WhotGame {
             {
                 playerCounter += card.getFace();
             }
-
         }
     }
 
@@ -186,7 +201,6 @@ public class WhotGame {
             {
                 computerCounter += card.getFace();
             }
-
         }
     }
 
@@ -227,16 +241,16 @@ public class WhotGame {
      *
      * @return  a list containing the player's cards
      */
-    public ArrayList<Card> getPlayerCardPile() {
-        return playerCardPile;
+    public ArrayList<Card> getHumanCardPile() {
+        return humanCardPile;
     }
 
     /**
      *
-     * @param playerCardPile list containing player's cards
+     * @param humanCardPile list containing player's cards
      */
-    public void setPlayerCardPile(ArrayList<Card> playerCardPile) {
-        this.playerCardPile = playerCardPile;
+    public void setHumanCardPile(ArrayList<Card> humanCardPile) {
+        this.humanCardPile = humanCardPile;
     }
 
     /**
