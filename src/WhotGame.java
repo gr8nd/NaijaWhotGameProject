@@ -12,25 +12,29 @@ import java.util.Collections;
  * boolean isThereWinner: used to check whether there is a winner or not
  */
 public class WhotGame {
-    private boolean thereIsAWinner = false;
+    private boolean computerIsTheWinner = false;
+    private boolean humanIsTheWinner = false;
+    private boolean isTie = false;
     private ArrayList<Card> drawPile;//this is where computer and player can draw a card from when they run out of a fitting card or
     //when instructed to do so by the game rule such as the GENERAL MARKET.
     private ArrayList<Card> computerCardPile;//a list containing all the computer cards
     private ArrayList<Card> playerCardPile;//a list containing all the player cards
     private int computerCounter = 0;//keeps record of the computer's face count when scoring by counting faces.
     private int playerCounter = 0;//keeps record of the player's face count when scoring by counting faces.
-
+    private ArrayList<Card> playedPile;
     private Card startCard;//This is first card that is displayed when the game starts
 
-    public WhotGame() {
+    public WhotGame()
+    {
         NaijaWhots whots = new NaijaWhots();//creates a NaijaWhots object
         computerCardPile = new ArrayList<>();
         playerCardPile = new ArrayList<>();
+        playedPile = new ArrayList<>();
         drawPile = new ArrayList<>();
         Card[] pack = new Card[54];
         pack = whots.getPack().toArray(pack);//gets the initialised and shuffled pack from the NaijaWhots class
         Collections.addAll(drawPile, pack);
-        startCard = drawPile.remove(0);//get the first card as the start card and remove it thereafter
+        startCard = drawPile.removeFirst();//get the first card as the start card and remove it thereafter
     }
 
     /**
@@ -39,13 +43,16 @@ public class WhotGame {
      * be any number as well.
      * @throws WhotGameException an exception that will be thrown when an invalid deal number is provided
      */
-    public void deal(int number) throws WhotGameException {
+    public void deal(int number) throws WhotGameException
+    {
         boolean isValidDeal = number >= 2 && number <= 27 && number % 2 == 0;
-        if (isValidDeal) {
-            for (int index = 0; index < number; index++) {
-                computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
+        if (isValidDeal)
+        {
+            for (int index = 0; index < number; index++)
+            {
+                computerCardPile.add(drawPile.removeFirst());//adds the first card in the drawPile to the computerPile
                 //and removes it afterward
-                playerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the playerPile and
+                playerCardPile.add(drawPile.removeFirst());//adds the first card in the drawPile to the playerPile and
                 //removes it afterward
             }
         } else if (number < 0) {
@@ -64,24 +71,34 @@ public class WhotGame {
      * @param card the card object that is played, the method attempts to remove a played card from any of the card
      * piles it finds it.
      */
-    public void play(Card card) {
+    public void play(Card card, boolean forceWinner)
+    {
         computerCardPile.remove(card);
         playerCardPile.remove(card);
+        if (computerCardPile.size() == 1 || playerCardPile.size() == 1)
+        {
+            System.out.println("Last card!");
+        }
+        checkWinner(forceWinner);
     }
 
     /**
      * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
      * else there must have been a winner, it therefor sets thereIsAWinner to true
      */
-    public void computerDraw() {
-        thereIsAWinner = drawPile.isEmpty() || !computerCardPile.add(drawPile.remove(0));
+    public void computerDraw(boolean forceWinner)
+    {
+        computerCardPile.add(drawPile.removeFirst());
+        checkWinner(forceWinner);
     }
     /**
      * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
      * else there must have been a winner, it therefor sets thereIsAWinner to true
      */
-    public void playerDraw() {
-        thereIsAWinner = drawPile.isEmpty() || !playerCardPile.add(drawPile.remove(0));
+    public void playerDraw(boolean forceWinner)
+    {
+        playerCardPile.add(drawPile.removeFirst());
+        checkWinner(forceWinner);
     }
 
     /**
@@ -89,7 +106,8 @@ public class WhotGame {
      * @param card a card to be played or that has been played. The method checks whether the card is one of the six
      * special cards and issues the appropriate rule on the card
      */
-    public void rule(Card card) {
+    public void rule(Card card)
+    {
         if (card.isHoldOn()) {
             System.out.println("Hold on!");
         } else if (card.isPickTwo()) {
@@ -114,55 +132,62 @@ public class WhotGame {
      * If it is the drawPile that runs out of card, a winner is decided by counting the face values of each player's
      * cards. Any player that has the lowest count wins.
      */
-    public void checkWinner(boolean forceWinner) {
-        if ((!forceWinner && drawPile.isEmpty()) || computerCardPile.isEmpty() || playerCardPile.isEmpty()) {
-            if (computerCardPile.isEmpty()) {
-                thereIsAWinner = true;
-            } else if (playerCardPile.isEmpty()) {
-                thereIsAWinner = true;
-            } else {
-                for (Card card : computerCardPile) {
-                    if (card.getSuit().equals(Suit.STAR)) {
-                        computerCounter += card.getFace() * 2;
-                    } else {
-                        computerCounter += card.getFace();
-                    }
-
-                }
-                for (Card card : playerCardPile) {
-                    if (card.getSuit().equals(Suit.STAR)) {
-                        playerCounter += card.getFace() * 2;
-                    } else {
-                        playerCounter += card.getFace();
-                    }
-
-                }
-                if (computerCounter > playerCounter) {
-                    thereIsAWinner = true;
-                } else if (computerCounter < playerCounter) {
-                    thereIsAWinner = true;
-                } else {
-                    thereIsAWinner = true;
-                }
+    public void checkWinner(boolean forceWinner)
+    {
+        if (!forceWinner && drawPile.isEmpty())
+        {
+            countHumanCards();
+            countComputerCards();
+            if (computerCounter > playerCounter)
+            {
+                humanIsTheWinner = true;
+            } else if(playerCounter > computerCounter)
+            {
+                computerIsTheWinner = true;
+            }else
+            {
+                isTie = true;
+            }
+        }else if (forceWinner && drawPile.isEmpty())
+        {
+            drawPile.addAll(playedPile);
+            playedPile.clear();
+        }
+    }
+    /***
+     * Count the face values of human cards after the draw pile has been exhausted.
+     */
+    public void countHumanCards()
+    {
+        for (Card card : playerCardPile)
+        {
+            if (card.getSuit().equals(Suit.STAR))
+            {
+                playerCounter += card.getFace() * 2;
+            } else
+            {
+                playerCounter += card.getFace();
             }
 
         }
     }
 
-    /**
-     *
-     * @return boolean that indicates whether there is a winner or not
+    /***
+     * Count the face values of computer cards after the draw pile has been exhausted.
      */
-    public boolean thereIsAWinner() {
-        return thereIsAWinner;
-    }
+    public void countComputerCards()
+    {
+        for (Card card : computerCardPile)
+        {
+            if (card.getSuit().equals(Suit.STAR))
+            {
+                computerCounter += card.getFace() * 2;
+            } else
+            {
+                computerCounter += card.getFace();
+            }
 
-    /**
-     *
-     * @param thereIsAWinner boolean used to indicate whether there is winner or not
-     */
-    public void setThereIsAWinner(boolean thereIsAWinner) {
-        this.thereIsAWinner = thereIsAWinner;
+        }
     }
 
     /**
@@ -228,5 +253,53 @@ public class WhotGame {
      */
     public void setStartCard(Card startCard) {
         this.startCard = startCard;
+    }
+
+    public ArrayList<Card> getPlayedPile() {
+        return playedPile;
+    }
+
+    public void setPlayedPile(ArrayList<Card> playedPile) {
+        this.playedPile = playedPile;
+    }
+
+    public boolean isComputerIsTheWinner() {
+        return computerIsTheWinner;
+    }
+
+    public void setComputerIsTheWinner(boolean computerIsTheWinner) {
+        this.computerIsTheWinner = computerIsTheWinner;
+    }
+
+    public boolean isHumanIsTheWinner() {
+        return humanIsTheWinner;
+    }
+
+    public void setHumanIsTheWinner(boolean humanIsTheWinner) {
+        this.humanIsTheWinner = humanIsTheWinner;
+    }
+
+    public boolean isTie() {
+        return isTie;
+    }
+
+    public void setTie(boolean tie) {
+        isTie = tie;
+    }
+
+    public int getComputerCounter() {
+        return computerCounter;
+    }
+
+    public void setComputerCounter(int computerCounter) {
+        this.computerCounter = computerCounter;
+    }
+
+    public int getPlayerCounter() {
+        return playerCounter;
+    }
+
+    public void setPlayerCounter(int playerCounter) {
+        this.playerCounter = playerCounter;
     }
 }
