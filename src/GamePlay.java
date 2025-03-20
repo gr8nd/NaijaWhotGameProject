@@ -100,7 +100,7 @@ public class GamePlay {
             {
                 game.computerDrawFromPile(forceWinner);
                 isComputerTurn = false;
-                //System.out.println("Computer has drawn from pile");
+                System.out.println("Computer has drawn from pile");
             }
         }
 
