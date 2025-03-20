@@ -22,7 +22,6 @@ public class GamePlay {
     //SUSPENSION, PICKTWO, PICKTHREE or GENERAL MARKET.
     private final SecureRandom rand = new SecureRandom();
     private final Scanner input = new Scanner(System.in);
-    private static int counter = 0;
     private boolean forceWinner; //If true, it will ensure that there is a winner in the game, draw will not be allowed
     //so the game will run indefinitely until there is a winner.
     /**
@@ -95,29 +94,25 @@ public class GamePlay {
      */
     public void computerPlay()
     {
-        if(counter == 0)
+        if((previousCard.isNormalCard()))
         {
-            System.out.println("Computer has played:");
-            System.out.println(previousCard.toString());
-            game.play(previousCard, forceWinner);
-        }
-        if((previousCard.isNormalCard() && counter != 0) || previousCard.isPlayerWhot())
-        {
-            if (computerSelectCardToPlay())
+            if (!computerGetCardToPlay())
             {
-                game.computerDraw(forceWinner);
+                game.computerDrawFromPile(forceWinner);
                 isComputerTurn = false;
-                System.out.println("Computer has drawn from pile");
+                //System.out.println("Computer has drawn from pile");
             }
         }
 
-        try {
+        try
+        {
             //Any of the following nested if-statements execute according to the nature of the previous card
-            while (!previousCard.isNormalCard()) {
+            while (!previousCard.isNormalCard())
+            {
                 //This statement executes when the previous card is HOLDON
                 if (previousCard.isHoldOn())
                 {
-                    computerSelectCardToPlay();
+                    computerGetCardToPlay();
                     //This statement executes when the previous card is PICKTWO
                 } else if (previousCard.isPickTwo() && !previousCard.isDefendCard())
                 {
@@ -127,12 +122,12 @@ public class GamePlay {
                     {
                         if (userInput == -1)
                         {
-                            game.playerDraw(forceWinner);
-                            game.playerDraw(forceWinner);
+                            game.humanDrawFromPile(forceWinner);
+                            game.humanDrawFromPile(forceWinner);
                             System.out.println("You have picked two cards");
-                            if (computerSelectCardToPlay())
+                            if (computerGetCardToPlay())
                             {
-                                game.computerDraw(forceWinner);
+                                game.computerDrawFromPile(forceWinner);
                                 isComputerTurn = false;
                                 System.out.println("Computer has drawn from pile");
                                 break;
@@ -165,13 +160,13 @@ public class GamePlay {
                     {
                         if (userInput == -1)
                         {
-                            game.playerDraw(forceWinner);
-                            game.playerDraw(forceWinner);
-                            game.playerDraw(forceWinner);
+                            game.humanDrawFromPile(forceWinner);
+                            game.humanDrawFromPile(forceWinner);
+                            game.humanDrawFromPile(forceWinner);
                             System.out.println("You have picked three cards");
-                            if (computerSelectCardToPlay())
+                            if (computerGetCardToPlay())
                             {
-                                game.computerDraw(forceWinner);
+                                game.computerDrawFromPile(forceWinner);
                                 isComputerTurn = false;
                                 System.out.println("Computer has drawn from pile");
                                 break;
@@ -201,11 +196,11 @@ public class GamePlay {
                 {
                     humanSelectCardToPlay("Hit 'Enter' to go to market");
                     String userInput = input.nextLine();
-                    game.playerDraw(forceWinner);
+                    game.humanDrawFromPile(forceWinner);
                     System.out.println("You have gone to market");
-                    if (computerSelectCardToPlay())
+                    if (computerGetCardToPlay())
                     {
-                        game.computerDraw(forceWinner);
+                        game.computerDrawFromPile(forceWinner);
                         isComputerTurn = false;
                         System.out.println("Computer has drawn from pile");
                         break;
@@ -227,9 +222,9 @@ public class GamePlay {
                     int userInput = input.nextInt();
                     if (userInput == -1)
                     {
-                        if (computerSelectCardToPlay())
+                        if (computerGetCardToPlay())
                         {
-                            game.computerDraw(forceWinner);
+                            game.computerDrawFromPile(forceWinner);
                             isComputerTurn = false;
                             System.out.println("Computer has drawn from pile");
                             break;
@@ -259,7 +254,7 @@ public class GamePlay {
                                 if (userInput == -1)
                                 {
                                     System.out.print("You have drawn from pile");
-                                    game.playerDraw(forceWinner);
+                                    game.humanDrawFromPile(forceWinner);
                                     break;
                                 }
                             }
@@ -269,9 +264,9 @@ public class GamePlay {
                     //value of 8
                 } else if (previousCard.isSuspension())
                 {
-                    if (!computerSelectCardToPlay())
+                    if (!computerGetCardToPlay())
                     {
-                        game.computerDraw(forceWinner);
+                        game.computerDrawFromPile(forceWinner);
                         isComputerTurn = false;
                         System.out.println("Computer has drawn from pile");
                         break;
@@ -279,15 +274,15 @@ public class GamePlay {
                     //This else statement executes when the previous card is normal card
                 } else
                 {
-                    computerSelectCardToPlay();
+                    computerGetCardToPlay();
                 }
                 //This statement executes when the previous card is a defend card coming from the human player
                 //the only two cards that can be defended are PICKTWO and PICKTHREE
                 if(previousCard.isDefendCard())
                 {
-                    if (!computerSelectCardToPlay())
+                    if (!computerGetCardToPlay())
                     {
-                        game.computerDraw(forceWinner);
+                        game.computerDrawFromPile(forceWinner);
                         isComputerTurn = false;
                         System.out.println("Computer has drawn from pile");
                         break;
@@ -303,7 +298,6 @@ public class GamePlay {
             System.out.println("The selection is not in your card");
         }
             isComputerTurn = false;
-        counter = 1;
     }
     /**
      * playerPlay method handles the player card play simulation, after finish playing this method should hand over
@@ -318,7 +312,7 @@ public class GamePlay {
                 int userInput = input.nextInt();
                 if (userInput == -1)
                 {
-                    game.playerDraw(forceWinner);
+                    game.humanDrawFromPile(forceWinner);
                     isComputerTurn = true;
                     System.out.println("You have drawn from pile");
                 } else
@@ -342,7 +336,7 @@ public class GamePlay {
                             userInput = input.nextInt();
                             if (userInput == -1)
                             {
-                                game.playerDraw(forceWinner);
+                                game.humanDrawFromPile(forceWinner);
                                 isComputerTurn = true;
                                 validPlay = true;
                             } else
@@ -376,7 +370,7 @@ public class GamePlay {
                             userInput = input.nextInt();
                             if (userInput == -1)
                             {
-                                game.playerDraw(forceWinner);
+                                game.humanDrawFromPile(forceWinner);
                                 isComputerTurn = true;
                                 validPlay = true;
                             } else
@@ -410,7 +404,7 @@ public class GamePlay {
                             userInput = input.nextInt();
                             if (userInput == -1)
                             {
-                                game.playerDraw(forceWinner);
+                                game.humanDrawFromPile(forceWinner);
                                 isComputerTurn = true;
                                 validPlay = true;
                             } else
@@ -455,8 +449,8 @@ public class GamePlay {
                                 }
                             } else
                             {
-                                game.computerDraw(forceWinner);
-                                game.computerDraw(forceWinner);
+                                game.computerDrawFromPile(forceWinner);
+                                game.computerDrawFromPile(forceWinner);
                                 System.out.println("computer has picked two cards");
                             }
                         }
@@ -481,16 +475,16 @@ public class GamePlay {
                                 }
                             } else
                             {
-                                game.computerDraw(forceWinner);
-                                game.computerDraw(forceWinner);
-                                game.computerDraw(forceWinner);
+                                game.computerDrawFromPile(forceWinner);
+                                game.computerDrawFromPile(forceWinner);
+                                game.computerDrawFromPile(forceWinner);
                                 System.out.println("computer has picked three cards");
                             }
                         }
                         //This statement executes when the previous card is GENERAL MARKET
                     } else if (previousCard.isGeneralMarket())
                     {
-                        game.computerDraw(forceWinner);
+                        game.computerDrawFromPile(forceWinner);
                         game.play(previousCard, forceWinner);
                         System.out.println("computer has gone to market");
                         isComputerTurn = false;
@@ -543,7 +537,7 @@ public class GamePlay {
                        }
                        if(!computerPlayed)
                        {
-                           game.computerDraw(forceWinner);
+                           game.computerDrawFromPile(forceWinner);
                            System.out.println("Computer has drawn from pile");
                        }
                     }
@@ -558,9 +552,9 @@ public class GamePlay {
         }
         }
 
-    public boolean computerSelectCardToPlay()
+    public boolean computerGetCardToPlay()
     {
-        boolean isComputerDrawingFromPile = true;
+        boolean isComputerDrawingFromPile = false;
         for(Card card:computerCards)
         {
             if(card.getFace() == previousCard.getFace() ||
@@ -571,7 +565,7 @@ public class GamePlay {
                 System.out.println("Computer has played:");
                 System.out.println(previousCard);
                 game.play(previousCard, forceWinner);
-                isComputerDrawingFromPile = false;
+                isComputerDrawingFromPile = true;
                 break;
             }
         }

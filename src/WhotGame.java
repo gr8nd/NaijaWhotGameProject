@@ -89,7 +89,7 @@ public class WhotGame {
      * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
      * else there must have been a winner, it therefor sets thereIsAWinner to true
      */
-    public void computerDraw(boolean forceWinner)
+    public void computerDrawFromPile(boolean forceWinner)
     {
         computerCardPile.add(drawPile.removeFirst());
         checkWinner(forceWinner);
@@ -98,7 +98,7 @@ public class WhotGame {
      * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
      * else there must have been a winner, it therefor sets thereIsAWinner to true
      */
-    public void playerDraw(boolean forceWinner)
+    public void humanDrawFromPile(boolean forceWinner)
     {
         humanCardPile.add(drawPile.removeFirst());
         checkWinner(forceWinner);
