@@ -78,6 +78,24 @@ public class GamePlay {
             startCardPlay();
         }
     }
+
+
+    private void startCardPlay()
+    {
+        if(previousCard.isHoldOn() &&
+                previousCard.isSuspension())
+        {
+            computerHoldOnAndSuspension();
+        }else if(previousCard.isWhot())
+        {
+            computerRequestsWhot();
+            isComputerTurn = false;
+        }else
+        {
+            startGame();
+        }
+    }
+
     /**
      * The start method checks whether a valid deal was done and thereafter starts the game,
      * the game runs until
@@ -115,40 +133,33 @@ public class GamePlay {
             }
         } else if (previousCard.isPickThree())
         {
-            computerPickTwo();
-            isComputerTurn = false;
+            int index = humanSelectCard()-1;
+            if(humanPickTwo(index))
+            {
+                isComputerTurn = true;
+            }
         } else if (previousCard.isPickThree())
         {
-            computerPickThree();
-            isComputerTurn = false;
-        } else if (previousCard.isHoldOn() |
+            int index = humanSelectCard()-1;
+            if(humanPickThree(index))
+            {
+                isComputerTurn = true;
+            }
+        } else if (previousCard.isHoldOn() ||
                 previousCard.isSuspension())
         {
-            computerHoldOnAndSuspension();
+            isComputerTurn = true;
         } else if (previousCard.isGeneralMarket())
         {
-            computerGoMarket();
-            isComputerTurn = false;
-        }else if(previousCard.isWhot())
-        {
-            computerPlaysWhot();
-            isComputerTurn = false;
-        }
-    }
-
-    private void startCardPlay()
-    {
-        if(previousCard.isHoldOn() &&
-                previousCard.isSuspension())
-        {
-            computerHoldOnAndSuspension();
+            int index = humanSelectCard()-1;
+            if(humanGoMarket(index))
+            {
+                isComputerTurn = true;
+            }
         }else if(previousCard.isWhot())
         {
             computerRequestsWhot();
             isComputerTurn = false;
-        }else
-        {
-            startGame();
         }
     }
 
@@ -160,6 +171,7 @@ public class GamePlay {
     private void humanPlay()
     {
         int index = humanSelectCard()-1;
+        Card card = humanCards.get(index);
         if ((previousCard.isNormalCard()))
         {
             if(humanNormalPlay(index) &&
@@ -169,27 +181,21 @@ public class GamePlay {
             }
         } else if (previousCard.isPickThree())
         {
-            if(humanPickTwo(index))
-            {
-                isComputerTurn = true;
-            }
+            computerPickTwo();
         } else if (previousCard.isPickThree())
         {
-            if(humanPickThree(index))
-            {
-                isComputerTurn = true;
-            }
+            computerPickThree();
         } else if (previousCard.isGeneralMarket())
         {
-            if(humanGoMarket(index))
-            {
-                isComputerTurn = true;
-            }
-        }else if(previousCard.isWhot())
+            computerGoMarket();
+        } else if(previousCard.isHoldOn() ||
+                previousCard.isSuspension())
+
+        if(card.isWhot())
         {
             if(humanRequestsCard())
             {
-                isComputerTurn = true;
+                computerPlaysWhot();
             }
         }
     }
@@ -242,7 +248,7 @@ public class GamePlay {
                 System.out.println("You made an invalid selection, please select a card you need.");
                 return false;
         }
-        System.out.printf("You need %s%n", wantedSuit);
+        System.out.printf("You need ***%s%n***", wantedSuit);
         return true;
     }
 
@@ -272,6 +278,8 @@ public class GamePlay {
                 Card card = humanCards.get(index);
                 game.play(card, forceWinner);
                 previousCard = card;
+                System.out.println("You played: ");
+                System.out.println(previousCard.toString());
                 return true;
             } catch (InputMismatchException | NumberFormatException e)
             {
@@ -340,7 +348,7 @@ public class GamePlay {
         int randomIndex = rand.nextInt(nonWhotCards.size());
         Card neededCard = nonWhotCards.get(randomIndex);
         wantedSuit = neededCard.getSuit();
-        System.out.printf("Computer needs %s%n", wantedSuit);
+        System.out.printf("Computer needs ***%s%n***", wantedSuit);
     }
 
     private void computerPlaysWhot()
@@ -399,8 +407,10 @@ public class GamePlay {
         {
             Card pickTwoCard = humanCards.get(index);
             game.play(pickTwoCard, forceWinner);
+            previousCard = pickTwoCard;
             pickTwoCard.setDefendCard(true);
-            System.out.println("You have defended the PICKTWO.");
+            System.out.println("You have defended the PICKTWO with.");
+            System.out.println(previousCard.toString());
             return true;
         }else
         {
@@ -421,10 +431,12 @@ public class GamePlay {
             return true;
         }else if(index == 1)
         {
-            Card pickTwoCard = humanCards.get(index);
-            game.play(pickTwoCard, forceWinner);
-            pickTwoCard.setDefendCard(true);
-            System.out.println("You have defended the PICKTHREE.");
+            Card pickThreeCard = humanCards.get(index);
+            game.play(pickThreeCard, forceWinner);
+            previousCard = pickThreeCard;
+            pickThreeCard.setDefendCard(true);
+            System.out.println("You have defended the PICKTHREE with.");
+            System.out.println(previousCard.toString());
             return true;
         }else
         {
@@ -467,6 +479,6 @@ public class GamePlay {
                 System.out.println(previousCard.toString());
             }
         }
-        isComputerTurn = previousCard.isHoldOn();
+        isComputerTurn = previousCard.isHoldOn() | previousCard.isSuspension();
     }
 }
