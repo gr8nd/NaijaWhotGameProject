@@ -83,6 +83,7 @@ public class WhotGame {
         rule(card);
         checkWinner(forceWinner);
         card.setDefendCard(false);
+        card.setPlayerWhot(false);
         playedPile.add(card);
     }
 
