@@ -118,33 +118,27 @@ public class GamePlay {
                 {
                     humanSelectCardToPlay("-1. to pick two from the pile or a card to defend");
                     int userInput = input.nextInt();
-                    outer:while (true)
-                    {
-                        if (userInput == -1)
-                        {
+                    while (true) {
+                        if (userInput == -1) {
                             game.humanDrawFromPile(forceWinner);
                             game.humanDrawFromPile(forceWinner);
                             System.out.println("You have picked two cards");
-                            if (computerGetCardToPlay())
-                            {
+                            if (computerGetCardToPlay()) {
                                 game.computerDrawFromPile(forceWinner);
                                 isComputerTurn = false;
                                 System.out.println("Computer has drawn from pile");
                                 break;
                             }
-                        } else
-                        {
+                        } else {
                             Card defendCard = playerCards.get(userInput - 1);
-                            if (defendCard.isPickTwo())
-                            {
+                            if (defendCard.isPickTwo()) {
                                 previousCard = defendCard;
                                 System.out.println("You defended the PICK TWO with: ");
                                 previousCard.setDefendCard(true);
                                 System.out.println(previousCard.toString());
                                 game.play(defendCard, forceWinner);
                                 break;
-                            } else
-                            {
+                            } else {
                                 System.out.println("The card is not fit for defend, if you don't have a valid card pick from the draw pile");
                                 humanSelectCardToPlay("-1. to pick two from the pile or a card to defend");
                                 userInput = input.nextInt();
@@ -156,34 +150,28 @@ public class GamePlay {
                 {
                     humanSelectCardToPlay("-1. to pick three from the pile or a card to defend");
                     int userInput = input.nextInt();
-                    outer:while (true)
-                    {
-                        if (userInput == -1)
-                        {
+                    while (true) {
+                        if (userInput == -1) {
                             game.humanDrawFromPile(forceWinner);
                             game.humanDrawFromPile(forceWinner);
                             game.humanDrawFromPile(forceWinner);
                             System.out.println("You have picked three cards");
-                            if (computerGetCardToPlay())
-                            {
+                            if (computerGetCardToPlay()) {
                                 game.computerDrawFromPile(forceWinner);
                                 isComputerTurn = false;
                                 System.out.println("Computer has drawn from pile");
                                 break;
                             }
-                        } else
-                        {
+                        } else {
                             Card defendCard = playerCards.get(userInput - 1);
-                            if (defendCard.isPickThree())
-                            {
+                            if (defendCard.isPickThree()) {
                                 previousCard = defendCard;
                                 System.out.println("You defended the PICK THREE with: ");
                                 previousCard.setDefendCard(true);
                                 System.out.printf(previousCard.toString());
                                 game.play(defendCard, forceWinner);
                                 break;
-                            } else
-                            {
+                            } else {
                                 System.out.println("The card is not fit for defend, if you don't have a valid card pick from the draw pile");
                                 humanSelectCardToPlay("-1. to pick three from the pile or a card to defend");
                                 userInput = input.nextInt();
@@ -442,7 +430,7 @@ public class GamePlay {
                                     {
                                         previousCard = card;
                                         System.out.println("Computer has defended the PICK TWO with:");
-                                        System.out.println(previousCard.toString());
+                                        System.out.println(previousCard);
                                         game.play(card, forceWinner);
                                         break;
                                     }
@@ -585,6 +573,54 @@ public class GamePlay {
         System.out.println();
         System.out.println(message);
         System.out.print("Select a card to play: >> ");
+    }
+
+     private boolean computerPickTwo()
+     {
+         boolean twoPicked = true;
+         for (Card card: computerCards)
+         {
+             if(card.isPickTwo() && computerCards.size() > 10)
+             {
+                 game.play(card, forceWinner);
+                 twoPicked = false;
+                 System.out.println("Computer has played:");
+                 System.out.println(card);
+             }
+         }
+         if(twoPicked)
+         {
+             game.computerDrawFromPile(forceWinner);
+             game.computerDrawFromPile(forceWinner);
+         }
+         return twoPicked;
+     }
+
+    private boolean computerPickThree()
+    {
+        boolean threePicked = true;
+        for (Card card: computerCards)
+        {
+            if(card.isPickThree() && computerCards.size() > 10)
+            {
+                game.play(card, forceWinner);
+                threePicked = false;
+                System.out.println("Computer has played:");
+                System.out.println(card);
+            }
+        }
+        if(threePicked)
+        {
+            game.computerDrawFromPile(forceWinner);
+            game.computerDrawFromPile(forceWinner);
+            game.computerDrawFromPile(forceWinner);
+        }
+        return threePicked;
+    }
+
+    private boolean computerWhot(Card card)
+    {
+        C
     }
 
     public boolean isForceWinner()

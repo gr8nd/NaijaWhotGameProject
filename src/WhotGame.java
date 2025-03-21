@@ -73,7 +73,6 @@ public class WhotGame {
      */
     public void play(Card card, boolean forceWinner)
     {
-        playedPile.add(card);
         computerCardPile.remove(card);
         humanCardPile.remove(card);
         drawPile.remove(card); //Needed only for the start card
@@ -83,6 +82,8 @@ public class WhotGame {
         }
         rule(card);
         checkWinner(forceWinner);
+        card.setDefendCard(false);
+        playedPile.add(card);
     }
 
     /**
