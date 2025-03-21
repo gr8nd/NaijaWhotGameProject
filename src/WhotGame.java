@@ -55,13 +55,17 @@ public class WhotGame {
                 humanCardPile.add(drawPile.removeFirst());//adds the first card in the drawPile to the playerPile and
                 //removes it afterward
             }
-        } else if (number < 0) {
+        } else if (number < 0)
+        {
             throw new WhotGameException("You cannot deal a negative number of cards");
-        } else if (number > 27) {
+        } else if (number > 27)
+        {
             throw new WhotGameException("You can only deal between 2 to 27 cards");
-        } else if (number % 2 != 0) {
+        } else if (number % 2 != 0)
+        {
             throw new WhotGameException("You cannot deal an odd number of cards");
-        } else {
+        } else
+        {
             throw new WhotGameException("You can only deal 2 or more cards");
         }
     }
@@ -113,17 +117,23 @@ public class WhotGame {
      */
     public void rule(Card card)
     {
-        if (card.isHoldOn()) {
+        if (card.isHoldOn())
+        {
             System.out.println("Hold on!");
-        } else if (card.isPickTwo()) {
+        } else if (card.isPickTwo())
+        {
             System.out.println("Pick two!");
-        } else if (card.isPickThree()) {
+        } else if (card.isPickThree())
+        {
             System.out.println("Pick three!");
-        } else if (card.isSuspension()) {
+        } else if (card.isSuspension())
+        {
             System.out.println("Suspension!");
-        } else if (card.isWhot()) {
+        } else if (card.isWhot())
+        {
             System.out.println("Whot! Select a card you need >> ");
-        } else if (card.isGeneralMarket()) {
+        } else if (card.isGeneralMarket())
+        {
             System.out.println("General market!");
         }
     }

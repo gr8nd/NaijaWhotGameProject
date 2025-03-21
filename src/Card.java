@@ -73,14 +73,13 @@ public class Card {
 
     public String toString()
     {
-        String display = ". . . . . . . . .\n" +
+
+        return           ". . . . . . . . .\n" +
                          ".               .\n" +
                          ".               .\n" +
         String.format("  %d %s          \n", this.face, this.suit) +
                          ".               .\n" +
                          ".               .\n" +
                          ". . . . . . . . .\n";
-
-        return display;
     }
 }
