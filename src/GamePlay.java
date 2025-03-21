@@ -146,6 +146,9 @@ public class GamePlay {
         {
             computerRequestsWhot();
             isComputerTurn = false;
+        }else
+        {
+            startGame();
         }
     }
 
