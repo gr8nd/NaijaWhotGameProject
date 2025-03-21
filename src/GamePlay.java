@@ -13,6 +13,7 @@ public class GamePlay {
     private boolean isComputerTurn = true;//Used for relinquishing control between computer and human, initially it is
     //computer turn
     private final WhotGame game;
+    private Suit wantedSuit;
     private boolean validDeal = true;//Used in checking if a valid deal number is provided.
     private final ArrayList<Card> humanCards;//A list containing all player's cards
     private final ArrayList<Card> computerCards;//A list containing all computer's cards
@@ -74,7 +75,7 @@ public class GamePlay {
     {
         if (validDeal)
         {
-            startGame();
+            startCardPlay();
         }
     }
     /**
@@ -130,7 +131,20 @@ public class GamePlay {
             isComputerTurn = false;
         }else if(previousCard.isWhot())
         {
-            computerWhot(previousCard);
+            computerPlaysWhot();
+            isComputerTurn = false;
+        }
+    }
+
+    private void startCardPlay()
+    {
+        if(previousCard.isHoldOn() &&
+                previousCard.isSuspension())
+        {
+            computerHoldOnAndSuspension();
+        }else if(previousCard.isWhot())
+        {
+            computerRequestsWhot();
             isComputerTurn = false;
         }
     }
@@ -170,7 +184,7 @@ public class GamePlay {
             }
         }else if(previousCard.isWhot())
         {
-            if(humanWantsCard())
+            if(humanRequestsCard())
             {
                 isComputerTurn = true;
             }
@@ -200,13 +214,11 @@ public class GamePlay {
         }
     }
 
-    private boolean humanWantsCard()
+    private boolean humanRequestsCard()
     {
-        previousCard.setPlayerWhot(true);
         System.out.printf("1. %s%n2. %s%n3. %s%n4. %s%n5. %s%n",
                 Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE);
         int want = input.nextInt();
-        Suit wantedSuit;
         switch (want) {
             case 1:
                 wantedSuit = Suit.CIRCLE;
@@ -309,7 +321,26 @@ public class GamePlay {
         }
     }
 
-    private void computerWhot(Card whot)
+    private void computerRequestsWhot()
+    {
+        ArrayList<Card> nonWhotCards = new ArrayList<>();
+        for (Card card : computerCards)
+        {
+            if (!card.isWhot())
+            {
+                if (computerCards.size() > 10)
+                {
+                    nonWhotCards.add(card);
+                }
+            }
+        }
+        int randomIndex = rand.nextInt(nonWhotCards.size());
+        Card neededCard = nonWhotCards.get(randomIndex);
+        wantedSuit = neededCard.getSuit();
+        System.out.printf("Computer needs %s%n", wantedSuit);
+    }
+
+    private void computerPlaysWhot()
     {
         ArrayList<Card> nonWhotCards = new ArrayList<>();
         Card whotCard = null;
@@ -323,28 +354,33 @@ public class GamePlay {
                     whotCard = card;
                     playedWhot = true;
                 }
-            } else
+            } else if(card.getSuit() == wantedSuit)
             {
                 nonWhotCards.add(card);
             }
         }
-        if(whot.isPlayerWhot())
+
+        if (playedWhot)
         {
-            if (playedWhot)
-            {
-                game.play(whotCard, forceWinner);
-                System.out.println("Computer has played:");
-                System.out.println(whotCard);
-            }else
+            previousCard = whotCard;
+            game.play(whotCard, forceWinner);
+            computerRequestsWhot();
+        }else
+        {
+            if(nonWhotCards.isEmpty())
             {
                 game.computerDrawFromPile(forceWinner);
                 System.out.println("Computer has drawn from pile.");
+            }else
+            {
+                int randomIndex = rand.nextInt(nonWhotCards.size());
+                Card neededCard = nonWhotCards.get(randomIndex);
+                previousCard = neededCard;
+                game.play(neededCard, forceWinner);
+                System.out.println("Computer has played the card you need:");
+                System.out.println(neededCard.toString());
             }
-        }else
-        {
-            int randomIndex = rand.nextInt(nonWhotCards.size());
-            Card neededCard = nonWhotCards.get(randomIndex);
-            System.out.println("Computer needs " + neededCard.getSuit());
+            wantedSuit = null;
         }
     }
 

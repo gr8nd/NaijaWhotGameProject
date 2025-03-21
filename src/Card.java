@@ -9,7 +9,6 @@ public class Card {
     private final int face;//an integer that represents the number on the card
     private final Suit suit;//an enumeration that represents the shape on the card
     private boolean isDefendCard;//Computer uses this to check if the PICK TWO/PICK THREE are defend card from the player
-    private boolean isPlayerWhot;//Computer uses this to check if the whot card is player's.
     public Card(Suit suit, int face)
     {
         this.suit = suit;
@@ -61,14 +60,6 @@ public class Card {
 
     public void setDefendCard(boolean defendCard) {
         isDefendCard = defendCard;
-    }
-
-    public boolean isPlayerWhot() {
-        return isPlayerWhot;
-    }
-
-    public void setPlayerWhot(boolean playerWhot) {
-        isPlayerWhot = playerWhot;
     }
 
     public String toString()
