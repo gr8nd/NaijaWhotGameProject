@@ -90,10 +90,10 @@ public class GamePlay {
         {
             computerRequestsWhot();
             isComputerTurn = false;
-        }else
-        {
-            startGame();
         }
+
+        startGame();
+
     }
 
     /**
@@ -339,10 +339,7 @@ public class GamePlay {
         {
             if (!card.isWhot())
             {
-                if (computerCards.size() > 10)
-                {
-                    nonWhotCards.add(card);
-                }
+                nonWhotCards.add(card);
             }
         }
         int randomIndex = rand.nextInt(nonWhotCards.size());
@@ -479,6 +476,6 @@ public class GamePlay {
                 System.out.println(previousCard.toString());
             }
         }
-        isComputerTurn = previousCard.isHoldOn() | previousCard.isSuspension();
+        isComputerTurn = previousCard.isHoldOn() || previousCard.isSuspension();
     }
 }

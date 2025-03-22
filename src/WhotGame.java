@@ -34,7 +34,7 @@ public class WhotGame {
         Card[] pack = new Card[54];
         pack = whots.getPack().toArray(pack);//gets the initialised and shuffled pack from the NaijaWhots class
         Collections.addAll(drawPile, pack);
-        startCard = drawPile.getFirst();//get the first card as the start card
+        startCard = drawPile.get(0);//get the first card as the start card
     }
 
     /**
@@ -50,9 +50,9 @@ public class WhotGame {
         {
             for (int index = 0; index < number; index++)
             {
-                computerCardPile.add(drawPile.removeFirst());//adds the first card in the drawPile to the computerPile
+                computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
                 //and removes it afterward
-                humanCardPile.add(drawPile.removeFirst());//adds the first card in the drawPile to the playerPile and
+                humanCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the playerPile and
                 //removes it afterward
             }
         } else if (number < 0)
@@ -96,7 +96,7 @@ public class WhotGame {
      */
     public void computerDrawFromPile(boolean forceWinner)
     {
-        computerCardPile.add(drawPile.removeFirst());
+        computerCardPile.add(drawPile.remove(0));
         checkWinner(forceWinner);
     }
     /**
@@ -105,7 +105,7 @@ public class WhotGame {
      */
     public void humanDrawFromPile(boolean forceWinner)
     {
-        humanCardPile.add(drawPile.removeFirst());
+        humanCardPile.add(drawPile.remove(0));
         checkWinner(forceWinner);
     }
 
