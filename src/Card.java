@@ -8,7 +8,8 @@
 public class Card {
     private final int face;//an integer that represents the number on the card
     private final Suit suit;//an enumeration that represents the shape on the card
-    private boolean isDefendCard;//Computer uses this to check if the PICK TWO/PICK THREE are defend card from the player
+    private boolean isDefendCard;//Computer uses this to check if the PICK TWO/PICK THREE
+    // are defended card from the player, which means it won't have to pick two or three for such card
     public Card(Suit suit, int face)
     {
         this.suit = suit;
