@@ -86,6 +86,9 @@ public class WhotGame {
         }
         rule(card);
         checkWinner(forceWinner);
+        card.setCardActionTaken(false);
+        card.setHumanCard(false);
+        card.setComputerCard(false);
         card.setDefendCard(false);
         playedPile.add(card);
     }

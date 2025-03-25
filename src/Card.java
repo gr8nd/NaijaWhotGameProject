@@ -10,6 +10,8 @@ public class Card {
     private final Suit suit;//an enumeration that represents the shape on the card
     private boolean isDefendCard;//Computer uses this to check if the PICK TWO/PICK THREE
     // are defended card from the player, which means it won't have to pick two or three for such card
+    private boolean cardActionTaken; //True or false depending on whether action has been taken by of
+    //the players on a special card.
     public Card(Suit suit, int face)
     {
         this.suit = suit;
@@ -61,6 +63,14 @@ public class Card {
 
     public void setDefendCard(boolean defendCard) {
         isDefendCard = defendCard;
+    }
+
+    public boolean isCardActionTaken() {
+        return cardActionTaken;
+    }
+
+    public void setCardActionTaken(boolean cardActionTaken) {
+        this.cardActionTaken = cardActionTaken;
     }
 
     public String toString()
