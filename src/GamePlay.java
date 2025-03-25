@@ -32,9 +32,10 @@ public class GamePlay
      * a parameter is used when no deal number
      * is provided, it therefore uses the default deal number of 6.
      */
-    public GamePlay(boolean forceWinner)
+    public GamePlay(boolean forceWinner, boolean isComputerTurn)
     {
         this.forceWinner = forceWinner;
+        this.isComputerTurn = isComputerTurn;
         game = new WhotGame();
         humanCards = game.getHumanCardPile();
         computerCards = game.getComputerCardPile();
@@ -44,9 +45,10 @@ public class GamePlay
     /**
      * @param number a deal number
      */
-    public GamePlay(int number, boolean forceWinner)
+    public GamePlay(int number, boolean forceWinner, boolean isComputerTurn)
     {
         this.forceWinner = forceWinner;
+        this.isComputerTurn = isComputerTurn;
         game = new WhotGame();
         humanCards = game.getHumanCardPile();
         computerCards = game.getComputerCardPile();
@@ -85,17 +87,6 @@ public class GamePlay
         System.out.println("The start card is:");
         System.out.println(previousCard.toString());
         game.play(previousCard, forceWinner);
-        if(previousCard.isHoldOn())
-        {
-            computerHoldOn();
-        }else if(previousCard.isSuspension())
-        {
-            computerSuspension();
-        } else if(previousCard.isWhot())
-        {
-            computerRequestsWhot();
-            isComputerTurn = false;
-        }
 
         startGame();
 

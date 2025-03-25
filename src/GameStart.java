@@ -6,7 +6,7 @@ public class GameStart
 {
     public static void main(String[] args)
     {
-        GamePlay game = new GamePlay(false);
+        GamePlay game = new GamePlay(false, true);
         game.start();
     }
 }
