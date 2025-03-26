@@ -11,8 +11,8 @@ import java.util.Scanner;
  */
 public class GamePlay
 {
-    private boolean isComputerTurn = true;//Used for relinquishing control between computer and human, initially it is
-    //computer turn
+    private boolean isComputerTurn = false;//Used for relinquishing control between computer and human, initially it is
+    //human turn
     private final WhotGame game;
     private Suit wantedSuit;
     private boolean validDeal = true;//Used in checking if a valid deal number is provided.
@@ -24,7 +24,7 @@ public class GamePlay
     //SUSPENSION, PICKTWO, PICKTHREE or GENERAL MARKET.
     private final SecureRandom rand = new SecureRandom();
     private final Scanner input = new Scanner(System.in);
-    private String mode;
+    private final String mode;
     private final String GAME_MODE1 = "Easy";
     private final String GAME_MODE2 = "Difficult";
     private final boolean forceWinner; //If true, it will ensure that there is a winner in the game, draw will not be allowed
@@ -35,18 +35,13 @@ public class GamePlay
      * a parameter is used when no deal number
      * is provided, it therefore uses the default deal number of 6.
      */
-    public GamePlay(boolean forceWinner, boolean isComputerTurn, String mode)
+    public GamePlay(boolean forceWinner, String mode) throws WhotGameException
     {
-        if(!mode.equalsIgnoreCase(GAME_MODE1) || !mode.equalsIgnoreCase(GAME_MODE2))
+        if(!mode.equalsIgnoreCase(GAME_MODE1) && !mode.equalsIgnoreCase(GAME_MODE2))
         {
-            try {
-                throw new WhotGameException("Game mode can take only one of the two options: '" + GAME_MODE1 + "' and '" + GAME_MODE2 + "' ");
-            } catch (WhotGameException e) {
-                System.out.println(e.getMessage());
-            }
+            throw new WhotGameException("Game mode can take only one of the two options: '" + GAME_MODE1 + "' and '" + GAME_MODE2 + "' ");
         }
         this.forceWinner = forceWinner;
-        this.isComputerTurn = isComputerTurn;
         this.mode = mode;
         game = new WhotGame();
         humanCards = game.getHumanCardPile();
@@ -57,17 +52,13 @@ public class GamePlay
     /**
      * @param number a deal number
      */
-    public GamePlay(int number, boolean forceWinner, boolean isComputerTurn, String mode) {
-        if(!mode.equalsIgnoreCase(GAME_MODE1) || !mode.equalsIgnoreCase(GAME_MODE2))
+    public GamePlay(int number, boolean forceWinner, String mode) throws WhotGameException
+    {
+        if(!mode.equalsIgnoreCase(GAME_MODE1) && !mode.equalsIgnoreCase(GAME_MODE2))
         {
-            try {
-                throw new WhotGameException("Game mode can take only one of the two options: '" + GAME_MODE1 + "' and '" + GAME_MODE2 + "' ");
-            } catch (WhotGameException e) {
-                System.out.println(e.getMessage());
-            }
+            throw new WhotGameException("Game mode can take only one of the two options: '" + GAME_MODE1 + "' and '" + GAME_MODE2 + "' ");
         }
         this.forceWinner = forceWinner;
-        this.isComputerTurn = isComputerTurn;
         this.mode = mode;
         game = new WhotGame();
         humanCards = game.getHumanCardPile();
@@ -107,7 +98,6 @@ public class GamePlay
         System.out.println("The start card is:");
         System.out.println(previousCard.toString());
         game.play(previousCard, forceWinner);
-        previousCard.setStartCard(true);
         startGame();
 
     }
@@ -147,7 +137,7 @@ public class GamePlay
             computerNormalPlay();
         } else if (previousCard.isPickTwo())
         {
-            if(!previousCard.isStartCard())
+            if(!previousCard.isCardActionTaken())
             {
                 computerPickTwo();
             }else
@@ -156,7 +146,7 @@ public class GamePlay
             }
         } else if (previousCard.isPickThree())
         {
-            if(!previousCard.isStartCard())
+            if(!previousCard.isCardActionTaken())
             {
                 computerPickThree();
             }else
@@ -165,39 +155,39 @@ public class GamePlay
             }
         } else if (previousCard.isHoldOn())
         {
-            if(!previousCard.isStartCard())
+            if(!previousCard.isCardActionTaken())
             {
                 computerHoldOn();
             }else
             {
-                isComputerTurn = false;
+                computerNormalPlay();
             }
         }else if(previousCard.isSuspension())
         {
-            if(!previousCard.isStartCard())
+            if(!previousCard.isCardActionTaken())
             {
                 computerSuspension();
             }else
             {
-                isComputerTurn = false;
+                computerNormalPlay();
             }
         } else if (previousCard.isGeneralMarket())
         {
-            if(!previousCard.isStartCard())
+            if(!previousCard.isCardActionTaken())
             {
                 computerGoMarket();
             }else
             {
-                isComputerTurn = false;
+                computerNormalPlay();
             }
         }else if(previousCard.isWhot())
         {
-            if(!previousCard.isStartCard())
+            if(!previousCard.isCardActionTaken())
             {
                 computerPlaysWhot();
             }else
             {
-                computerRequestsWhot();
+                computerNormalPlay();
             }
         }
     }
@@ -236,10 +226,6 @@ public class GamePlay
                 previousCard.setCardActionTaken(true);
                 System.out.println("You have gone to market.");
                 isComputerTurn = true;
-            }else if(previousCard.isHoldOn() ||
-                    previousCard.isSuspension())
-            {
-                previousCard.setCardActionTaken(true);
             }else
             {
                 game.humanDrawFromPile(forceWinner);
@@ -253,22 +239,28 @@ public class GamePlay
                 humanNormalPlay(index);
             } else if (previousCard.isPickTwo())
             {
-                humanPickTwo(index);
+                if(!previousCard.isCardActionTaken())
+                {
+                    humanPickTwo(index);
+                }else
+                {
+                    humanNormalPlay(index);
+                }
             } else if (previousCard.isPickThree())
             {
-                humanPickThree(index);
+                if(!previousCard.isCardActionTaken())
+                {
+                    humanPickThree(index);
+                }else
+                {
+                    humanNormalPlay(index);
+                }
             } else if (previousCard.isGeneralMarket())
             {
-                humanGoMarket(index);
-            } else if(previousCard.isHoldOn())
-            {
-                isComputerTurn = false;
-                index = humanSelectCard();
                 humanNormalPlay(index);
-            }else if(previousCard.isSuspension())
+            } else if(previousCard.isHoldOn() ||
+                    previousCard.isSuspension())
             {
-                isComputerTurn = false;
-                index = humanSelectCard();
                 humanNormalPlay(index);
             } else if(previousCard.isWhot())
             {
@@ -291,6 +283,7 @@ public class GamePlay
             previousCard = card;
             System.out.println("You played: ");
             System.out.println(previousCard.toString());
+            wantedSuit = null;
         }else
         {
             System.out.println("Play a Whot card or pick from pile.");
@@ -405,7 +398,8 @@ public class GamePlay
         {
             Card card = humanCards.get(index);
             if(card.getSuit() == previousCard.getSuit() ||
-                    card.getFace() == previousCard.getFace())
+                    card.getFace() == previousCard.getFace() ||
+                    card.getSuit() == wantedSuit)
             {
                 game.play(card, forceWinner);
                 System.out.println("You played: ");
@@ -414,6 +408,7 @@ public class GamePlay
                         !previousCard.isSuspension()) ||
                         previousCard.isCardActionTaken();
                 previousCard = card;
+                wantedSuit = null;
             }else if(card.isWhot())
             {
                 if(!previousCard.isPickTwo() &&
@@ -586,18 +581,18 @@ public class GamePlay
 
     private void humanPickTwo(int index)
     {
-        Card pickTwoCard = humanCards.get(index);
-        if(pickTwoCard.isPickTwo() &&
+        Card card = humanCards.get(index);
+        if(card.isPickTwo() &&
                 !previousCard.isCardActionTaken())
         {
-            game.play(pickTwoCard, forceWinner);
+            game.play(card, forceWinner);
             previousCard.setCardActionTaken(true);
-            previousCard = pickTwoCard;
-            pickTwoCard.setDefendCard(true);
+            previousCard = card;
+            card.setDefendCard(true);
             System.out.println("You have defended the PICKTWO with.");
             System.out.println(previousCard.toString());
             isComputerTurn = true;
-        }else if(pickTwoCard.isPickTwo() &&
+        }else if(previousCard.isPickTwo() &&
                 previousCard.isCardActionTaken())
         {
             humanNormalPlay(index);
@@ -610,18 +605,18 @@ public class GamePlay
 
     private void humanPickThree(int index)
     {
-        Card pickThreeCard = humanCards.get(index);
-        if(pickThreeCard.isPickThree() &&
+        Card card = humanCards.get(index);
+        if(card.isPickThree() &&
                 !previousCard.isCardActionTaken())
         {
-            game.play(pickThreeCard, forceWinner);
+            game.play(card, forceWinner);
             previousCard.setCardActionTaken(true);
-            previousCard = pickThreeCard;
-            pickThreeCard.setDefendCard(true);
+            previousCard = card;
+            card.setDefendCard(true);
             System.out.println("You have defended the PICKTHREE with.");
             System.out.println(previousCard.toString());
             isComputerTurn = true;
-        }else if(pickThreeCard.isPickThree() &&
+        }else if(previousCard.isPickThree() &&
                 previousCard.isCardActionTaken())
         {
             humanNormalPlay(index);
@@ -632,43 +627,16 @@ public class GamePlay
         }
     }
 
-    private void humanGoMarket(int index)
-    {
-        if(previousCard.isCardActionTaken())
-        {
-            humanNormalPlay(index);
-        }else
-        {
-            game.humanDrawFromPile(forceWinner);
-            previousCard.setCardActionTaken(true);
-            System.out.println("You have gone to market.");
-            isComputerTurn = true;
-        }
-    }
-
     private void computerGoMarket()
     {
-        if(previousCard.isCardActionTaken())
-        {
-            computerNormalPlay();
-            return;
-        }
-        if(!previousCard.isCardActionTaken())
-        {
-            game.computerDrawFromPile(forceWinner, mode);
-            previousCard.setCardActionTaken(true);
-            System.out.println("Computer has gone to market.");
-            isComputerTurn = false;
-        }
+        game.computerDrawFromPile(forceWinner, mode);
+        previousCard.setCardActionTaken(true);
+        System.out.println("Computer has gone to market.");
+        isComputerTurn = false;
     }
 
     private void computerSuspension()
     {
-        if(previousCard.isCardActionTaken())
-        {
-            computerNormalPlay();
-            return;
-        }
         boolean pickFromPile = true;
         boolean playOtherCard = false;
         Card otherCard = null;
@@ -710,11 +678,6 @@ public class GamePlay
 
     private void computerHoldOn()
     {
-        if(previousCard.isCardActionTaken())
-        {
-            computerNormalPlay();
-            return;
-        }
         boolean pickFromPile = true;
         boolean playOtherCard = false;
         Card otherCard = null;
@@ -751,50 +714,6 @@ public class GamePlay
             System.out.println("Computer has played: ");
             System.out.println(previousCard.toString());
             isComputerTurn = false;
-        }
-    }
-
-    private void humanHoldOn(int index)
-    {
-        if(previousCard.isCardActionTaken())
-        {
-            humanNormalPlay(index);
-            return;
-        }
-        Card card = humanCards.get(index);
-        if(card.isHoldOn())
-        {
-            game.play(card, forceWinner);
-            previousCard.setCardActionTaken(true);
-            previousCard = card;
-            System.out.println("You have played: ");
-            System.out.println(previousCard.toString());
-            isComputerTurn = false;
-        }else
-        {
-            System.out.println("Play a valid card or pick from pile.");
-        }
-    }
-
-    private void humanSuspension(int index)
-    {
-        if(previousCard.isCardActionTaken())
-        {
-            humanNormalPlay(index);
-            return;
-        }
-        Card card = humanCards.get(index);
-        if(card.isSuspension())
-        {
-            game.play(card, forceWinner);
-            previousCard.setCardActionTaken(true);
-            previousCard = card;
-            System.out.println("You have played: ");
-            System.out.println(previousCard.toString());
-            isComputerTurn = false;
-        }else
-        {
-            System.out.println("Play a valid card or pick from pile.");
         }
     }
 }
