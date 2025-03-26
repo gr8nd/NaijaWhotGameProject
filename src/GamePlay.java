@@ -24,6 +24,9 @@ public class GamePlay
     //SUSPENSION, PICKTWO, PICKTHREE or GENERAL MARKET.
     private final SecureRandom rand = new SecureRandom();
     private final Scanner input = new Scanner(System.in);
+    private String mode;
+    private final String GAME_MODE1 = "Easy";
+    private final String GAME_MODE2 = "Difficult";
     private final boolean forceWinner; //If true, it will ensure that there is a winner in the game, draw will not be allowed
     //so the game will run indefinitely until there is a winner.
 
@@ -32,10 +35,19 @@ public class GamePlay
      * a parameter is used when no deal number
      * is provided, it therefore uses the default deal number of 6.
      */
-    public GamePlay(boolean forceWinner, boolean isComputerTurn)
+    public GamePlay(boolean forceWinner, boolean isComputerTurn, String mode)
     {
+        if(!mode.equalsIgnoreCase(GAME_MODE1) || !mode.equalsIgnoreCase(GAME_MODE2))
+        {
+            try {
+                throw new WhotGameException("Game mode can take only one of the two options: '" + GAME_MODE1 + "' and '" + GAME_MODE2 + "' ");
+            } catch (WhotGameException e) {
+                System.out.println(e.getMessage());
+            }
+        }
         this.forceWinner = forceWinner;
         this.isComputerTurn = isComputerTurn;
+        this.mode = mode;
         game = new WhotGame();
         humanCards = game.getHumanCardPile();
         computerCards = game.getComputerCardPile();
@@ -45,10 +57,18 @@ public class GamePlay
     /**
      * @param number a deal number
      */
-    public GamePlay(int number, boolean forceWinner, boolean isComputerTurn)
-    {
+    public GamePlay(int number, boolean forceWinner, boolean isComputerTurn, String mode) {
+        if(!mode.equalsIgnoreCase(GAME_MODE1) || !mode.equalsIgnoreCase(GAME_MODE2))
+        {
+            try {
+                throw new WhotGameException("Game mode can take only one of the two options: '" + GAME_MODE1 + "' and '" + GAME_MODE2 + "' ");
+            } catch (WhotGameException e) {
+                System.out.println(e.getMessage());
+            }
+        }
         this.forceWinner = forceWinner;
         this.isComputerTurn = isComputerTurn;
+        this.mode = mode;
         game = new WhotGame();
         humanCards = game.getHumanCardPile();
         computerCards = game.getComputerCardPile();
@@ -65,7 +85,7 @@ public class GamePlay
     {
         try
         {
-            game.deal(number);
+            game.deal(number, mode);
             previousCard = game.getStartCard();
         } catch (WhotGameException e)
         {
@@ -311,7 +331,7 @@ public class GamePlay
         }
         if(computerDrawingFromPile)
         {
-            game.computerDrawFromPile(forceWinner);
+            game.computerDrawFromPile(forceWinner, mode);
             System.out.println("Computer has drawn from pile.");
             isComputerTurn = false;
         }
@@ -449,8 +469,8 @@ public class GamePlay
                 !previousCard.isDefendCard() &&
                 !previousCard.isCardActionTaken())
         {
-            game.computerDrawFromPile(forceWinner);
-            game.computerDrawFromPile(forceWinner);
+            game.computerDrawFromPile(forceWinner, mode);
+            game.computerDrawFromPile(forceWinner, mode);
             previousCard.setCardActionTaken(true);
             System.out.println("Computer has picked pick two.");
         }
@@ -488,9 +508,9 @@ public class GamePlay
                 !previousCard.isDefendCard() &&
                 !previousCard.isCardActionTaken())
         {
-            game.computerDrawFromPile(forceWinner);
-            game.computerDrawFromPile(forceWinner);
-            game.computerDrawFromPile(forceWinner);
+            game.computerDrawFromPile(forceWinner, mode);
+            game.computerDrawFromPile(forceWinner, mode);
+            game.computerDrawFromPile(forceWinner, mode);
             previousCard.setCardActionTaken(true);
             System.out.println("Computer has picked pick three.");
         }
@@ -549,7 +569,7 @@ public class GamePlay
         {
             if(nonWhotCards.isEmpty())
             {
-                game.computerDrawFromPile(forceWinner);
+                game.computerDrawFromPile(forceWinner, mode);
                 System.out.println("Computer has drawn from pile.");
             }else
             {
@@ -635,7 +655,7 @@ public class GamePlay
         }
         if(!previousCard.isCardActionTaken())
         {
-            game.computerDrawFromPile(forceWinner);
+            game.computerDrawFromPile(forceWinner, mode);
             previousCard.setCardActionTaken(true);
             System.out.println("Computer has gone to market.");
             isComputerTurn = false;
@@ -673,7 +693,7 @@ public class GamePlay
 
         if(pickFromPile)
         {
-            game.computerDrawFromPile(forceWinner);
+            game.computerDrawFromPile(forceWinner, mode);
             previousCard.setCardActionTaken(true);
             System.out.println("Computer has drawn from pile.");
             isComputerTurn = false;
@@ -719,7 +739,7 @@ public class GamePlay
 
         if(pickFromPile)
         {
-            game.computerDrawFromPile(forceWinner);
+            game.computerDrawFromPile(forceWinner, mode);
             previousCard.setCardActionTaken(true);
             System.out.println("Computer has drawn from pile.");
             isComputerTurn = false;

@@ -1,3 +1,4 @@
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -15,6 +16,7 @@ public class WhotGame {
     private boolean computerIsTheWinner = false;
     private boolean humanIsTheWinner = false;
     private boolean isTie = false;
+    private final SecureRandom rand = new SecureRandom();
     private ArrayList<Card> drawPile;//this is where computer and player can draw a card from when they run out of a fitting card or
     //when instructed to do so by the game rule such as the GENERAL MARKET.
     private ArrayList<Card> computerCardPile;//a list containing all the computer cards
@@ -43,18 +45,37 @@ public class WhotGame {
      * be any number as well.
      * @throws WhotGameException an exception that will be thrown when an invalid deal number is provided
      */
-    public void deal(int number) throws WhotGameException
+    public void deal(int number, String mode) throws WhotGameException
     {
         boolean isValidDeal = number >= 2 && number <= 27 && number % 2 == 0;
         if (isValidDeal)
         {
             for (int index = 0; index < number; index++)
             {
-                computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
-                //and removes it afterward
+                if(mode.equalsIgnoreCase("Difficult"))
+                {
+                    int randomIndex = rand.nextInt(4);//Computer has 3/4 (75%) chance of getting special cards in
+                    //difficult mode
+                    if(randomIndex == 0 || randomIndex == 1 || randomIndex == 2)
+                    {
+                        for (Card card: drawPile)
+                        {
+                            if(!card.isNormalCard())
+                            {
+                                computerCardPile.add(card);
+                                break;
+                            }
+                        }
+                    }
+                }else
+                {
+                    computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
+                    //and removes it afterward
+                }
                 humanCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the playerPile and
                 //removes it afterward
             }
+
         } else if (number < 0)
         {
             throw new WhotGameException("You cannot deal a negative number of cards");
@@ -96,9 +117,35 @@ public class WhotGame {
      * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
      * else there must have been a winner, it therefor sets thereIsAWinner to true
      */
-    public void computerDrawFromPile(boolean forceWinner)
+    public void computerDrawFromPile(boolean forceWinner, String mode)
     {
-        computerCardPile.add(drawPile.remove(0));
+        if(mode.equalsIgnoreCase("Difficult"))
+        {
+            int randomIndex = rand.nextInt(4);//Computer has 3/4 (75%) chance of getting special cards in
+            //difficult mode
+            boolean pickSpecial = false;
+            if(randomIndex == 0 || randomIndex == 1 || randomIndex == 2)
+            {
+                for (Card card: drawPile)
+                {
+                    if(!card.isNormalCard())
+                    {
+                        computerCardPile.add(card);
+                        pickSpecial = true;
+                        break;
+                    }
+                }
+                if(!pickSpecial)
+                {
+                    computerCardPile.add(drawPile.remove(0));
+                }
+            }else {
+                computerCardPile.add(drawPile.remove(0));
+            }
+        }else
+        {
+            computerCardPile.add(drawPile.remove(0));
+        }
         checkWinner(forceWinner);
     }
     /**
