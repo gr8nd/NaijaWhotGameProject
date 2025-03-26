@@ -12,6 +12,7 @@ public class Card {
     // are defended card from the player, which means it won't have to pick two or three for such card
     private boolean cardActionTaken; //True or false depending on whether action has been taken by of
     //the players on a special card.
+    private boolean isStartCard; //If the card is the start card of the game.
     public Card(Suit suit, int face)
     {
         this.suit = suit;
@@ -71,6 +72,14 @@ public class Card {
 
     public void setCardActionTaken(boolean cardActionTaken) {
         this.cardActionTaken = cardActionTaken;
+    }
+
+    public boolean isStartCard() {
+        return isStartCard;
+    }
+
+    public void setStartCard(boolean startCard) {
+        isStartCard = startCard;
     }
 
     public String toString()
