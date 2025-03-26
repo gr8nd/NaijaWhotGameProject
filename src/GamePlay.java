@@ -132,7 +132,7 @@ public class GamePlay
                 computerPickTwo();
             }else
             {
-                isComputerTurn = false;
+                computerNormalPlay();
             }
         } else if (previousCard.isPickThree())
         {
@@ -141,7 +141,7 @@ public class GamePlay
                 computerPickThree();
             }else
             {
-                isComputerTurn = false;
+                computerNormalPlay();
             }
         } else if (previousCard.isHoldOn())
         {
@@ -265,6 +265,12 @@ public class GamePlay
             game.play(card, forceWinner);
             previousCard = card;
             humanRequestsCard();
+        }else if(card.getSuit() == wantedSuit)
+        {
+            game.play(card, forceWinner);
+            previousCard = card;
+            System.out.println("You played: ");
+            System.out.println(previousCard.toString());
         }else
         {
             System.out.println("Play a Whot card or pick from pile.");
@@ -277,7 +283,8 @@ public class GamePlay
         for (Card card : computerCards)
         {
             if (card.getFace() == previousCard.getFace() ||
-                    card.getSuit() == previousCard.getSuit())
+                    card.getSuit() == previousCard.getSuit() &&
+                            card.getSuit() == wantedSuit)
             {
                 game.play(card, forceWinner);
                 System.out.println("Computer has played:");
@@ -287,6 +294,7 @@ public class GamePlay
                         !previousCard.isSuspension()) ||
                         previousCard.isCardActionTaken();
                 previousCard = card;
+                wantedSuit = null;
                 break;
             }else if(card.isWhot())
             {
@@ -599,7 +607,7 @@ public class GamePlay
             humanNormalPlay(index);
         }else
         {
-            System.out.println("You selected an invalid card, draw two cards " +
+            System.out.println("You selected an invalid card, draw three cards " +
                     "from pile or play a fitting card to defend.");
         }
     }
