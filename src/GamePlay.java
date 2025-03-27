@@ -78,6 +78,7 @@ public class GamePlay
         {
             game.deal(number, mode);
             previousCard = game.getStartCard();
+            previousCard.setFirstCard(true);
         } catch (WhotGameException e)
         {
             validDeal = false;
@@ -235,6 +236,11 @@ public class GamePlay
                 previousCard.setCardActionTaken(true);
                 isComputerTurn = true;
             }
+        }else if(index == 0 &&
+                previousCard.isWhot() &&
+                previousCard.isFirstCard())
+        {
+            humanRequestsCard();
         }else if(index != -2)
         {
             humanNormalPlay(index);
@@ -243,28 +249,34 @@ public class GamePlay
 
     private void humanRequestsCard()
     {
-        System.out.printf("1. %s%n2. %s%n3. %s%n4. %s%n5. %s%n",
-                Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE);
-        int want = input.nextInt();
-        switch (want) {
-            case 1:
-                wantedSuit = Suit.CIRCLE;
-                break;
-            case 2:
-                wantedSuit = Suit.CROSS;
-                break;
-            case 3:
-                wantedSuit = Suit.TRIANGLE;
-                break;
-            case 4:
-                wantedSuit = Suit.STAR;
-                break;
-            case 5:
-                wantedSuit = Suit.SQUARE;
-                break;
-            default:
-                System.out.println("You made an invalid selection, please select a card you need.");
-                return;
+        try {
+            System.out.printf("1. %s%n2. %s%n3. %s%n4. %s%n5. %s%n",
+                    Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE);
+            int want = input.nextInt();
+            switch (want) {
+                case 1:
+                    wantedSuit = Suit.CIRCLE;
+                    break;
+                case 2:
+                    wantedSuit = Suit.CROSS;
+                    break;
+                case 3:
+                    wantedSuit = Suit.TRIANGLE;
+                    break;
+                case 4:
+                    wantedSuit = Suit.STAR;
+                    break;
+                case 5:
+                    wantedSuit = Suit.SQUARE;
+                    break;
+                default:
+                    System.out.println("You made an invalid selection, please select a card you need.");
+                    return;
+            }
+        }catch (InputMismatchException | NumberFormatException e)
+        {
+            System.out.println("You made an invalid selection, please select a card you need.");
+            return;
         }
         System.out.println("You need *** " + wantedSuit + " ***");
         isComputerTurn = true;
@@ -281,7 +293,13 @@ public class GamePlay
             System.out.println(">> " + (i + 1) + " ");
             System.out.println(humanCards.get(i).toString());
         }
-        System.out.print("Select the card to play or -1 to drawn from pile:");
+        if(previousCard.isWhot() && previousCard.isFirstCard())
+        {
+            System.out.println("Enter 0 to request a card" );
+            String userInput = input.nextLine();
+            return convertUserInput(userInput);
+        }
+        System.out.print("Select the number to play or -1 to drawn from pile:");
         String userInput = input.nextLine();
         input.nextLine();
         return convertUserInput(userInput);
@@ -495,7 +513,7 @@ public class GamePlay
         ArrayList<Card> nonWhotCards = new ArrayList<>();
         for (Card card : computerCards)
         {
-            if (!card.isWhot())
+            if (!card.isWhot() && card.getSuit() != previousCard.getSuit())
             {
                 nonWhotCards.add(card);
             }

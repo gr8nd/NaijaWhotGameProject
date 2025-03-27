@@ -109,6 +109,7 @@ public class WhotGame {
         checkWinner(forceWinner);
         card.setCardActionTaken(false);
         card.setDefendCard(false);
+        card.setFirstCard(false);
         playedPile.add(card);
     }
 
