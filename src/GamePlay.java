@@ -310,8 +310,7 @@ public class GamePlay
     {
         try
         {
-            int index = Integer.parseInt(userInput.trim());
-            return index == -1 ? index : index-1;
+            return Integer.parseInt(userInput.trim());
         }catch (IndexOutOfBoundsException e)
         {
             System.out.println("The selection is not in your card.");
