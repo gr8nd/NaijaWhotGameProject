@@ -413,9 +413,9 @@ public class GamePlay
         boolean computerDrawingFromPile = true;
         for (Card card : computerCards)
         {
-            if (card.getFace() == previousCard.getFace() ||
-                    card.getSuit() == previousCard.getSuit() &&
-                            card.getSuit() == wantedSuit)
+            if (card.getSuit() == wantedSuit ||
+                    card.getFace() == previousCard.getFace() ||
+                    card.getSuit() == previousCard.getSuit())
             {
                 game.play(card, forceWinner);
                 System.out.println("Computer has played:");
@@ -425,12 +425,12 @@ public class GamePlay
                 previousCard = card;
                 wantedSuit = null;
                 break;
-            }else if(card.isWhot())
+            }else if(card.isWhot() && wantedSuit == null)
             {
                 game.play(card, forceWinner);
                 previousCard = card;
                 System.out.println("Computer has played:");
-                System.out.println(previousCard.toString());
+                System.out.println(previousCard);
                 computerRequestsWhot();
                 return;
             }
