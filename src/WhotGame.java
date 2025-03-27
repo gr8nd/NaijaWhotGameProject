@@ -107,9 +107,6 @@ public class WhotGame {
         }
         rule(card);
         checkWinner(forceWinner);
-        card.setCardActionTaken(false);
-        card.setDefendCard(false);
-        card.setFirstCard(false);
         playedPile.add(card);
     }
 
@@ -201,8 +198,20 @@ public class WhotGame {
         {
             if (forceWinner)
             {
-                drawPile.addAll(playedPile);
+                ArrayList<Card> list = new ArrayList<>();
+                for(int i =0; i < playedPile.size()-1; i++)
+                {
+                    //reset all cards but the last played card to their default values
+                    Card card = playedPile.get(i);
+                    card.setFirstCard(false);
+                    card.setCardActionTaken(false);
+                    card.setDefendCard(false);
+                    list.add(card);
+                }
+                drawPile.addAll(list);
+                Collections.shuffle(drawPile);
                 playedPile.clear();
+                list.clear();
             }else
             {
                 countHumanCards();
@@ -228,7 +237,6 @@ public class WhotGame {
                 humanIsTheWinner = true;
             }
         }
-
     }
     /***
      * Count the face values of human cards after the draw pile has been exhausted.

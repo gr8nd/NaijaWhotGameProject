@@ -287,7 +287,6 @@ public class GamePlay
         System.out.println("You have " + (humanCards.size()) + " cards in your pile.");
         System.out.print("Hit 'Enter' to see all your cards: >> ");
         input.nextLine();
-        input.nextLine();
         for (int i = 0; i < humanCards.size(); i++)
         {
             System.out.println(">> " + (i + 1) + " ");
@@ -295,14 +294,16 @@ public class GamePlay
         }
         if(previousCard.isWhot() && previousCard.isFirstCard())
         {
-            System.out.println("Enter 0 to request a card" );
+            System.out.print("Enter 0 to request a card" );
             String userInput = input.nextLine();
             return convertUserInput(userInput);
+        }else
+        {
+            System.out.print("Select the number to play or -1 to drawn from pile:");
+            String userInput = input.nextLine();
+            input.nextLine();
+            return convertUserInput(userInput);
         }
-        System.out.print("Select the number to play or -1 to drawn from pile:");
-        String userInput = input.nextLine();
-        input.nextLine();
-        return convertUserInput(userInput);
     }
 
     private  int convertUserInput(String userInput)
@@ -326,19 +327,16 @@ public class GamePlay
         try
         {
             Card card = humanCards.get(index);
-           if(card.isWhot())
-            {
-                if(previousCard.isCardActionTaken() || previousCard.isNormalCard())
-                {
-                    game.play(card, forceWinner);
-                    previousCard = card;
-                    System.out.println("You played: ");
-                    System.out.println(previousCard.toString());
-                    humanRequestsCard();
-                }else
-                {
-                    System.out.println("Enter -1 to pick from pile.");
-                }
+           if(previousCard.isWhot())
+           {
+               if(card.isWhot())
+               {
+                   game.play(card, forceWinner);
+                   previousCard = card;
+                   System.out.println("You played: ");
+                   System.out.println(previousCard);
+                   humanRequestsCard();
+               }
             }else if(previousCard.isPickTwo() &&
                    !previousCard.isCardActionTaken())
             {
@@ -347,7 +345,8 @@ public class GamePlay
                    !previousCard.isCardActionTaken())
            {
                humanPickThree(index);
-           } else if(previousCard.isGeneralMarket())
+           } else if(previousCard.isGeneralMarket() &&
+                   !previousCard.isCardActionTaken())
            {
                System.out.println("Enter -1 to go to market");
            } else if(card.getSuit() == previousCard.getSuit() ||
