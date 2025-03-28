@@ -9,9 +9,9 @@ public class GameStart
     public static void main(String[] args)
     {
         Scanner input = new Scanner(System.in);
-        System.out.println("Select game mode: Easy or Difficult? >> ");
+        System.out.println("Select game mode: Easy or Difficult?");
         String mode = input.nextLine();
-        System.out.println("Play until there is a winner (i.e. no tie) Y/N? >> ");
+        System.out.println("Play until there is a winner (i.e. no tie) Y/N?");
         String forceWinner = input.nextLine();
         GamePlay game;
         try {
