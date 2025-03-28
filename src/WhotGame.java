@@ -136,6 +136,8 @@ public class WhotGame {
                         break;
                     }
                 }
+                //If there is no special card, computer will just pick the first card
+                //in the draw pile.
                 if(!pickSpecial)
                 {
                     computerCardPile.add(drawPile.remove(0));
