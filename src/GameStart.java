@@ -13,9 +13,8 @@ public class GameStart
         String mode = input.nextLine();
         System.out.println("Play until there is a winner (i.e. no tie) Y/N?");
         String forceWinner = input.nextLine();
-        GamePlay game;
         try {
-            game = new GamePlay(forceWinner.equalsIgnoreCase("Y"),  mode);
+            GamePlay game = new GamePlay(forceWinner.equalsIgnoreCase("Y"),  mode);
             game.start();
         } catch (WhotGameException e) {
             System.out.println(e.getMessage());

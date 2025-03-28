@@ -1,4 +1,3 @@
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.List;
  */
 public class NaijaWhots
 {
-    private final SecureRandom rand = new SecureRandom();//Ensures that the random number generated is truly unpredictable
     private final List<Card> pack = new ArrayList<>(54);//The pack as an array containing 54 cards
 
     public NaijaWhots()

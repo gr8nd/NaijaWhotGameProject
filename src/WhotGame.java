@@ -13,9 +13,10 @@ import java.util.Collections;
  * boolean isThereWinner: used to check whether there is a winner or not
  */
 public class WhotGame {
-    private boolean computerIsTheWinner = false;
-    private boolean humanIsTheWinner = false;
+    private boolean computerTheWinner = false;
+    private boolean humanTheWinner = false;
     private boolean isTie = false;
+    private final String GAME_MODE_DIFFICULT = "Difficult";
     private final SecureRandom rand = new SecureRandom();
     private ArrayList<Card> drawPile;//this is where computer and player can draw a card from when they run out of a fitting card or
     //when instructed to do so by the game rule such as the GENERAL MARKET.
@@ -23,7 +24,7 @@ public class WhotGame {
     private ArrayList<Card> humanCardPile;//a list containing all the player cards
     private int computerCounter = 0;//keeps record of the computer's face count when scoring by counting faces.
     private int playerCounter = 0;//keeps record of the player's face count when scoring by counting faces.
-    private ArrayList<Card> playedPile;
+    private ArrayList<Card> playedPile; //Holds the cards that are played during the course of the game
     private Card startCard;//This is first card that is displayed when the game starts
 
     public WhotGame()
@@ -43,6 +44,7 @@ public class WhotGame {
      *
      * @param number the total number of cards each player will receive at the start of the game, usually 6 but can
      * be any number as well.
+     * @param mode the game mode, easy or difficult are available
      * @throws WhotGameException an exception that will be thrown when an invalid deal number is provided
      */
     public void deal(int number, String mode) throws WhotGameException
@@ -52,7 +54,7 @@ public class WhotGame {
         {
             for (int index = 0; index < number; index++)
             {
-                if(mode.equalsIgnoreCase("Difficult"))
+                if(mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
                 {
                     int randomIndex = rand.nextInt(4);//Computer has 3/4 (75%) chance of getting special cards in
                     //difficult mode
@@ -92,7 +94,7 @@ public class WhotGame {
     }
 
     /**
-     *
+     * @param forceWinner if true, run the game till there is a winner
      * @param card the card object that is played, the method attempts to remove a played card from any of the card
      * piles it finds it.
      */
@@ -111,8 +113,10 @@ public class WhotGame {
     }
 
     /**
+     * @param mode the game mode, easy or difficult are available
+     * @param forceWinner if true, run the game till there is a winner
      * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
-     * else there must have been a winner, it therefor sets thereIsAWinner to true
+     * else there must have been a winner, it therefor sets the winner to true
      */
     public void computerDrawFromPile(boolean forceWinner, String mode)
     {
@@ -146,6 +150,7 @@ public class WhotGame {
         checkWinner(forceWinner);
     }
     /**
+     * @param forceWinner if true, run the game till there is a winner
      * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
      * else there must have been a winner, it therefor sets thereIsAWinner to true
      */
@@ -184,6 +189,7 @@ public class WhotGame {
     }
 
     /**
+     * @param forceWinner if true, run the game till there is a winner
      * The method checks for a winner and therefore should be called each time a card is played either by the computer
      * or by human. There is a winner when any of the following occurs during the game play:
      * 1. The drawPile runs out of cards (i.e. when it becomes empty).
@@ -218,10 +224,10 @@ public class WhotGame {
                 countComputerCards();
                 if (computerCounter > playerCounter)
                 {
-                    humanIsTheWinner = true;
+                    humanTheWinner = true;
                 } else if(playerCounter > computerCounter)
                 {
-                    computerIsTheWinner = true;
+                    computerTheWinner = true;
                 }else
                 {
                     isTie = true;
@@ -231,10 +237,10 @@ public class WhotGame {
         {
             if(computerCardPile.isEmpty())
             {
-                computerIsTheWinner = true;
+                computerTheWinner = true;
             }else if(humanCardPile.isEmpty())
             {
-                humanIsTheWinner = true;
+                humanTheWinner = true;
             }
         }
     }
@@ -264,6 +270,7 @@ public class WhotGame {
         {
             if (card.getSuit().equals(Suit.STAR))
             {
+                //face value of STAR suit is doubled during counting
                 computerCounter += card.getFace() * 2;
             } else
             {
@@ -345,20 +352,20 @@ public class WhotGame {
         this.playedPile = playedPile;
     }
 
-    public boolean isComputerIsTheWinner() {
-        return computerIsTheWinner;
+    public boolean isComputerTheWinner() {
+        return computerTheWinner;
     }
 
-    public void setComputerIsTheWinner(boolean computerIsTheWinner) {
-        this.computerIsTheWinner = computerIsTheWinner;
+    public void setComputerTheWinner(boolean computerTheWinner) {
+        this.computerTheWinner = computerTheWinner;
     }
 
-    public boolean isHumanIsTheWinner() {
-        return humanIsTheWinner;
+    public boolean isHumanTheWinner() {
+        return humanTheWinner;
     }
 
-    public void setHumanIsTheWinner(boolean humanIsTheWinner) {
-        this.humanIsTheWinner = humanIsTheWinner;
+    public void setHumanTheWinner(boolean humanTheWinner) {
+        this.humanTheWinner = humanTheWinner;
     }
 
     public boolean isTie() {

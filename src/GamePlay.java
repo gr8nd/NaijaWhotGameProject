@@ -24,9 +24,10 @@ public class GamePlay
     //SUSPENSION, PICKTWO, PICKTHREE or GENERAL MARKET.
     private final SecureRandom rand = new SecureRandom();
     private final Scanner input = new Scanner(System.in);
-    private final String mode;
-    private final String GAME_MODE1 = "Easy";
-    private final String GAME_MODE2 = "Difficult";
+    private final String mode;//the game mode, easy or difficult are available
+    private final String GAME_MODE_EASY = "Easy";
+    private final int DEFAULT_DEAL_NUMBER = 6;
+    private final String GAME_MODE_DIFFICULT = "Difficult";
     private final boolean forceWinner; //If true, it will ensure that there is a winner in the game, draw will not be allowed
     //so the game will run indefinitely until there is a winner.
 
@@ -34,19 +35,22 @@ public class GamePlay
      * The GamePlay has two overloaded constructors. This constructor without
      * a parameter is used when no deal number
      * is provided, it therefore uses the default deal number of 6.
+     * @param mode the game mode, easy or difficult are available
+     * @param forceWinner if true, run the game till there is a winner
      */
     public GamePlay(boolean forceWinner, String mode) throws WhotGameException
     {
-        if(!mode.equalsIgnoreCase(GAME_MODE1) && !mode.equalsIgnoreCase(GAME_MODE2))
+        if(!mode.equalsIgnoreCase(GAME_MODE_EASY) && !mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
         {
-            throw new WhotGameException("Game mode can take only one of the two options: '" + GAME_MODE1 + "' and '" + GAME_MODE2 + "' ");
+            throw new WhotGameException("Game mode can take only one of the two options: '" + GAME_MODE_EASY
+                    + "' and '" + GAME_MODE_DIFFICULT + "' ");
         }
         this.forceWinner = forceWinner;
         this.mode = mode;
-        game = new WhotGame();
-        humanCards = game.getHumanCardPile();
-        computerCards = game.getComputerCardPile();
-        this.deal(6);
+        this.game = new WhotGame();
+        this.humanCards = game.getHumanCardPile();
+        this.computerCards = game.getComputerCardPile();
+        this.deal(DEFAULT_DEAL_NUMBER);
     }
 
     /**
@@ -54,21 +58,20 @@ public class GamePlay
      */
     public GamePlay(int number, boolean forceWinner, String mode) throws WhotGameException
     {
-        if(!mode.equalsIgnoreCase(GAME_MODE1) && !mode.equalsIgnoreCase(GAME_MODE2))
+        if(!mode.equalsIgnoreCase(GAME_MODE_EASY) && !mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
         {
-            throw new WhotGameException("Game mode can take only one of the two options: '" + GAME_MODE1 + "' and '" + GAME_MODE2 + "' ");
+            throw new WhotGameException("Game mode can take only one of the two options: '" + GAME_MODE_EASY + "' and '" + GAME_MODE_DIFFICULT + "' ");
         }
         this.forceWinner = forceWinner;
         this.mode = mode;
-        game = new WhotGame();
-        humanCards = game.getHumanCardPile();
-        computerCards = game.getComputerCardPile();
+        this.game = new WhotGame();
+        this.humanCards = game.getHumanCardPile();
+        this.computerCards = game.getComputerCardPile();
         this.deal(number);
     }
 
     /**
      * previousCard is initially the startCard in the WhotGame
-     *
      * @param number a deal number that is provided, if no valid deal number is provided a
      *  WhotGameException is thrown and appropriate message is issued to the user.
      */
@@ -99,19 +102,19 @@ public class GamePlay
         System.out.println("The start card is:");
         System.out.println(previousCard.toString());
         game.play(previousCard, forceWinner);
-        startGame();
 
+        startGame();
     }
 
     /**
-     * The start method checks whether a valid deal was done and thereafter starts the game,
+     * The start method starts the game,
      * the game runs until
      * there is a winner, rotating turn between computer and human.
      */
     private void startGame()
     {
-        while (!game.isHumanIsTheWinner() &&
-                !game.isComputerIsTheWinner() &&
+        while (!game.isHumanTheWinner() &&
+                !game.isComputerTheWinner() &&
                 !game.isTie())
         {
             if (isComputerTurn)
@@ -128,15 +131,15 @@ public class GamePlay
                 humanPlay();
             }
         }
-        if(game.isHumanIsTheWinner())
+        if(game.isHumanTheWinner())
         {
-            System.out.println("You win!");
-        }else if(game.isComputerIsTheWinner())
+            System.out.println("Game Over!!!\nYou win!");
+        }else if(game.isComputerTheWinner())
         {
-            System.out.println("You lose!");
+            System.out.println("Game Over!!!\nYou lose!");
         }else
         {
-            System.out.println("It is a tie!");
+            System.out.println("Game Over!!!\nIt is a tie!");
         }
     }
 
@@ -147,6 +150,22 @@ public class GamePlay
      */
     private void computerPlay()
     {
+        if(computerCards.size() == 1)
+        {
+            //Specially handle the last card in the pile
+            Card lastCard = computerCards.get(0);
+            if(lastCard.isWhot() ||
+                    lastCard.getSuit() == previousCard.getSuit() ||
+                    lastCard.getFace() == previousCard.getFace()||
+                    lastCard.getSuit() == wantedSuit)
+            {
+                game.play(lastCard, forceWinner);
+                previousCard = lastCard;
+                System.out.println(previousCard);
+                System.out.println("Check!");
+                return;
+            }
+        }
         if ((previousCard.isNormalCard()))
         {
             computerNormalPlay();
@@ -205,6 +224,23 @@ public class GamePlay
     private void humanPlay()
     {
         int index = humanSelectCard();
+        if(humanCards.size() == 1)
+        {
+            //Specially handle the last card in the pile
+            Card lastCard = humanCards.get(index-1);
+            if(lastCard.isWhot() ||
+                    lastCard.getSuit() == previousCard.getSuit() ||
+                    lastCard.getFace() == previousCard.getFace() ||
+                    lastCard.getSuit() == wantedSuit)
+            {
+                game.play(lastCard, forceWinner);
+                previousCard = lastCard;
+                System.out.println(previousCard);
+                System.out.println("Check!");
+                return;
+            }
+        }
+
         if(index == -1)
         {
             if(previousCard.isPickThree() &&
@@ -302,11 +338,14 @@ public class GamePlay
         {
             System.out.println("You have " + (humanCards.size()) + " cards in your pile.");
             System.out.println("These are all your cards:");
+            StringBuilder builder = new StringBuilder();
             for (int i = 0; i < humanCards.size(); i++)
             {
-                System.out.println(">> " + (i + 1) + " ");
-                System.out.println(humanCards.get(i).toString());
+                String s = ">> " + (i + 1) + " \n";
+                String c = humanCards.get(i).toString();
+                builder.append(s).append(c).append("\n");
             }
+            System.out.println(builder);
             if(previousCard.isWhot() && previousCard.isFirstCard())
             {
                 System.out.println("Enter 0 to request a card." );
@@ -350,7 +389,6 @@ public class GamePlay
                        System.out.println("You played: ");
                        System.out.println(previousCard);
                        isComputerTurn = true;
-                       previousCard.setCardActionTaken(true);
                        wantedSuit = null;
                    }
                }
@@ -476,14 +514,14 @@ public class GamePlay
         for (Card card : computerCards)
         {
             if (card.isPickTwo() &&
-                    computerCards.size() > 10 &&
+                    computerCards.size() > 7 &&
                     !previousCard.isCardActionTaken())
             {
                 game.play(card, forceWinner);
                 previousCard = card;
                 twoPicked = false;
                 System.out.println("Computer has defended the pick two with.");
-                System.out.println(previousCard.toString());
+                System.out.println(previousCard);
                 previousCard.setCardActionTaken(true);
                 previousCard.setDefendCard(true);
                 break;
@@ -507,14 +545,14 @@ public class GamePlay
         for (Card card : computerCards)
         {
             if (card.isPickThree() &&
-                    computerCards.size() > 10 &&
+                    computerCards.size() > 7 &&
                     !previousCard.isCardActionTaken())
             {
                 game.play(card, forceWinner);
                 previousCard = card;
                 threePicked = false;
                 System.out.println("Computer has defended the pick three with:");
-                System.out.println(previousCard.toString());
+                System.out.println(previousCard);
                 previousCard.setDefendCard(true);
                 previousCard.setCardActionTaken(true);
                 break;
@@ -536,13 +574,32 @@ public class GamePlay
     private void computerRequestsWhot()
     {
         ArrayList<Card> nonWhotCards = new ArrayList<>();
+        ArrayList<Card> otherCards = new ArrayList<>();
         for (Card card : computerCards)
         {
-            if (!card.isWhot() && card.getSuit() != previousCard.getSuit())
+            if (!card.isWhot() &&
+                    card.getSuit() != previousCard.getSuit())
             {
                 nonWhotCards.add(card);
             }
+            if(!card.isWhot())
+            {
+                otherCards.add(card);
+            }
         }
+
+        if(otherCards.isEmpty())
+        {
+            //When computer has only Whot! cards in its pile, it requests any random suit
+            //even though such a suit does not exist in its pile.
+            Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
+            int randIndex = rand.nextInt(suits.length);
+            wantedSuit = suits[randIndex];
+            System.out.println("Computer needs *** " + wantedSuit + " ***");
+            isComputerTurn = false;
+            return;
+        }
+
         int randomIndex = rand.nextInt(nonWhotCards.size());
         Card neededCard = nonWhotCards.get(randomIndex);
         wantedSuit = neededCard.getSuit();
@@ -559,7 +616,7 @@ public class GamePlay
         {
             if (card.isWhot())
             {
-                if (computerCards.size() > 10)
+                if (computerCards.size() > 7)
                 {
                     whotCard = card;
                     playedWhot = true;
@@ -576,14 +633,18 @@ public class GamePlay
             game.play(whotCard, forceWinner);
             previousCard = whotCard;
             System.out.println("Computer has played: ");
-            System.out.println(previousCard.toString());
+            System.out.println(previousCard);
             computerRequestsWhot();
         }else
         {
             if(nonWhotCards.isEmpty())
             {
-                game.computerDrawFromPile(forceWinner, mode);
-                System.out.println("Computer has drawn from pile.");
+                //When computer has only Whot! cards in its pile, it requests any random suit
+                //even though such a suit does not exist in its pile.
+                Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
+                int randIndex = rand.nextInt(suits.length);
+                wantedSuit = suits[randIndex];
+                System.out.println("Computer needs *** " + wantedSuit + " ***");
             }else
             {
                 int randomIndex = rand.nextInt(nonWhotCards.size());
