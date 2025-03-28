@@ -224,23 +224,6 @@ public class GamePlay
     private void humanPlay()
     {
         int index = humanSelectCard();
-        if(humanCards.size() == 1)
-        {
-            //Specially handle the last card in the pile
-            Card lastCard = humanCards.get(index-1);
-            if(lastCard.isWhot() ||
-                    lastCard.getSuit() == previousCard.getSuit() ||
-                    lastCard.getFace() == previousCard.getFace() ||
-                    lastCard.getSuit() == wantedSuit)
-            {
-                game.play(lastCard, forceWinner);
-                previousCard = lastCard;
-                System.out.println(previousCard);
-                System.out.println("Check!");
-                return;
-            }
-        }
-
         if(index == -1)
         {
             if(previousCard.isPickThree() &&
@@ -293,6 +276,23 @@ public class GamePlay
             humanRequestsCard();
         }else if(index != -2)
         {
+            if(humanCards.size() == 1)
+            {
+                //Specially handle the last card in the pile
+                Card lastCard = humanCards.get(index-1);
+                if(lastCard.isWhot() ||
+                        lastCard.getSuit() == previousCard.getSuit() ||
+                        lastCard.getFace() == previousCard.getFace() ||
+                        lastCard.getSuit() == wantedSuit)
+                {
+                    game.play(lastCard, forceWinner);
+                    previousCard = lastCard;
+                    System.out.println(previousCard);
+                    System.out.println("Check!");
+                    return;
+                }
+            }
+
             humanNormalPlay(index-1);
         }
     }
