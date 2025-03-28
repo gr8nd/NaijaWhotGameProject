@@ -128,6 +128,16 @@ public class GamePlay
                 humanPlay();
             }
         }
+        if(game.isHumanIsTheWinner())
+        {
+            System.out.println("You win!");
+        }else if(game.isComputerIsTheWinner())
+        {
+            System.out.println("You lose!");
+        }else
+        {
+            System.out.println("It is a tie!");
+        }
     }
 
     /**
@@ -357,7 +367,8 @@ public class GamePlay
            {
                System.out.println("Enter -1 to go to market.");
            } else if(card.getSuit() == previousCard.getSuit() ||
-                   card.getFace() == previousCard.getFace())
+                   card.getFace() == previousCard.getFace() ||
+                   card.isWhot())
            {
                if(card.isWhot())
                {
