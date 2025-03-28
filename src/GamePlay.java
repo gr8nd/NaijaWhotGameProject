@@ -124,7 +124,7 @@ public class GamePlay
             {
                 System.out.println("The card on board is:");
                 System.out.println(previousCard.toString());
-                if(previousCard.isWhot())
+                if(previousCard.isWhot() && wantedSuit != null)
                 {
                     System.out.println("The wanted card is: *** " + wantedSuit + " ***");
                 }
