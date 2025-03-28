@@ -388,7 +388,7 @@ public class GamePlay
                        previousCard = card;
                        System.out.println("You played: ");
                        System.out.println(previousCard);
-                       isComputerTurn = true;
+                       isComputerTurn = !card.isSuspension() && !card.isHoldOn();
                        wantedSuit = null;
                    }
                }
@@ -651,6 +651,7 @@ public class GamePlay
                 int randIndex = rand.nextInt(suits.length);
                 wantedSuit = suits[randIndex];
                 System.out.println("Computer needs *** " + wantedSuit + " ***");
+                isComputerTurn = false;
             }else if(!nonWhotCards.isEmpty())
             {
                 int randomIndex = rand.nextInt(nonWhotCards.size());
@@ -660,8 +661,8 @@ public class GamePlay
                 System.out.println("Computer has played:");
                 System.out.println(neededCard.toString());
                 wantedSuit = null;
+                isComputerTurn = neededCard.isHoldOn() || neededCard.isSuspension();
             }
-            isComputerTurn = false;
         }
     }
 
