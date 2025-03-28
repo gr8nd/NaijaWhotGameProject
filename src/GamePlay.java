@@ -432,6 +432,7 @@ public class GamePlay
             System.out.println("Select a valid card number.");
         }
     }
+
     private void humanPickTwo(int index)
     {
         Card card = humanCards.get(index);
@@ -612,6 +613,7 @@ public class GamePlay
         ArrayList<Card> nonWhotCards = new ArrayList<>();
         Card whotCard = null;
         boolean playedWhot = false;
+        ArrayList<Card> otherCards = new ArrayList<>();
         for (Card card : computerCards)
         {
             if (card.isWhot())
@@ -626,6 +628,10 @@ public class GamePlay
             {
                 nonWhotCards.add(card);
             }
+            if(!card.isWhot())
+            {
+                otherCards.add(card);
+            }
         }
 
         if (playedWhot)
@@ -637,7 +643,7 @@ public class GamePlay
             computerRequestsWhot();
         }else
         {
-            if(nonWhotCards.isEmpty())
+            if(otherCards.isEmpty())
             {
                 //When computer has only Whot! cards in its pile, it requests any random suit
                 //even though such a suit does not exist in its pile.
@@ -645,7 +651,7 @@ public class GamePlay
                 int randIndex = rand.nextInt(suits.length);
                 wantedSuit = suits[randIndex];
                 System.out.println("Computer needs *** " + wantedSuit + " ***");
-            }else
+            }else if(!nonWhotCards.isEmpty())
             {
                 int randomIndex = rand.nextInt(nonWhotCards.size());
                 Card neededCard = nonWhotCards.get(randomIndex);
