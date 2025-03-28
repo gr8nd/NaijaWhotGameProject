@@ -610,10 +610,10 @@ public class GamePlay
 
     private void computerPlaysWhot()
     {
-        ArrayList<Card> nonWhotCards = new ArrayList<>();
+        ArrayList<Card> wantedSuits = new ArrayList<>();
         Card whotCard = null;
         boolean playedWhot = false;
-        ArrayList<Card> otherCards = new ArrayList<>();
+        ArrayList<Card> nonWhotCards = new ArrayList<>();
         for (Card card : computerCards)
         {
             if (card.isWhot())
@@ -626,11 +626,12 @@ public class GamePlay
                 }
             } else if(card.getSuit() == wantedSuit)
             {
-                nonWhotCards.add(card);
+                wantedSuits.add(card);
             }
+
             if(!card.isWhot())
             {
-                otherCards.add(card);
+                nonWhotCards.add(card);
             }
         }
 
@@ -643,7 +644,7 @@ public class GamePlay
             computerRequestsWhot();
         }else
         {
-            if(otherCards.isEmpty())
+            if(nonWhotCards.isEmpty())
             {
                 //When computer has only Whot! cards in its pile, it requests any random suit
                 //even though such a suit does not exist in its pile.
@@ -652,10 +653,10 @@ public class GamePlay
                 wantedSuit = suits[randIndex];
                 System.out.println("Computer needs *** " + wantedSuit + " ***");
                 isComputerTurn = false;
-            }else if(!nonWhotCards.isEmpty())
+            }else if(!wantedSuits.isEmpty())
             {
-                int randomIndex = rand.nextInt(nonWhotCards.size());
-                Card neededCard = nonWhotCards.get(randomIndex);
+                int randomIndex = rand.nextInt(wantedSuits.size());
+                Card neededCard = wantedSuits.get(randomIndex);
                 game.play(neededCard, forceWinner);
                 previousCard = neededCard;
                 System.out.println("Computer has played:");
