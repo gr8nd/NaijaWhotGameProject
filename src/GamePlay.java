@@ -294,6 +294,9 @@ public class GamePlay
             }
 
             humanNormalPlay(index-1);
+        }else
+        {
+            isComputerTurn = false;
         }
     }
 
@@ -325,6 +328,7 @@ public class GamePlay
             }
         }catch (InputMismatchException | NumberFormatException e)
         {
+            input.nextLine();
             System.out.println("You made an invalid selection, please select a card you need.");
             return;
         }
@@ -349,21 +353,22 @@ public class GamePlay
             if(previousCard.isWhot() && previousCard.isFirstCard())
             {
                 System.out.println("Enter 0 to request a card." );
-                return input.nextInt();
             }else
             {
                 System.out.println("Select the number to play or -1 to drawn from pile.");
-                return input.nextInt();
             }
+            return input.nextInt();
         }catch (IndexOutOfBoundsException e)
         {
+            input.nextLine();
             System.out.println("The selection is not in your card.");
+            return -2;
         }catch (InputMismatchException | NumberFormatException e)
         {
+            input.nextLine();
             System.out.println("Select a valid card number.");
+            return -2;
         }
-        return -2;
-
     }
 
     private void humanNormalPlay(int index)
