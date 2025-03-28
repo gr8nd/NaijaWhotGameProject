@@ -131,6 +131,10 @@ public class GamePlay
                 humanPlay();
             }
         }
+
+        System.out.println("Your cards' face count: " + game.getPlayerCounter());
+        System.out.println("Computer cards' face count: " + game.getComputerCounter());
+
         if(game.isHumanTheWinner())
         {
             System.out.println("Game Over!!!\nYou win!");
