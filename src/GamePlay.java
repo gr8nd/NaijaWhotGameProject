@@ -663,6 +663,12 @@ public class GamePlay
                 System.out.println(neededCard.toString());
                 wantedSuit = null;
                 isComputerTurn = neededCard.isHoldOn() || neededCard.isSuspension();
+            }else
+            {
+                game.computerDrawFromPile(forceWinner, mode);
+                previousCard.setCardActionTaken(true);
+                System.out.println("Computer has drawn from pile.");
+                isComputerTurn = false;
             }
         }
     }
