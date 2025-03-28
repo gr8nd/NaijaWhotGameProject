@@ -1,7 +1,6 @@
-import java.util.ArrayList;
+import java.util.*;
 import java.security.SecureRandom;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.stream.Stream;
 
 /**
  * This class has the highest number of lines and also the most difficult to implement. It contains the whole logic of
@@ -16,8 +15,8 @@ public class GamePlay
     private final WhotGame game;
     private Suit wantedSuit;
     private boolean validDeal = true;//Used in checking if a valid deal number is provided.
-    private final ArrayList<Card> humanCards;//A list containing all player's cards
-    private final ArrayList<Card> computerCards;//A list containing all computer's cards
+    private final List<Card> humanCards;//A list containing all player's cards
+    private final List<Card> computerCards;//A list containing all computer's cards
     private Card previousCard;//Initially the previousCard is the startCard in the WhotGame game class. Thereafter, it takes
     //the most recent card played during the game. Each player's play must be valid if the card played has the same
     // Suit or the face(number) as the previousCard. The Whot card can be played at any time except during HOLDON,
@@ -56,7 +55,7 @@ public class GamePlay
     /**
      * @param number a deal number
      */
-    public GamePlay(int number, boolean forceWinner, String mode) throws WhotGameException
+    public GamePlay(boolean forceWinner, String mode, int number) throws WhotGameException
     {
         if(!mode.equalsIgnoreCase(GAME_MODE_EASY) && !mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
         {
@@ -485,6 +484,14 @@ public class GamePlay
     private void computerNormalPlay()
     {
         boolean computerDrawingFromPile = true;
+        //In Difficult mode, and in the absence of force winner mode, when game is decided by the counts
+        // of players cards
+        //computer has to dispose cards with large face value(numbers) first before lower values.
+        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) && !forceWinner)
+        {
+            computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
+            //computerCards.forEach(System.out::println);
+        }
         for (Card card : computerCards)
         {
             if (card.getSuit() == wantedSuit ||
@@ -583,6 +590,12 @@ public class GamePlay
 
     private void computerRequestsWhot()
     {
+        //In Difficult mode, and in the absence of force winner mode, when game is decided by the counts of players cards
+        //computer has to request cards with large face value(numbers) first before lower values.
+        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) && !forceWinner)
+        {
+            computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
+        }
         ArrayList<Card> nonWhotCards = new ArrayList<>();
         ArrayList<Card> otherCards = new ArrayList<>();
         for (Card card : computerCards)
@@ -605,6 +618,22 @@ public class GamePlay
             Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
             int randIndex = rand.nextInt(suits.length);
             wantedSuit = suits[randIndex];
+            System.out.println("Computer needs *** " + wantedSuit + " ***");
+            isComputerTurn = false;
+            return;
+        }
+
+        //In difficult mode, when computer draw  pile is about to be exhausted, computer will have to
+        //request special cards to increase its winning potential.
+        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) &&
+                computerCards.size() < 6)
+        {
+            Stream<Card> specialCards = computerCards.stream().filter(card ->
+                    !card.isNormalCard()
+            );
+            long randomIndex = rand.nextLong(specialCards.count());
+            Card neededCard = nonWhotCards.get((int) randomIndex);
+            wantedSuit = neededCard.getSuit();
             System.out.println("Computer needs *** " + wantedSuit + " ***");
             isComputerTurn = false;
             return;
