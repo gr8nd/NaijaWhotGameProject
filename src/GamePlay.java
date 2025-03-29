@@ -1,3 +1,8 @@
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.security.SecureRandom;
 import java.util.stream.Stream;
@@ -14,6 +19,7 @@ public class GamePlay
     //human turn
     private final WhotGame game;
     private Suit wantedSuit;
+    private final String CSV_SEPARATOR = ",";
     private boolean validDeal = true;//Used in checking if a valid deal number is provided.
     private final List<Card> humanCards;//A list containing all player's cards
     private final List<Card> computerCards;//A list containing all computer's cards
@@ -739,43 +745,40 @@ public class GamePlay
      * @return a list containing cards that should be played in the list
      * order (from first element to last element) to give the longest sequential play.
      */
-    private List<Card> findLongestSequentialPlay()
+    private List<Card> findLongestSequentialPlay(List<Card> computerCards, int currentIndex,
+                                                 List<Card> longestList, List<Card> currentList)
     {
-        List<Card> longestList = new ArrayList<>();
-        List<Card> currentList = new ArrayList<>();
-        int longestCount = 0;
-        Card currentCard;
-        Card nonFitCard = null;
-        for(int i = 0; i < computerCards.size(); i++)
+        List<Card> currentLongestList = new ArrayList<>();
+        Card currentCard = computerCards.get(currentIndex);
+        currentLongestList.add(currentCard);
+        currentList.remove(currentCard);
+        for (int index = 0; index < currentList.size(); index++)
         {
-            Card card = computerCards.get(i);
-            if(!card.isWhot())
+            Card card = currentList.get(index);
+            if (!card.isWhot())
             {
-                List<Card> list = new ArrayList<>(computerCards);
-                currentCard = card;
-                currentList.add(currentCard);
-                list.remove(currentCard);
-                for (Card nextCard : list)
+                if (card.getFace() == currentCard.getFace() ||
+                        card.getSuit() == currentCard.getSuit())
                 {
-                    if (nextCard.getFace() == currentCard.getFace() ||
-                            nextCard.getSuit() == currentCard.getSuit()) {
-                        currentList.add(nextCard);
-                        currentCard = nextCard;
-                        list.remove(currentCard);
-                    }else
-                    {
-                        //TODO
-                        nonFitCard = card;
-                    }
-                }
-                if(currentList.size() > longestCount)
-                {
-                    longestCount = currentList.size();
-                    longestList = currentList;
+                    currentLongestList.add(card);
+                    currentCard = card;
+                    currentList.remove(currentCard);
+                    index = 0;
                 }
             }
         }
-        return longestList;
+
+        if(currentIndex == computerCards.size()-1)
+        {
+            longestList.addAll(currentList);
+            return longestList;
+        }
+        currentIndex += 1;
+        if(currentLongestList.size() > longestList.size())
+        {
+            longestList = currentLongestList;
+        }
+        return findLongestSequentialPlay(computerCards, currentIndex, longestList, currentList);
     }
 
     /**
@@ -792,10 +795,9 @@ public class GamePlay
         List<Card> currentList = new ArrayList<>(computerCards);
         longestList.add(currentCard);
         currentList.remove(currentCard);
-        Card nonFitCard = null;
-        for (int i = 0; i < currentList.size(); i++)
+        for (int index = 0; index < currentList.size(); index++)
         {
-            Card card = currentList.get(i);
+            Card card = currentList.get(index);
             if (!card.isWhot())
             {
                 if (card.getFace() == currentCard.getFace() ||
@@ -804,13 +806,96 @@ public class GamePlay
                     longestList.add(card);
                     currentCard = card;
                     currentList.remove(currentCard);
-                }else
-                {
-                    //TODO
-                    nonFitCard = card;
+                    index = 0;
                 }
             }
         }
+
+        longestList.addAll(currentList);
         return longestList;
+    }
+
+    private void writeToCSV(List<Card> humanCards, List<Card> computerCards, int round)
+    {
+        String fileName = "whot";
+        String extension = ".csv";
+        Path file = Paths.get(fileName + round + extension);
+        String s = "id,computersuit,humansuit,computerface,humanface,computertype," +
+                "humantype,computeraction,humanaction,computerdefendcard,humandefendcard," +
+                "computeractiontaken,humanactiontaken,mode,forcewinner,humanwinner";
+        StringBuilder builder = new StringBuilder();
+        builder.append(s);
+        builder.append("\n\n");
+        for (int i =0; i < humanCards.size(); i++)
+        {
+            Card humanCard = humanCards.get(i);
+            Card computerCard = computerCards.get(i);
+            builder.append(round);
+            builder.append(CSV_SEPARATOR);
+            builder.append(computerCard.getSuit());
+            builder.append(CSV_SEPARATOR);
+            builder.append(humanCard.getSuit());
+            builder.append(CSV_SEPARATOR);
+            builder.append(computerCard.getFace());
+            builder.append(CSV_SEPARATOR);
+            builder.append(humanCard.getFace());
+            builder.append(CSV_SEPARATOR);
+            builder.append(computerCard.isNormalCard()?"normal":"special");
+            builder.append(CSV_SEPARATOR);
+            builder.append(humanCard.isNormalCard()?"normal":"special");
+            builder.append(CSV_SEPARATOR);
+            builder.append(getAction(computerCard));
+            builder.append(CSV_SEPARATOR);
+            builder.append(getAction(humanCard));
+            builder.append(CSV_SEPARATOR);
+            builder.append(computerCard.isDefendCard()? "True" : "False");
+            builder.append(CSV_SEPARATOR);
+            builder.append(humanCard.isDefendCard()? "True" : "False");
+            builder.append(CSV_SEPARATOR);
+            builder.append(computerCard.isCardActionTaken()? "True" : "False");
+            builder.append(CSV_SEPARATOR);
+            builder.append(humanCard.isCardActionTaken()? "True" : "False");
+            builder.append(CSV_SEPARATOR);
+            builder.append(mode);
+            builder.append(CSV_SEPARATOR);
+            builder.append(forceWinner);
+            builder.append(CSV_SEPARATOR);
+            builder.append(game.isHumanTheWinner()? "True" : "False");
+            builder.append("\n\n");
+        }
+        try {
+            OutputStream fileOutputStream = new FileOutputStream(new
+                    File(String.valueOf(file), fileName));
+            fileOutputStream.write(builder.toString().getBytes());
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        }catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private String getAction(Card card)
+    {
+        if(card.isWhot())
+        {
+            return "card request";
+        }else if(card.isPickTwo())
+        {
+            return  "pick two";
+        }else if(card.isPickThree())
+        {
+            return "pick three";
+        }else if(card.isGeneralMarket())
+        {
+            return "general market";
+        }else if(card.isHoldOn())
+        {
+            return "hold on";
+        }else if(card.isSuspension())
+        {
+            return "suspension";
+        }
+        return "none";
     }
 }
