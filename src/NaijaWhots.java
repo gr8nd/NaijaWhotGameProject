@@ -26,6 +26,8 @@ public class NaijaWhots
      */
     private void initializeCards()
     {
+        //Initialise Circle and Triangle together because they have the same number of
+        //faces
         int[] facesOfCirclesAndTriangles = {1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14};
         for (int face : facesOfCirclesAndTriangles) {
             Card circle = new Card(Suit.CIRCLE, face);
@@ -34,6 +36,8 @@ public class NaijaWhots
             pack.add(triangle);
         }
 
+        //Initialise Cross and Square together because they have the same number of
+        //faces
         int[] facesOfCrossesAndSquares = {1, 2, 3, 5, 7, 10, 11, 13, 14};
         for (int face : facesOfCrossesAndSquares)
         {
@@ -43,6 +47,7 @@ public class NaijaWhots
             pack.add(square);
         }
 
+        //Star is initialised alone because it has its own number of faces
         int[] facesOfStars = {1, 2, 3, 4, 5, 7, 8};
         for (int facesOfStar : facesOfStars)
         {
@@ -50,6 +55,7 @@ public class NaijaWhots
             pack.add(card);
         }
 
+        //Initialise the Whot! card alone just as Star
         int NUM_OF_WHOT = 5; //There will be 5 Whots in our pack
         int WHOT_FACE = 20; //The number on the Whot card is usually 20
         for (int i = 0; i < NUM_OF_WHOT; i++)

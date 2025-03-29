@@ -74,7 +74,7 @@ public class GamePlay
      * @param number a deal number that is provided, if no valid deal number is provided a
      *  WhotGameException is thrown and appropriate message is issued to the user.
      */
-    public void deal(int number)
+    private void deal(int number)
     {
         try
         {
@@ -639,18 +639,21 @@ public class GamePlay
         if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) &&
                 computerCards.size() < 6)
         {
-            Stream<Card> specialCards = nonWhotCards.stream().filter(card ->
-                    !card.isNormalCard());
-            long randomIndex = rand.nextLong(specialCards.count());
-            Card neededCard = nonWhotCards.get((int) randomIndex);
-            wantedSuit = neededCard.getSuit();
-            System.out.println("Computer needs *** " + wantedSuit + " ***");
-            isComputerTurn = false;
-            return;
+            List<Card> specialCards = nonWhotCards.stream().filter(card ->
+                    !card.isNormalCard()).toList();
+            if(!specialCards.isEmpty())
+            {
+                int randIndex = rand.nextInt(specialCards.size());
+                Card neededCard = specialCards.get(randIndex);
+                wantedSuit = neededCard.getSuit();
+                System.out.println("Computer needs *** " + wantedSuit + " ***");
+                isComputerTurn = false;
+                return;
+            }
         }
 
-        int randomIndex = rand.nextInt(nonWhotCards.size());
-        Card neededCard = nonWhotCards.get(randomIndex);
+        int randIndex = rand.nextInt(nonWhotCards.size());
+        Card neededCard = nonWhotCards.get(randIndex);
         wantedSuit = neededCard.getSuit();
         System.out.println("Computer needs *** " + wantedSuit + " ***");
         isComputerTurn = false;
@@ -727,5 +730,30 @@ public class GamePlay
         previousCard.setCardActionTaken(true);
         System.out.println("Computer has gone to market.");
         isComputerTurn = false;
+    }
+
+    /**
+     * Computer needs to find the card it will play to get the longest
+     * sequential play. This is necessary to maximize its winning
+     * potential.
+     */
+    private List<Card> findLongestSequentialPlay()
+    {
+        List<Card> longestList = new ArrayList<>();
+        int longestCount = Integer.MIN_VALUE;
+        Card currentCard = null;
+        for(int i = 0; i < computerCards.size(); i++)
+        {
+            Card card = computerCards.get(i);
+            if(!card.isWhot())
+            {
+                currentCard = card;
+                for(int j = 0; j < computerCards.size(); j++)
+                {
+                    //TODO
+                }
+            }
+        }
+        return null;
     }
 }

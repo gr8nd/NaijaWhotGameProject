@@ -1,6 +1,8 @@
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * The logic of the Whot game starts here in the WhotGame class
@@ -16,7 +18,6 @@ public class WhotGame {
     private boolean computerTheWinner = false;
     private boolean humanTheWinner = false;
     private boolean isTie = false;
-    private final String GAME_MODE_DIFFICULT = "Difficult";
     private final SecureRandom rand = new SecureRandom();
     private ArrayList<Card> drawPile;//this is where computer and player can draw a card from when they run out of a fitting card or
     //when instructed to do so by the game rule such as the GENERAL MARKET.
@@ -54,20 +55,23 @@ public class WhotGame {
         {
             for (int index = 0; index < number; index++)
             {
+                String GAME_MODE_DIFFICULT = "Difficult";
                 if(mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
                 {
-                    int randomIndex = rand.nextInt(4);//Computer has 3/4 (75%) chance of getting special cards in
+                    int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
                     //difficult mode
-                    if(randomIndex == 0 || randomIndex == 1 || randomIndex == 2)
+                    if(probIndex != 3)
                     {
-                        for (Card card: drawPile)
-                        {
-                            if(!card.isNormalCard())
-                            {
-                                computerCardPile.add(card);
-                                break;
-                            }
-                        }
+                        List<Card> specialCards = drawPile.stream().filter(card ->
+                                !card.isNormalCard()).toList();
+                        int randIndex = rand.nextInt(specialCards.size());
+                        Card specialCard = specialCards.get(randIndex);
+                        computerCardPile.add(specialCard);
+                        drawPile.remove(specialCard);
+                    }else
+                    {
+                        computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
+                        //and removes it afterward
                     }
                 }else
                 {
@@ -124,28 +128,20 @@ public class WhotGame {
         {
             if(mode.equalsIgnoreCase("Difficult"))
             {
-                int randomIndex = rand.nextInt(4);//Computer has 3/4 (75%) chance of getting special cards in
+                int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
                 //difficult mode
-                boolean pickSpecial = false;
-                if(randomIndex == 0 || randomIndex == 1 || randomIndex == 2)
+                if(probIndex != 3)
                 {
-                    for (Card card: drawPile)
-                    {
-                        if(!card.isNormalCard())
-                        {
-                            computerCardPile.add(card);
-                            pickSpecial = true;
-                            break;
-                        }
-                    }
-                    //If there is no special card, computer will just pick the first card
-                    //in the draw pile.
-                    if(!pickSpecial)
-                    {
-                        computerCardPile.add(drawPile.remove(0));
-                    }
-                }else {
-                    computerCardPile.add(drawPile.remove(0));
+                    List<Card> specialCards = drawPile.stream().filter(card ->
+                            !card.isNormalCard()).toList();
+                    int randIndex = rand.nextInt(specialCards.size());
+                    Card specialCard = specialCards.get(randIndex);
+                    computerCardPile.add(specialCard);
+                    drawPile.remove(specialCard);
+                }else
+                {
+                    computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
+                    //and removes it afterward
                 }
             }else
             {
@@ -257,7 +253,7 @@ public class WhotGame {
      */
     public void countHumanCards()
     {
-        playerCounter = 0;//reset counter each time it called
+        playerCounter = 0;//reset counter each time it is called
         for (Card card : humanCardPile)
         {
             if (card.getSuit().equals(Suit.STAR))
@@ -275,7 +271,7 @@ public class WhotGame {
      */
     public void countComputerCards()
     {
-        computerCounter = 0;//reset counter each time it called
+        computerCounter = 0;//reset counter each time it is called
         for (Card card : computerCardPile)
         {
             if (card.getSuit().equals(Suit.STAR))
