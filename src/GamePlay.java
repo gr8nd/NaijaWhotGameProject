@@ -736,6 +736,8 @@ public class GamePlay
      * Computer needs to find the card it will play to get the longest
      * sequential play. This is necessary to maximize its winning
      * potential.
+     * @return a list containing cards that should be played in the list
+     * order (from first element to last element) to give the longest sequential play.
      */
     private List<Card> findLongestSequentialPlay()
     {
