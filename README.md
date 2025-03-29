@@ -1,8 +1,8 @@
 # NaijaWhotGameProject
-Modelling the Naija Whot game
+Modelling the Naija Whot game via CLI
 # NaijaWhotGameProject
 Modelling the Naija Whot game
-              Modelling The NaijaWhot Game
+              Modelling The NaijaWhot Game via CLI
 
 
 
