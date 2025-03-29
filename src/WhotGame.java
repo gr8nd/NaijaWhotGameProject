@@ -22,8 +22,8 @@ public class WhotGame {
     //when instructed to do so by the game rule such as the GENERAL MARKET.
     private ArrayList<Card> computerCardPile;//a list containing all the computer cards
     private ArrayList<Card> humanCardPile;//a list containing all the player cards
-    private int computerCounter = 0;//keeps record of the computer's face count when scoring by counting faces.
-    private int playerCounter = 0;//keeps record of the player's face count when scoring by counting faces.
+    private int computerCounter;//keeps record of the computer's face count when scoring by counting faces.
+    private int playerCounter;//keeps record of the player's face count when scoring by counting faces.
     private ArrayList<Card> playedPile; //Holds the cards that are played during the course of the game
     private Card startCard;//This is first card that is displayed when the game starts
 
