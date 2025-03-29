@@ -742,20 +742,75 @@ public class GamePlay
     private List<Card> findLongestSequentialPlay()
     {
         List<Card> longestList = new ArrayList<>();
-        int longestCount = Integer.MIN_VALUE;
-        Card currentCard = null;
+        List<Card> currentList = new ArrayList<>();
+        int longestCount = 0;
+        Card currentCard;
+        Card nonFitCard = null;
         for(int i = 0; i < computerCards.size(); i++)
         {
             Card card = computerCards.get(i);
             if(!card.isWhot())
             {
+                List<Card> list = new ArrayList<>(computerCards);
                 currentCard = card;
-                for(int j = 0; j < computerCards.size(); j++)
+                currentList.add(currentCard);
+                list.remove(currentCard);
+                for (Card nextCard : list)
                 {
-                    //TODO
+                    if (nextCard.getFace() == currentCard.getFace() ||
+                            nextCard.getSuit() == currentCard.getSuit()) {
+                        currentList.add(nextCard);
+                        currentCard = nextCard;
+                        list.remove(currentCard);
+                    }else
+                    {
+                        //TODO
+                        nonFitCard = card;
+                    }
+                }
+                if(currentList.size() > longestCount)
+                {
+                    longestCount = currentList.size();
+                    longestList = currentList;
                 }
             }
         }
-        return null;
+        return longestList;
+    }
+
+    /**
+     * Computer needs to find the card it will play to get the longest
+     * sequential play. This is necessary to maximize its winning
+     * potential.
+     * @param currentCard the current card to start the sequential run from
+     * @return a list containing cards that should be played in the list
+     * order (from first element to last element) to give the longest sequential play.
+     */
+    private List<Card> findLongestSequentialPlay(Card currentCard)
+    {
+        List<Card> longestList = new ArrayList<>();
+        List<Card> currentList = new ArrayList<>(computerCards);
+        longestList.add(currentCard);
+        currentList.remove(currentCard);
+        Card nonFitCard = null;
+        for (int i = 0; i < currentList.size(); i++)
+        {
+            Card card = currentList.get(i);
+            if (!card.isWhot())
+            {
+                if (card.getFace() == currentCard.getFace() ||
+                        card.getSuit() == currentCard.getSuit())
+                {
+                    longestList.add(card);
+                    currentCard = card;
+                    currentList.remove(currentCard);
+                }else
+                {
+                    //TODO
+                    nonFitCard = card;
+                }
+            }
+        }
+        return longestList;
     }
 }
