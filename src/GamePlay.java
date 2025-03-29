@@ -495,13 +495,13 @@ public class GamePlay
         if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) && !forceWinner)
         {
             computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
-            //computerCards.forEach(System.out::println);
         }
         for (Card card : computerCards)
         {
-            if (card.getSuit() == wantedSuit ||
+            if ((card.getSuit() == wantedSuit ||
                     card.getFace() == previousCard.getFace() ||
-                    card.getSuit() == previousCard.getSuit())
+                    card.getSuit() == previousCard.getSuit()) &&
+                    !card.isWhot())
             {
                 game.play(card, forceWinner);
                 System.out.println("Computer has played:");
@@ -633,9 +633,8 @@ public class GamePlay
         if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) &&
                 computerCards.size() < 6)
         {
-            Stream<Card> specialCards = computerCards.stream().filter(card ->
-                    !card.isNormalCard()
-            );
+            Stream<Card> specialCards = nonWhotCards.stream().filter(card ->
+                    !card.isNormalCard());
             long randomIndex = rand.nextLong(specialCards.count());
             Card neededCard = nonWhotCards.get((int) randomIndex);
             wantedSuit = neededCard.getSuit();
