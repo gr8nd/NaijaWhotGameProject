@@ -120,34 +120,37 @@ public class WhotGame {
      */
     public void computerDrawFromPile(boolean forceWinner, String mode)
     {
-        if(mode.equalsIgnoreCase("Difficult"))
+        if(!drawPile.isEmpty())
         {
-            int randomIndex = rand.nextInt(4);//Computer has 3/4 (75%) chance of getting special cards in
-            //difficult mode
-            boolean pickSpecial = false;
-            if(randomIndex == 0 || randomIndex == 1 || randomIndex == 2)
+            if(mode.equalsIgnoreCase("Difficult"))
             {
-                for (Card card: drawPile)
+                int randomIndex = rand.nextInt(4);//Computer has 3/4 (75%) chance of getting special cards in
+                //difficult mode
+                boolean pickSpecial = false;
+                if(randomIndex == 0 || randomIndex == 1 || randomIndex == 2)
                 {
-                    if(!card.isNormalCard())
+                    for (Card card: drawPile)
                     {
-                        computerCardPile.add(card);
-                        pickSpecial = true;
-                        break;
+                        if(!card.isNormalCard())
+                        {
+                            computerCardPile.add(card);
+                            pickSpecial = true;
+                            break;
+                        }
                     }
-                }
-                //If there is no special card, computer will just pick the first card
-                //in the draw pile.
-                if(!pickSpecial)
-                {
+                    //If there is no special card, computer will just pick the first card
+                    //in the draw pile.
+                    if(!pickSpecial)
+                    {
+                        computerCardPile.add(drawPile.remove(0));
+                    }
+                }else {
                     computerCardPile.add(drawPile.remove(0));
                 }
-            }else {
+            }else
+            {
                 computerCardPile.add(drawPile.remove(0));
             }
-        }else
-        {
-            computerCardPile.add(drawPile.remove(0));
         }
         checkWinner(forceWinner);
     }
@@ -158,7 +161,10 @@ public class WhotGame {
      */
     public void humanDrawFromPile(boolean forceWinner)
     {
-        humanCardPile.add(drawPile.remove(0));
+        if(!drawPile.isEmpty())
+        {
+            humanCardPile.add(drawPile.remove(0));
+        }
         checkWinner(forceWinner);
     }
 
