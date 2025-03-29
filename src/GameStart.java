@@ -13,7 +13,7 @@ public class GameStart
         String mode = input.nextLine();
         System.out.println("Play until there is a winner (i.e. no tie) Y/N?");
         String forceWinner = input.nextLine();
-        System.out.println("Enter the deal number (between 2 and 27): ");
+        System.out.println("Enter the deal number (between 2 and 26): ");
         int dealNum = input.nextInt();
         try {
             GamePlay game = new GamePlay(forceWinner.equalsIgnoreCase("Y"),  mode, dealNum);

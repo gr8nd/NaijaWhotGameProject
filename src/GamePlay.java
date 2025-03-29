@@ -81,6 +81,9 @@ public class GamePlay
             game.deal(number, mode);
             previousCard = game.getStartCard();
             previousCard.setFirstCard(true);
+            System.out.println("Your initial Pile count: " + game.getHumanCardPile().size());
+            System.out.println("Computer's initial Pile count: " + game.getComputerCardPile().size());
+            System.out.println("Initial Draw Pile count: " + game.getDrawPile().size());
         } catch (WhotGameException e)
         {
             validDeal = false;
@@ -121,6 +124,7 @@ public class GamePlay
                 computerPlay();
             } else
             {
+                System.out.println("Current Draw Pile count: " + game.getDrawPile().size());
                 System.out.println("The card on board is:");
                 System.out.println(previousCard.toString());
                 if(previousCard.isWhot() && wantedSuit != null)
@@ -135,6 +139,8 @@ public class GamePlay
         System.out.println("Computer's number of cards' left: " + computerCards.size());
         if(!forceWinner)
         {
+            game.countComputerCards();
+            game.countHumanCards();
             System.out.println("Your cards' face count: " + game.getPlayerCounter());
             System.out.println("Computer's cards' face count: " + game.getComputerCounter());
         }

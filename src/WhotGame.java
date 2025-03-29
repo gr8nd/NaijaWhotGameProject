@@ -257,6 +257,7 @@ public class WhotGame {
      */
     public void countHumanCards()
     {
+        playerCounter = 0;//reset counter each time it called
         for (Card card : humanCardPile)
         {
             if (card.getSuit().equals(Suit.STAR))
@@ -274,6 +275,7 @@ public class WhotGame {
      */
     public void countComputerCards()
     {
+        computerCounter = 0;//reset counter each time it called
         for (Card card : computerCardPile)
         {
             if (card.getSuit().equals(Suit.STAR))
