@@ -132,7 +132,7 @@ public class GamePlay
         }
 
         System.out.println("Your number of cards' left: " + humanCards.size());
-        System.out.println("Computer number of cards' left: " + computerCards.size());
+        System.out.println("Computer's number of cards' left: " + computerCards.size());
         if(!forceWinner)
         {
             System.out.println("Your cards' face count: " + game.getPlayerCounter());
