@@ -23,6 +23,10 @@ public class WhotGame {
     //when instructed to do so by the game rule such as the GENERAL MARKET.
     private ArrayList<Card> computerCardPile;//a list containing all the computer cards
     private ArrayList<Card> humanCardPile;//a list containing all the player cards
+    private ArrayList<Card> computerPlayedPile;//a list containing all the computer cards computer has played
+    //during the course of the game.
+    private ArrayList<Card> humanPlayedPile;//a list containing all the player cards the human player
+    //has played during the course of the game.
     private int computerCounter;//keeps record of the computer's face count when scoring by counting faces.
     private int playerCounter;//keeps record of the player's face count when scoring by counting faces.
     private ArrayList<Card> playedPile; //Holds the cards that are played during the course of the game
@@ -35,6 +39,8 @@ public class WhotGame {
         humanCardPile = new ArrayList<>();
         playedPile = new ArrayList<>();
         drawPile = new ArrayList<>();
+        computerPlayedPile = new ArrayList<>();
+        humanPlayedPile = new ArrayList<>();
         Card[] pack = new Card[54];
         pack = whots.getPack().toArray(pack);//gets the initialised and shuffled pack from the NaijaWhots class
         Collections.addAll(drawPile, pack);
@@ -104,8 +110,14 @@ public class WhotGame {
      */
     public void play(Card card, boolean forceWinner)
     {
-        computerCardPile.remove(card);
-        humanCardPile.remove(card);
+        if(computerCardPile.remove(card))
+        {
+            computerPlayedPile.add(card);
+        }
+        if(humanCardPile.remove(card))
+        {
+            humanPlayedPile.add(card);
+        }
         drawPile.remove(card); //Needed only for the start card
         if (computerCardPile.size() == 1 || humanCardPile.size() == 1)
         {
@@ -396,5 +408,21 @@ public class WhotGame {
 
     public void setPlayerCounter(int playerCounter) {
         this.playerCounter = playerCounter;
+    }
+
+    public ArrayList<Card> getComputerPlayedPile() {
+        return computerPlayedPile;
+    }
+
+    public void setComputerPlayedPile(ArrayList<Card> computerPlayedPile) {
+        this.computerPlayedPile = computerPlayedPile;
+    }
+
+    public ArrayList<Card> getHumanPlayedPile() {
+        return humanPlayedPile;
+    }
+
+    public void setHumanPlayedPile(ArrayList<Card> humanPlayedPile) {
+        this.humanPlayedPile = humanPlayedPile;
     }
 }

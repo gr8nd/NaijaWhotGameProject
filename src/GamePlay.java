@@ -161,6 +161,7 @@ public class GamePlay
         {
             System.out.println("Game Over!!!\nIt is a tie!");
         }
+        this.writeToCSV(game.getHumanPlayedPile(), game.getComputerPlayedPile());
     }
 
     /**
@@ -815,55 +816,72 @@ public class GamePlay
         return longestList;
     }
 
-    private void writeToCSV(List<Card> humanCards, List<Card> computerCards, int round)
+    /**
+     * Write the current statistics of the game to file as comma-separated values (.csv)
+     * @param humanPlayedPile a list containing all the computer cards computer has played
+     *     //during the course of the game.
+     * @param computerPlayedPile a list containing all the player cards the human player
+     *     //has played during the course of the game.
+     */
+    private void writeToCSV(List<Card> humanPlayedPile, List<Card> computerPlayedPile)
     {
         String fileName = "whot";
         String extension = ".csv";
-        Path file = Paths.get(fileName + round + extension);
+        String id = String.valueOf(System.currentTimeMillis());
+        Path file = Paths.get(fileName + id + extension);
         String s = "id,computersuit,humansuit,computerface,humanface,computertype," +
                 "humantype,computeraction,humanaction,computerdefendcard,humandefendcard," +
                 "computeractiontaken,humanactiontaken,mode,forcewinner,humanwinner";
         StringBuilder builder = new StringBuilder();
         builder.append(s);
-        builder.append("\n\n");
-        for (int i =0; i < humanCards.size(); i++)
+        builder.append("\n");
+        long maximum = (Math.max(humanPlayedPile.size(), computerPlayedPile.size()));
+        for (int i = 0; i < maximum; i++)
         {
-            Card humanCard = humanCards.get(i);
-            Card computerCard = computerCards.get(i);
-            builder.append(round);
-            builder.append(CSV_SEPARATOR);
-            builder.append(computerCard.getSuit());
-            builder.append(CSV_SEPARATOR);
-            builder.append(humanCard.getSuit());
-            builder.append(CSV_SEPARATOR);
-            builder.append(computerCard.getFace());
-            builder.append(CSV_SEPARATOR);
-            builder.append(humanCard.getFace());
-            builder.append(CSV_SEPARATOR);
-            builder.append(computerCard.isNormalCard()?"normal":"special");
-            builder.append(CSV_SEPARATOR);
-            builder.append(humanCard.isNormalCard()?"normal":"special");
-            builder.append(CSV_SEPARATOR);
-            builder.append(getAction(computerCard));
-            builder.append(CSV_SEPARATOR);
-            builder.append(getAction(humanCard));
-            builder.append(CSV_SEPARATOR);
-            builder.append(computerCard.isDefendCard()? "True" : "False");
-            builder.append(CSV_SEPARATOR);
-            builder.append(humanCard.isDefendCard()? "True" : "False");
-            builder.append(CSV_SEPARATOR);
-            builder.append(computerCard.isCardActionTaken()? "True" : "False");
-            builder.append(CSV_SEPARATOR);
-            builder.append(humanCard.isCardActionTaken()? "True" : "False");
+            builder.append(id);
+            if(i < humanPlayedPile.size())
+            {
+                Card humanCard = humanPlayedPile.get(i);
+                builder.append(CSV_SEPARATOR);
+                builder.append(humanCard.getSuit());
+                builder.append(CSV_SEPARATOR);
+                builder.append(humanCard.getFace());
+                builder.append(CSV_SEPARATOR);
+                builder.append(humanCard.isNormalCard());
+                builder.append(CSV_SEPARATOR);
+                builder.append(getAction(humanCard));
+                builder.append(CSV_SEPARATOR);
+                builder.append(humanCard.isDefendCard());
+                builder.append(CSV_SEPARATOR);
+                builder.append(humanCard.isCardActionTaken());
+            }
+            if(i < computerPlayedPile.size())
+            {
+                Card computerCard = computerPlayedPile.get(i);
+                builder.append(CSV_SEPARATOR);
+                builder.append(computerCard.getSuit());
+                builder.append(CSV_SEPARATOR);
+                builder.append(computerCard.getFace());
+                builder.append(CSV_SEPARATOR);
+                builder.append(computerCard.isNormalCard());
+                builder.append(CSV_SEPARATOR);
+                builder.append(getAction(computerCard));
+                builder.append(CSV_SEPARATOR);
+                builder.append(computerCard.isDefendCard());
+                builder.append(CSV_SEPARATOR);
+                builder.append(computerCard.isCardActionTaken());
+            }
+
             builder.append(CSV_SEPARATOR);
             builder.append(mode);
             builder.append(CSV_SEPARATOR);
             builder.append(forceWinner);
             builder.append(CSV_SEPARATOR);
-            builder.append(game.isHumanTheWinner()? "True" : "False");
+            builder.append(game.isHumanTheWinner());
             builder.append("\n\n");
         }
-        try {
+        try
+        {
             OutputStream fileOutputStream = new FileOutputStream(new
                     File(String.valueOf(file), fileName));
             fileOutputStream.write(builder.toString().getBytes());
@@ -875,6 +893,11 @@ public class GamePlay
         }
     }
 
+    /***
+     * Get the action which a card stands for
+     * @param card the card to find its action
+     * @return a string representing the card's action.
+     */
     private String getAction(Card card)
     {
         if(card.isWhot())
