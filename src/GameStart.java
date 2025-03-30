@@ -13,10 +13,12 @@ public class GameStart
                 Welcome to Whot! Game!!!
                 The Nigerian national game.
                 This console game is a fully functional Naija Whot! game \s
-                played via CLI.
+                played via CLI (Command Line Interface).
                 This software is licensed by GNU GENERAL PUBLIC LICENSE.
-                Hit Enter key to continue...""");
+                Hit Enter key to continue... >>""");
         input.nextLine();
+        System.out.println("Do you want to see a simulated visual display of your cards Y/N?");
+        String verbose = input.nextLine();
         System.out.println("Select game mode: Easy or Difficult?");
         String mode = input.nextLine();
         System.out.println("Play until there is a winner (i.e. no tie) Y/N?");
@@ -25,7 +27,8 @@ public class GameStart
         int dealNum = input.nextInt();
         try
         {
-            GamePlay game = new GamePlay(forceWinner.equalsIgnoreCase("Y"),  mode, dealNum);
+            GamePlay game = new GamePlay(forceWinner.equalsIgnoreCase("Y"),
+                    mode, dealNum, verbose.equalsIgnoreCase("Y"));
             game.start();
         } catch (WhotGameException e)
         {

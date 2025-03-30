@@ -45,10 +45,10 @@ public class WhotGame {
         pack = whots.getPack().toArray(pack);//gets the initialised and shuffled pack from the NaijaWhots class
         Collections.addAll(drawPile, pack);
         startCard = drawPile.get(0);//get the first card as the start card
+        playedPile.add(startCard);
     }
 
     /**
-     *
      * @param number the total number of cards each player will receive at the start of the game, usually 6 but can
      * be any number as well.
      * @param mode the game mode, easy or difficult are available
@@ -70,10 +70,17 @@ public class WhotGame {
                     {
                         List<Card> specialCards = drawPile.stream().filter(card ->
                                 !card.isNormalCard()).toList();
-                        int randIndex = rand.nextInt(specialCards.size());
-                        Card specialCard = specialCards.get(randIndex);
-                        computerCardPile.add(specialCard);
-                        drawPile.remove(specialCard);
+                        if(!specialCards.isEmpty())
+                        {
+                            int randIndex = rand.nextInt(specialCards.size());
+                            Card specialCard = specialCards.get(randIndex);
+                            computerCardPile.add(specialCard);
+                            drawPile.remove(specialCard);
+                        }else
+                        {
+                            computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
+                            //and removes it afterward
+                        }
                     }else
                     {
                         computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
@@ -118,7 +125,6 @@ public class WhotGame {
         {
             humanPlayedPile.add(card);
         }
-        drawPile.remove(card); //Needed only for the start card
         if (computerCardPile.size() == 1 || humanCardPile.size() == 1)
         {
             System.out.println("Last card!");
@@ -146,10 +152,17 @@ public class WhotGame {
                 {
                     List<Card> specialCards = drawPile.stream().filter(card ->
                             !card.isNormalCard()).toList();
-                    int randIndex = rand.nextInt(specialCards.size());
-                    Card specialCard = specialCards.get(randIndex);
-                    computerCardPile.add(specialCard);
-                    drawPile.remove(specialCard);
+                    if(!specialCards.isEmpty())
+                    {
+                        int randIndex = rand.nextInt(specialCards.size());
+                        Card specialCard = specialCards.get(randIndex);
+                        computerCardPile.add(specialCard);
+                        drawPile.remove(specialCard);
+                    }else
+                    {
+                        computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
+                        //and removes it afterward
+                    }
                 }else
                 {
                     computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
@@ -266,16 +279,16 @@ public class WhotGame {
     public void countHumanCards()
     {
         playerCounter = 0;//reset counter each time it is called
-        for (Card card : humanCardPile)
-        {
+        humanCardPile.forEach(card ->{
             if (card.getSuit().equals(Suit.STAR))
             {
+                //face value of STAR suit is doubled during counting
                 playerCounter += card.getFace() * 2;
             } else
             {
                 playerCounter += card.getFace();
             }
-        }
+        });
     }
 
     /***
@@ -284,8 +297,7 @@ public class WhotGame {
     public void countComputerCards()
     {
         computerCounter = 0;//reset counter each time it is called
-        for (Card card : computerCardPile)
-        {
+        computerCardPile.forEach(card ->{
             if (card.getSuit().equals(Suit.STAR))
             {
                 //face value of STAR suit is doubled during counting
@@ -294,7 +306,7 @@ public class WhotGame {
             {
                 computerCounter += card.getFace();
             }
-        }
+        });
     }
 
     /**
