@@ -188,9 +188,9 @@ public class GamePlay
                     lastCard.getSuit() == wantedSuit)
             {
                 game.play(lastCard, forceWinner);
-                previousCard = lastCard;
-                System.out.println(previousCard);
+                System.out.println(lastCard);
                 System.out.println("Check!");
+                previousCard = lastCard;
                 return;
             }
         }
@@ -307,23 +307,19 @@ public class GamePlay
             EXIT_CODE = 99;
         }else if(index != -2)
         {
-            if(humanCards.size() == 1)
+            //Specifically handle the last card in the pile
+            Card lastCard = humanCards.get(index-1);
+            if(humanCards.size() == 1 && lastCard.isWhot() ||
+                    lastCard.getSuit() == previousCard.getSuit() ||
+                    lastCard.getFace() == previousCard.getFace() ||
+                    lastCard.getSuit() == wantedSuit)
             {
-                //Specially handle the last card in the pile
-                Card lastCard = humanCards.get(index-1);
-                if(lastCard.isWhot() ||
-                        lastCard.getSuit() == previousCard.getSuit() ||
-                        lastCard.getFace() == previousCard.getFace() ||
-                        lastCard.getSuit() == wantedSuit)
-                {
-                    game.play(lastCard, forceWinner);
-                    previousCard = lastCard;
-                    System.out.println(previousCard);
-                    System.out.println("Check!");
-                    return;
-                }
+                game.play(lastCard, forceWinner);
+                System.out.println(lastCard);
+                System.out.println("Check!");
+                previousCard = lastCard;
+                return;
             }
-
             humanNormalPlay(index-1);
         }else
         {
@@ -365,10 +361,10 @@ public class GamePlay
         }
         if(card != null)
         {
+            System.out.println("You played: ");
+            System.out.println(card);
             game.play(card, forceWinner);
             previousCard = card;
-            System.out.println("You played: ");
-            System.out.println(previousCard);
         }
 
         System.out.println("You need *** " + wantedSuit + " ***");
@@ -443,10 +439,10 @@ public class GamePlay
                }else if(!card.isWhot() &&
                        card.getSuit() == wantedSuit)
                {
+                   System.out.println("You played: ");
+                   System.out.println(card);
                    game.play(card, forceWinner);
                    previousCard = card;
-                   System.out.println("You played: ");
-                   System.out.println(previousCard);
                    isComputerTurn = !card.isSuspension() && !card.isHoldOn();
                    wantedSuit = null;
                }
@@ -471,9 +467,9 @@ public class GamePlay
                    humanRequestsCard(card);
                }else
                {
-                   game.play(card, forceWinner);
                    System.out.println("You played: ");
                    System.out.println(card);
+                   game.play(card, forceWinner);
                    isComputerTurn = !card.isSuspension() && !card.isHoldOn();
                    previousCard = card;
                }
@@ -494,11 +490,11 @@ public class GamePlay
                 !previousCard.isCardActionTaken())
         {
             game.play(card, forceWinner);
-            previousCard = card;
-            previousCard.setCardActionTaken(true);
-            previousCard.setDefendCard(true);
+            card.setCardActionTaken(true);
+            card.setDefendCard(true);
             System.out.println("You have defended the PICKTWO with.");
-            System.out.println(previousCard.toString());
+            System.out.println(card);
+            previousCard = card;
             isComputerTurn = true;
         }else
         {
@@ -514,11 +510,11 @@ public class GamePlay
                 !previousCard.isCardActionTaken())
         {
             game.play(card, forceWinner);
-            previousCard = card;
-            previousCard.setCardActionTaken(true);
-            previousCard.setDefendCard(true);
+            card.setCardActionTaken(true);
+            card.setDefendCard(true);
             System.out.println("You have defended the PICKTHREE with.");
-            System.out.println(previousCard.toString());
+            System.out.println(card);
+            previousCard = card;
             isComputerTurn = true;
         }else
         {
@@ -552,11 +548,11 @@ public class GamePlay
                         card.getSuit() == previousCard.getSuit()) &&
                         !card.isWhot())
                 {
-                    game.play(card, forceWinner);
                     System.out.println("Computer has played:");
                     System.out.println(card);
                     computerDrawingFromPile = false;
                     isComputerTurn = card.isHoldOn() || card.isSuspension();
+                    game.play(card, forceWinner);
                     previousCard = card;
                     wantedSuit = null;
                     break;
@@ -565,10 +561,11 @@ public class GamePlay
                         computerCards.size() > 10)
                 {
                     computerRequestsWhot();
-                    game.play(card, forceWinner);
                     System.out.println("Computer has played:");
+                    System.out.println(card);
+                    game.play(card, forceWinner);
+                    System.out.println("Computer needs *** " + wantedSuit + " ***");
                     previousCard = card;
-                    System.out.println(previousCard);
                     return;
                 }
             }
@@ -592,12 +589,12 @@ public class GamePlay
                     !previousCard.isCardActionTaken())
             {
                 game.play(card, forceWinner);
-                previousCard = card;
                 twoPicked = false;
                 System.out.println("Computer has defended the pick two with.");
-                System.out.println(previousCard);
-                previousCard.setCardActionTaken(true);
-                previousCard.setDefendCard(true);
+                System.out.println(card);
+                card.setCardActionTaken(true);
+                card.setDefendCard(true);
+                previousCard = card;
                 break;
             }
         }
@@ -623,12 +620,12 @@ public class GamePlay
                     !previousCard.isCardActionTaken())
             {
                 game.play(card, forceWinner);
-                previousCard = card;
                 threePicked = false;
                 System.out.println("Computer has defended the pick three with:");
-                System.out.println(previousCard);
-                previousCard.setDefendCard(true);
-                previousCard.setCardActionTaken(true);
+                System.out.println(card);
+                card.setDefendCard(true);
+                card.setCardActionTaken(true);
+                previousCard = card;
                 break;
             }
         }
@@ -677,7 +674,6 @@ public class GamePlay
             Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
             int randIndex = rand.nextInt(suits.length);
             wantedSuit = suits[randIndex];
-            System.out.println("Computer needs *** " + wantedSuit + " ***");
             isComputerTurn = false;
             return;
         }
@@ -694,18 +690,18 @@ public class GamePlay
             {
                 List<Card> longestList = new ArrayList<>();
                 List<Card> nonSeqList = new ArrayList<>();
-                List<Card> list = findLongestSequentialPlayList(specialCards, 0, longestList, nonSeqList);
+                List<Card> list = findLongestSequentialPlayList(specialCards,
+                        0, longestList, nonSeqList);
                 wantedSuit = list.get(0).getSuit();
-                System.out.println("Computer needs *** " + wantedSuit + " ***");
                 isComputerTurn = false;
                 return;
             }
         }
         List<Card> longestList = new ArrayList<>();
         List<Card> nonSeqList = new ArrayList<>();
-        List<Card> list = findLongestSequentialPlayList(nonWhotCards, 0, longestList, nonSeqList);
+        List<Card> list = findLongestSequentialPlayList(nonWhotCards,
+                0, longestList, nonSeqList);
         wantedSuit = list.get(0).getSuit();
-        System.out.println("Computer needs *** " + wantedSuit + " ***");
         isComputerTurn = false;
     }
 
@@ -739,16 +735,17 @@ public class GamePlay
         if (playedWhot)
         {
             computerRequestsWhot();
-            game.play(whotCard, forceWinner);
             System.out.println("Computer has played: ");
+            System.out.println(whotCard);
+            game.play(whotCard, forceWinner);
+            System.out.println("Computer needs *** " + wantedSuit + " ***");
             previousCard = whotCard;
-            System.out.println(previousCard);
         }else
         {
             if(nonWhotCards.isEmpty())
             {
                 //When computer has only Whot! cards in its pile, it requests any random suit
-                //even though such a suit does not exist in its pile.
+                //even though a card with such a suit does not exist in its pile.
                 Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
                 int randIndex = rand.nextInt(suits.length);
                 wantedSuit = suits[randIndex];
@@ -758,12 +755,12 @@ public class GamePlay
             {
                 int randomIndex = rand.nextInt(wantedSuits.size());
                 Card neededCard = wantedSuits.get(randomIndex);
-                game.play(neededCard, forceWinner);
-                previousCard = neededCard;
                 System.out.println("Computer has played:");
                 System.out.println(neededCard.toString());
+                game.play(neededCard, forceWinner);
                 wantedSuit = null;
                 isComputerTurn = neededCard.isHoldOn() || neededCard.isSuspension();
+                previousCard = neededCard;
             }else
             {
                 game.computerDrawFromPile(forceWinner, mode);
@@ -786,8 +783,9 @@ public class GamePlay
      * Computer needs to find the card it will play to get the longest
      * sequential play. This is necessary to maximize its winning
      * potential.
-     * @return a list containing cards that should be played in the list
-     * order (from first element to last element) to give the longest sequential play.
+     * @return a list with first part or all, containing cards that should be played in the list
+     * order (from first element to last element) to give the longest sequential play, any
+     * 'non-sequential' cards are also appended to the end of the list.
      */
     private List<Card> findLongestSequentialPlayList(List<Card> wantedCardList,
                                                      int currentIndex, List<Card> longestList,
@@ -817,7 +815,6 @@ public class GamePlay
         if(currentIndex == wantedCardList.size()-1)
         {
             longestList.addAll(nonSeqList);
-            //assert longestList.size() == computerCards.size();
             return longestList;
         }
         currentIndex += 1;
@@ -834,8 +831,9 @@ public class GamePlay
      * sequential play. This is necessary to maximize its winning
      * potential.
      * @param currentCard the current card to start the sequential run from
-     * @return a list containing cards that should be played in the list
-     * order (from first element to last element) to give the longest sequential play.
+     * @return a list with first part or all, containing cards that should be played in the list
+     * order (from first element to last element) to give the longest sequential play, any
+     * 'non-sequential' cards are also appended to the end of the list.
      */
     private List<Card> findLongestSequentialPlayList(Card currentCard)
     {
@@ -861,7 +859,6 @@ public class GamePlay
 
         longestList.remove(0);//remove the first element because it is the previousCard played
         longestList.addAll(currentList);
-        //assert longestList.size() == computerCards.size();
         return longestList;
     }
 
