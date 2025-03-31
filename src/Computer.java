@@ -211,7 +211,6 @@ public class Computer
         gamePlay.setIsComputerTurn(false);
     }
 
-
     /**
      * Play the Whot! the user requests
      */
@@ -354,6 +353,12 @@ public class Computer
      * Computer needs to find the card it will play to get the longest
      * sequential play. This is necessary to maximize its winning
      * potential.
+     * @param longestList the longest list of such cards to be returned, initially empty
+     * @param currentIndex the index of the current card to check if it is eligible to join the
+     * longest list
+     * @param nonSeqList the list that holds all disqualified cards
+     * @param wantedCardList a list of cards that computer wants to choose one from to request with Whot card,
+     * any card in this list that gives the longest sequential play will be requested by computer
      * @return a list with first part or all, containing cards that should be played in the list
      * order (from first element to last element) to give the longest sequential play, any
      * 'non-sequential' cards are also appended to the end of the list.
@@ -370,16 +375,13 @@ public class Computer
         for (int index = 0; index < currentList.size(); index++)
         {
             Card card = currentList.get(index);
-            if (!card.isWhot())
+            if (!card.isWhot() && (card.getFace() == currentCard.getFace() ||
+                    card.getSuit() == currentCard.getSuit()))
             {
-                if (card.getFace() == currentCard.getFace() ||
-                        card.getSuit() == currentCard.getSuit())
-                {
-                    currentLongestList.add(card);
-                    currentCard = card;
-                    currentList.remove(currentCard);
-                    index = 0;//move the cursor to the first index (start of the list)
-                }
+                currentLongestList.add(card);
+                currentCard = card;
+                currentList.remove(currentCard);
+                index = 0;//move the cursor to the first index (start of the list)
             }
         }
 
@@ -415,20 +417,17 @@ public class Computer
         for (int index = 0; index < currentList.size(); index++)
         {
             Card card = currentList.get(index);
-            if (!card.isWhot())
+            if (!card.isWhot() && (card.getFace() == currentCard.getFace() ||
+                    card.getSuit() == currentCard.getSuit()))
             {
-                if (card.getFace() == currentCard.getFace() ||
-                        card.getSuit() == currentCard.getSuit())
-                {
-                    longestList.add(card);
-                    currentCard = card;
-                    currentList.remove(currentCard);
-                    index = 0;//move the cursor to the first index (start of the list)
-                }
+                longestList.add(card);
+                currentCard = card;
+                currentList.remove(currentCard);
+                index = 0;//move the cursor to the first index (start of the list)
             }
         }
 
-        longestList.remove(0);//remove the first element because it is the previousCard played
+        longestList.remove(0);//remove the first element because it is the 'previousCard' played
         longestList.addAll(currentList);
         return longestList;
     }

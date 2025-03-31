@@ -5,7 +5,7 @@ import java.util.*;
 import java.security.SecureRandom;
 
 /**
- * This class has the highest number of lines and also the most difficult to implement. It contains the whole logic of
+ * This class contains the whole logic of
  * the Whot game. Computer and human take turn to play, after playing computer relinquishes control to the human and like
  * wise human. This turn continues until the drawPile runs out or either the computerDrawPile or playerDrawPile runs out
  * thereafter a winner will be decided.
