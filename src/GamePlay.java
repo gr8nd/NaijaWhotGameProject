@@ -234,7 +234,7 @@ public class GamePlay
         try
         {
             OutputStream fileOutputStream = new FileOutputStream(new
-                    File(String.valueOf(file), fileName));
+                    File(String.valueOf(file), name));
             fileOutputStream.write(builder.toString().getBytes());
             fileOutputStream.flush();
             fileOutputStream.close();
