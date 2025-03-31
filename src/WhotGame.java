@@ -18,6 +18,7 @@ public class WhotGame {
     private boolean computerTheWinner = false;
     private boolean humanTheWinner = false;
     private boolean isTie = false;
+    String GAME_MODE_DIFFICULT = "Difficult";
     private final SecureRandom rand = new SecureRandom();
     private ArrayList<Card> drawPile;//this is where computer and player can draw a card from when they run out of a fitting card or
     //when instructed to do so by the game rule such as the GENERAL MARKET.
@@ -56,51 +57,39 @@ public class WhotGame {
      */
     public void deal(int number, String mode) throws WhotGameException
     {
-        boolean isValidDeal = number >= 2 && number <= 27 && number % 2 == 0;
+        boolean isValidDeal = number >= 2 && number <= 26 && number % 2 == 0;
         if (isValidDeal)
         {
             for (int index = 0; index < number; index++)
             {
-                String GAME_MODE_DIFFICULT = "Difficult";
-                if(mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
-                {
-                    int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
-                    //difficult mode
-                    if(probIndex != 3)
-                    {
-                        List<Card> specialCards = drawPile.stream().filter(card ->
-                                !card.isNormalCard()).toList();
-                        if(!specialCards.isEmpty())
-                        {
-                            int randIndex = rand.nextInt(specialCards.size());
-                            Card specialCard = specialCards.get(randIndex);
-                            computerCardPile.add(specialCard);
-                            drawPile.remove(specialCard);
-                        }else
-                        {
-                            computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
-                            //and removes it afterward
-                        }
-                    }else
-                    {
-                        computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
-                        //and removes it afterward
-                    }
-                }else
-                {
-                    computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
-                    //and removes it afterward
-                }
                 humanCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the playerPile and
                 //removes it afterward
+                int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
+                //difficult mode
+                if(mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) && probIndex != 3)
+                {
+
+                    List<Card> specialCards = drawPile.stream().filter(card ->
+                            !card.isNormalCard()).toList();
+                    if(!specialCards.isEmpty())
+                    {
+                        int randIndex = rand.nextInt(specialCards.size());
+                        Card specialCard = specialCards.get(randIndex);
+                        computerCardPile.add(specialCard);
+                        drawPile.remove(specialCard);
+                        continue;
+                    }
+                }
+                computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
+                //and removes it afterward
             }
 
         } else if (number < 0)
         {
             throw new WhotGameException("You cannot deal a negative number of cards");
-        } else if (number > 27)
+        } else if (number > 26)
         {
-            throw new WhotGameException("You can only deal between 2 to 27 cards");
+            throw new WhotGameException("You can only deal between 2 to 26 cards");
         } else if (number % 2 != 0)
         {
             throw new WhotGameException("You cannot deal an odd number of cards");
@@ -142,36 +131,22 @@ public class WhotGame {
      */
     public void computerDrawFromPile(boolean forceWinner, String mode)
     {
-        if(!drawPile.isEmpty())
+        int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
+        //difficult mode
+        List<Card> specialCards = drawPile.stream().filter(card ->
+                !card.isNormalCard()).toList();
+        if(!drawPile.isEmpty() &&
+                mode.equalsIgnoreCase("Difficult") &&
+                probIndex != 3 &&
+                !specialCards.isEmpty())
         {
-            if(mode.equalsIgnoreCase("Difficult"))
-            {
-                int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
-                //difficult mode
-                if(probIndex != 3)
-                {
-                    List<Card> specialCards = drawPile.stream().filter(card ->
-                            !card.isNormalCard()).toList();
-                    if(!specialCards.isEmpty())
-                    {
-                        int randIndex = rand.nextInt(specialCards.size());
-                        Card specialCard = specialCards.get(randIndex);
-                        computerCardPile.add(specialCard);
-                        drawPile.remove(specialCard);
-                    }else
-                    {
-                        computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
-                        //and removes it afterward
-                    }
-                }else
-                {
-                    computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
-                    //and removes it afterward
-                }
-            }else
-            {
-                computerCardPile.add(drawPile.remove(0));
-            }
+            int randIndex = rand.nextInt(specialCards.size());
+            Card specialCard = specialCards.get(randIndex);
+            computerCardPile.add(specialCard);
+            drawPile.remove(specialCard);
+        }else
+        {
+            computerCardPile.add(drawPile.remove(0));
         }
         checkWinner(forceWinner);
     }
@@ -233,11 +208,14 @@ public class WhotGame {
         {
             if (forceWinner)
             {
+                //In force winner mode, which allows continuous play until there is a winner
+                //if the draw pile runs out, we need to populate it with cards from the played
+                //pile
                 ArrayList<Card> list = new ArrayList<>();
                 for(int i =0; i < playedPile.size()-1; i++)
                 {
-                    //reset all cards but the last played card to their default values
                     Card card = playedPile.get(i);
+                    //first reset all cards but the last played card to their default values
                     card.setFirstCard(false);
                     card.setCardActionTaken(false);
                     card.setDefendCard(false);
@@ -251,26 +229,14 @@ public class WhotGame {
             {
                 countHumanCards();
                 countComputerCards();
-                if (computerCounter > playerCounter)
-                {
-                    humanTheWinner = true;
-                } else if(playerCounter > computerCounter)
-                {
-                    computerTheWinner = true;
-                }else
-                {
-                    isTie = true;
-                }
+                humanTheWinner = computerCounter > playerCounter;
+                computerTheWinner = playerCounter > computerCounter;
+                isTie = computerCounter == playerCounter;
             }
         }else
         {
-            if(computerCardPile.isEmpty())
-            {
-                computerTheWinner = true;
-            }else if(humanCardPile.isEmpty())
-            {
-                humanTheWinner = true;
-            }
+            computerTheWinner = computerCardPile.isEmpty();
+            humanTheWinner = humanCardPile.isEmpty();
         }
     }
     /***

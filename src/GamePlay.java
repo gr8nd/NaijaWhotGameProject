@@ -1,8 +1,6 @@
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.util.*;
 import java.security.SecureRandom;
 
@@ -412,7 +410,7 @@ public class GamePlay
                 System.out.println("Enter 0 to request a card or 99 to end the game.." );
             }else
             {
-                System.out.println("Select the number to play or -1 to draw from pile or 99 to end the game.");
+                System.out.println("Select the number to play or -1 to pick from pile or 99 to end the game.");
             }
             return input.nextInt();
         }catch (IndexOutOfBoundsException e)
@@ -442,17 +440,15 @@ public class GamePlay
                if(card.isWhot())
                {
                    humanRequestsCard(card);
-               }else
+               }else if(!card.isWhot() &&
+                       card.getSuit() == wantedSuit)
                {
-                   if(card.getSuit() == wantedSuit)
-                   {
-                       game.play(card, forceWinner);
-                       previousCard = card;
-                       System.out.println("You played: ");
-                       System.out.println(previousCard);
-                       isComputerTurn = !card.isSuspension() && !card.isHoldOn();
-                       wantedSuit = null;
-                   }
+                   game.play(card, forceWinner);
+                   previousCard = card;
+                   System.out.println("You played: ");
+                   System.out.println(previousCard);
+                   isComputerTurn = !card.isSuspension() && !card.isHoldOn();
+                   wantedSuit = null;
                }
             }else if(previousCard.isPickTwo() &&
                    !previousCard.isCardActionTaken())
@@ -545,15 +541,11 @@ public class GamePlay
         {
             computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
         }
-        List<Card> list = null;
+
         if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
         {
-            list = findLongestSequentialPlay(previousCard);
-        }
-
-        if (list != null)
-        {
-            for (Card card : list)
+            List<Card> longestSequentialList = findLongestSequentialPlayList(previousCard);
+            for (Card card : longestSequentialList)
             {
                 if ((card.getSuit() == wantedSuit ||
                         card.getFace() == previousCard.getFace() ||
@@ -568,7 +560,9 @@ public class GamePlay
                     previousCard = card;
                     wantedSuit = null;
                     break;
-                }else if(card.isWhot() && wantedSuit == null && computerCards.size() > 10)
+                }else if(card.isWhot() &&
+                        wantedSuit == null &&
+                        computerCards.size() > 10)
                 {
                     computerRequestsWhot();
                     game.play(card, forceWinner);
@@ -700,7 +694,7 @@ public class GamePlay
             {
                 List<Card> longestList = new ArrayList<>();
                 List<Card> nonSeqList = new ArrayList<>();
-                List<Card> list = findLongestSequentialPlay(specialCards, 0, longestList, nonSeqList);
+                List<Card> list = findLongestSequentialPlayList(specialCards, 0, longestList, nonSeqList);
                 wantedSuit = list.get(0).getSuit();
                 System.out.println("Computer needs *** " + wantedSuit + " ***");
                 isComputerTurn = false;
@@ -709,7 +703,7 @@ public class GamePlay
         }
         List<Card> longestList = new ArrayList<>();
         List<Card> nonSeqList = new ArrayList<>();
-        List<Card> list = findLongestSequentialPlay(nonWhotCards, 0, longestList, nonSeqList);
+        List<Card> list = findLongestSequentialPlayList(nonWhotCards, 0, longestList, nonSeqList);
         wantedSuit = list.get(0).getSuit();
         System.out.println("Computer needs *** " + wantedSuit + " ***");
         isComputerTurn = false;
@@ -726,14 +720,11 @@ public class GamePlay
         ArrayList<Card> nonWhotCards = new ArrayList<>();
         for (Card card : computerCards)
         {
-            if (card.isWhot())
+            if (card.isWhot() && computerCards.size() > 7)
             {
-                if (computerCards.size() > 7)
-                {
-                    whotCard = card;
-                    playedWhot = true;
-                    break;
-                }
+                whotCard = card;
+                playedWhot = true;
+                break;
             } else if(card.getSuit() == wantedSuit)
             {
                 wantedSuits.add(card);
@@ -798,9 +789,9 @@ public class GamePlay
      * @return a list containing cards that should be played in the list
      * order (from first element to last element) to give the longest sequential play.
      */
-    private List<Card> findLongestSequentialPlay(List<Card> wantedCardList,
-                                                 int currentIndex, List<Card> longestList,
-                                                 List<Card> nonSeqList)
+    private List<Card> findLongestSequentialPlayList(List<Card> wantedCardList,
+                                                     int currentIndex, List<Card> longestList,
+                                                     List<Card> nonSeqList)
     {
         List<Card> currentLongestList = new ArrayList<>();
         List<Card> currentList = new ArrayList<>(computerCards);
@@ -835,7 +826,7 @@ public class GamePlay
             longestList = currentLongestList;
             nonSeqList = currentList;
         }
-        return findLongestSequentialPlay(wantedCardList, currentIndex, longestList, nonSeqList);
+        return findLongestSequentialPlayList(wantedCardList, currentIndex, longestList, nonSeqList);
     }
 
     /**
@@ -846,7 +837,7 @@ public class GamePlay
      * @return a list containing cards that should be played in the list
      * order (from first element to last element) to give the longest sequential play.
      */
-    private List<Card> findLongestSequentialPlay(Card currentCard)
+    private List<Card> findLongestSequentialPlayList(Card currentCard)
     {
         List<Card> longestList = new ArrayList<>();
         List<Card> currentList = new ArrayList<>(computerCards);
