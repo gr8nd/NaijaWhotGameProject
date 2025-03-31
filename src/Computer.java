@@ -288,13 +288,13 @@ public class Computer
         {
             computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
         }
-        ArrayList<Card> nonWhotCards = new ArrayList<>();
+        ArrayList<Card> unwantedSuitCards = new ArrayList<>();
         ArrayList<Card> otherCards = new ArrayList<>();
         computerCards.forEach(card ->{
             if (!card.isWhot() &&
                     card.getSuit() != gamePlay.getPreviousCard().getSuit())
             {
-                nonWhotCards.add(card);
+                unwantedSuitCards.add(card);
             }
             if(!card.isWhot())
             {
@@ -319,7 +319,7 @@ public class Computer
         if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) &&
                 computerCards.size() < 7)
         {
-            List<Card> specialCards = nonWhotCards.stream().filter(card ->
+            List<Card> specialCards = unwantedSuitCards.stream().filter(card ->
                     !card.isNormalCard()).toList();
             if(!specialCards.isEmpty())
             {
@@ -334,7 +334,7 @@ public class Computer
         }
         List<Card> longestList = new ArrayList<>();
         List<Card> nonSeqList = new ArrayList<>();
-        List<Card> list = findLongestSequentialPlayList(nonWhotCards,
+        List<Card> list = findLongestSequentialPlayList(unwantedSuitCards,
                 0, longestList, nonSeqList);
         gamePlay.setWantedSuit(list.get(0).getSuit());
         gamePlay.setIsComputerTurn(false);
@@ -388,7 +388,7 @@ public class Computer
         if(currentIndex == wantedCardList.size()-1)
         {
             longestList.addAll(nonSeqList);
-            return longestList;
+            return !longestList.isEmpty()?longestList:wantedCardList;
         }
         currentIndex += 1;
         if(currentLongestList.size() > longestList.size())

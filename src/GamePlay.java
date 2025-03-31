@@ -173,9 +173,10 @@ public class GamePlay
         {
             file.mkdir();
         }
-        String s = "id,computersuit,humansuit,computerface,humanface,computertype," +
-                "humantype,computeraction,humanaction,computerdefendcard,humandefendcard," +
-                "computeractiontaken,humanactiontaken,mode,forcewinner,humanwinner,computerwinner,tie";
+        String s = "id,humansuit,humanface,humantype,humanaction,humandefendcard,humanactiontaken" +
+                "computersuit,computerface,computertype" +
+                "computeraction,computerdefendcard" +
+                "computeractiontaken,mode,forcewinner,humanwinner,computerwinner,tie";
         StringBuilder builder = new StringBuilder();
         builder.append(s);
         builder.append("\n");
