@@ -169,7 +169,7 @@ public class GamePlay
     {
         String id = String.valueOf(System.currentTimeMillis());
         String name = "whot" + id + ".csv";
-        String fileName = System.getProperty("user.dir") + File.separator + name;
+        String fileName = System.getProperty("user.dir") + File.separator + "whots";
         File file = new File(fileName);
         if(!file.exists())
         {
@@ -201,6 +201,20 @@ public class GamePlay
                 builder.append(humanCard.isDefendCard());
                 builder.append(CSV_SEPARATOR);
                 builder.append(humanCard.isCardActionTaken());
+            }else
+            {
+                builder.append(CSV_SEPARATOR);
+                builder.append("None");
+                builder.append(CSV_SEPARATOR);
+                builder.append(0);
+                builder.append(CSV_SEPARATOR);
+                builder.append("None");
+                builder.append(CSV_SEPARATOR);
+                builder.append("None");
+                builder.append(CSV_SEPARATOR);
+                builder.append("None");
+                builder.append(CSV_SEPARATOR);
+                builder.append("None");
             }
             if(i < computerPlayedPile.size())
             {
@@ -217,6 +231,20 @@ public class GamePlay
                 builder.append(computerCard.isDefendCard());
                 builder.append(CSV_SEPARATOR);
                 builder.append(computerCard.isCardActionTaken());
+            }else
+            {
+                builder.append(CSV_SEPARATOR);
+                builder.append("None");
+                builder.append(CSV_SEPARATOR);
+                builder.append(0);
+                builder.append(CSV_SEPARATOR);
+                builder.append("None");
+                builder.append(CSV_SEPARATOR);
+                builder.append("None");
+                builder.append(CSV_SEPARATOR);
+                builder.append("None");
+                builder.append(CSV_SEPARATOR);
+                builder.append("None");
             }
 
             builder.append(CSV_SEPARATOR);
@@ -253,24 +281,24 @@ public class GamePlay
     {
         if(card.isWhot())
         {
-            return "card request";
+            return "Whot";
         }else if(card.isPickTwo())
         {
-            return  "pick two";
+            return  "Pick two";
         }else if(card.isPickThree())
         {
-            return "pick three";
+            return "Pick three";
         }else if(card.isGeneralMarket())
         {
-            return "general market";
+            return "General market";
         }else if(card.isHoldOn())
         {
-            return "hold on";
+            return "Hold on";
         }else if(card.isSuspension())
         {
-            return "suspension";
+            return "Suspension";
         }
-        return "none";
+        return "None";
     }
 
     public Card getPreviousCard() {
