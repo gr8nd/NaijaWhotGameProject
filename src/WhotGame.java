@@ -9,10 +9,10 @@ import java.util.stream.Stream;
  * drawPile: this is where computer and player can draw a card from when they run out of a fitting card or
  * when instructed to do so by the game rule such as the GENERAL MARKET.
  * computerCardPile: a list containing all the computer cards
- * playerDrawPile: a list containing all the player cards
+ * humanCardPile: a list containing all the player cards
  * computerCount and playerCount: keep record of the total face values of all the computer cards and the player
  * cards respectively, they are used when scoring by face to determine a winner.
- * boolean isThereWinner: used to check whether there is a winner or not
+ * boolean computerTheWinner, humanTheWinner, isTie: are used to check whether there is a winner or tie
  */
 public class WhotGame {
     private boolean computerTheWinner = false;
@@ -66,19 +66,17 @@ public class WhotGame {
                 //removes it afterward
                 int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
                 //difficult mode
-                if(mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) && probIndex != 3)
+                List<Card> specialCards = drawPile.stream().filter(card ->
+                        !card.isNormalCard()).toList();
+                if(mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) &&
+                        probIndex != 3 &&
+                        !specialCards.isEmpty())
                 {
-
-                    List<Card> specialCards = drawPile.stream().filter(card ->
-                            !card.isNormalCard()).toList();
-                    if(!specialCards.isEmpty())
-                    {
-                        int randIndex = rand.nextInt(specialCards.size());
-                        Card specialCard = specialCards.get(randIndex);
-                        computerCardPile.add(specialCard);
-                        drawPile.remove(specialCard);
-                        continue;
-                    }
+                    int randIndex = rand.nextInt(specialCards.size());
+                    Card specialCard = specialCards.get(randIndex);
+                    computerCardPile.add(specialCard);
+                    drawPile.remove(specialCard);
+                    continue;
                 }
                 computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
                 //and removes it afterward
@@ -173,22 +171,22 @@ public class WhotGame {
     {
         if (card.isHoldOn())
         {
-            System.out.println("Hold on!");
+            System.out.println("HOLD ON!");
         } else if (card.isPickTwo())
         {
-            System.out.println("Pick two!");
+            System.out.println("PICK TWO!");
         } else if (card.isPickThree())
         {
-            System.out.println("Pick three!");
+            System.out.println("PICK THREE!");
         } else if (card.isSuspension())
         {
-            System.out.println("Suspension!");
+            System.out.println("SUSPENSION!");
         } else if (card.isWhot())
         {
-            System.out.println("Whot! Select a card you need >> ");
+            System.out.println("WHOT! SELECT A CARD YOU NEED");
         } else if (card.isGeneralMarket())
         {
-            System.out.println("General market!");
+            System.out.println("GENERAL MARKET!");
         }
     }
 

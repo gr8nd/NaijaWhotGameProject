@@ -4,9 +4,7 @@ import java.util.List;
 
 /**
  * In this NaijaWhots class, the initialization of the cards to form a pack and the shuffling
- * of the pack are done by the private methods initialise() and shuffle() respectively.
- * There is also a public shuffle method for shuffling the pack once more to avoid the need to instantiate NaijaWhot
- * object.
+ * of the pack are done by the private methods initialise() and shuffleCards() respectively.
  * There is also the getPack method that returns an array containing 54 card objects -- the pack
  */
 public class NaijaWhots

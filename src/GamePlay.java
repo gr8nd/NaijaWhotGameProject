@@ -16,7 +16,6 @@ public class GamePlay
     //human turn
     private final WhotGame game;
     private Suit wantedSuit;
-    private int EXIT_CODE;
     private boolean validDeal = true;//Used in checking if a valid deal number is provided.
     private final List<Card> humanCards;//A list containing all player's cards
     private final List<Card> computerCards;//A list containing all computer's cards
@@ -25,10 +24,10 @@ public class GamePlay
     // Suit or the face(number) as the previousCard. The Whot card can be played at any time except during HOLDON,
     //SUSPENSION, PICKTWO, PICKTHREE or GENERAL MARKET.
     private final SecureRandom rand = new SecureRandom();
-    private final Scanner input = new Scanner(System.in);
     private final String mode;//the game mode, easy or difficult are available
     private final String GAME_MODE_EASY = "Easy";
-    private boolean verbose = false;
+    private final HumanPlay humanPlay;
+    private final ComputerPlay computerPlay;
     private final String GAME_MODE_DIFFICULT = "Difficult";
     private final boolean forceWinner; //If true, it will ensure that there is a winner in the game, draw will not be allowed
     //so the game will run indefinitely until there is a winner.
@@ -49,10 +48,11 @@ public class GamePlay
         }
         this.forceWinner = forceWinner;
         this.mode = mode;
-        this.verbose = verbose;
         this.game = new WhotGame();
         this.humanCards = game.getHumanCardPile();
         this.computerCards = game.getComputerCardPile();
+        this.humanPlay = new HumanPlay(forceWinner, verbose, this.game, this.humanCards, this);
+        this.computerPlay = new ComputerPlay(forceWinner, mode, this.game, this.computerCards, this);
         int DEFAULT_DEAL_NUMBER = 6;
         this.deal(DEFAULT_DEAL_NUMBER);
     }
@@ -68,10 +68,11 @@ public class GamePlay
         }
         this.forceWinner = forceWinner;
         this.mode = mode;
-        this.verbose = verbose;
         this.game = new WhotGame();
         this.humanCards = game.getHumanCardPile();
         this.computerCards = game.getComputerCardPile();
+        this.humanPlay = new HumanPlay(forceWinner, verbose, this.game, this.humanCards, this);
+        this.computerPlay = new ComputerPlay(forceWinner, mode, this.game, this.computerCards, this);
         this.deal(number);
     }
 
@@ -125,26 +126,12 @@ public class GamePlay
                 !game.isComputerTheWinner() &&
                 !game.isTie())
         {
-            if(EXIT_CODE == 99)
-            {
-                System.out.println("You ended the game.");
-                System.exit(0);
-                return;
-            }
-
             if (isComputerTurn)
             {
-                computerPlay();
+                computerPlay.play();
             } else
             {
-                System.out.println("The current Draw Pile count: " + game.getDrawPile().size());
-                System.out.println("The card on board is:");
-                System.out.println(previousCard.toString());
-                if(previousCard.isWhot() && wantedSuit != null)
-                {
-                    System.out.println("The wanted card is: *** " + wantedSuit + " ***");
-                }
-                humanPlay();
+                humanPlay.play();
             }
         }
 
@@ -172,697 +159,6 @@ public class GamePlay
     }
 
     /**
-     * computerPlay method handles the computer card play simulation, after finish playing computer
-     * should relinquish
-     * turn to the human.
-     */
-    private void computerPlay()
-    {
-        if(computerCards.size() == 1)
-        {
-            //Specially handle the last card in the pile
-            Card lastCard = computerCards.get(0);
-            if(lastCard.isWhot() ||
-                    lastCard.getSuit() == previousCard.getSuit() ||
-                    lastCard.getFace() == previousCard.getFace()||
-                    lastCard.getSuit() == wantedSuit)
-            {
-                game.play(lastCard, forceWinner);
-                System.out.println(lastCard);
-                System.out.println("Check!");
-                previousCard = lastCard;
-                return;
-            }
-        }
-        if ((previousCard.isNormalCard()))
-        {
-            computerNormalPlay();
-        } else if (previousCard.isPickTwo())
-        {
-            if(!previousCard.isCardActionTaken())
-            {
-                computerPickTwo();
-            }else
-            {
-                computerNormalPlay();
-            }
-        } else if (previousCard.isPickThree())
-        {
-            if(!previousCard.isCardActionTaken())
-            {
-                computerPickThree();
-            }else
-            {
-                computerNormalPlay();
-            }
-        } else if (previousCard.isHoldOn())
-        {
-            previousCard.setCardActionTaken(true);
-            computerNormalPlay();
-        }else if(previousCard.isSuspension())
-        {
-            previousCard.setCardActionTaken(true);
-            computerNormalPlay();
-        } else if (previousCard.isGeneralMarket())
-        {
-            if(!previousCard.isCardActionTaken())
-            {
-                computerGoMarket();
-            }else
-            {
-                computerNormalPlay();
-            }
-        }else if(previousCard.isWhot())
-        {
-            if(!previousCard.isCardActionTaken())
-            {
-                computerPlaysWhot();
-            }else
-            {
-                computerNormalPlay();
-            }
-        }
-    }
-
-    /**
-     * playerPlay method handles the player card play simulation, after
-     * finish playing this method should hand over
-     * turn to the computer.
-     */
-    private void humanPlay()
-    {
-        int index = humanSelectCard();
-        if(index == -1)
-        {
-            if(previousCard.isPickThree() &&
-                    !previousCard.isCardActionTaken())
-            {
-                game.humanDrawFromPile(forceWinner);
-                game.humanDrawFromPile(forceWinner);
-                game.humanDrawFromPile(forceWinner);
-                previousCard.setCardActionTaken(true);
-                System.out.println("You have picked three.");
-                isComputerTurn = true;
-            }else if(previousCard.isPickTwo() &&
-                    !previousCard.isCardActionTaken())
-            {
-                game.humanDrawFromPile(forceWinner);
-                game.humanDrawFromPile(forceWinner);
-                previousCard.setCardActionTaken(true);
-                System.out.println("You have picked two.");
-                isComputerTurn = true;
-            }else if(previousCard.isGeneralMarket()
-                    && !previousCard.isCardActionTaken())
-            {
-                game.humanDrawFromPile(forceWinner);
-                previousCard.setCardActionTaken(true);
-                System.out.println("You have gone to market.");
-                isComputerTurn = true;
-            }else if(previousCard.isHoldOn())
-            {
-                game.humanDrawFromPile(forceWinner);
-                previousCard.setCardActionTaken(true);
-                System.out.println("You have drawn from pile.");
-                isComputerTurn = true;
-            }else if(previousCard.isSuspension())
-            {
-                game.humanDrawFromPile(forceWinner);
-                previousCard.setCardActionTaken(true);
-                System.out.println("You have drawn from pile.");
-                isComputerTurn = true;
-            }else
-            {
-                game.humanDrawFromPile(forceWinner);
-                System.out.println("You have drawn from pile.");
-                previousCard.setCardActionTaken(true);
-                isComputerTurn = true;
-            }
-        }else if(index == 0 &&
-                previousCard.isWhot() &&
-                previousCard.isFirstCard())
-        {
-            humanRequestsCard(null);
-        }else if(index == 99)
-        {
-            EXIT_CODE = 99;
-        }else if(index != -2)
-        {
-            //Specifically handle the last card in the pile
-            Card lastCard = humanCards.get(index-1);
-            if(humanCards.size() == 1 && lastCard.isWhot() ||
-                    lastCard.getSuit() == previousCard.getSuit() ||
-                    lastCard.getFace() == previousCard.getFace() ||
-                    lastCard.getSuit() == wantedSuit)
-            {
-                game.play(lastCard, forceWinner);
-                System.out.println(lastCard);
-                System.out.println("Check!");
-                previousCard = lastCard;
-                return;
-            }
-            humanNormalPlay(index-1);
-        }else
-        {
-            isComputerTurn = false;
-        }
-    }
-
-    private void humanRequestsCard(Card card)
-    {
-        try {
-            System.out.printf("1. %s%n2. %s%n3. %s%n4. %s%n5. %s%n",
-                    Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE);
-            int want = input.nextInt();
-            switch (want) {
-                case 1:
-                    wantedSuit = Suit.CIRCLE;
-                    break;
-                case 2:
-                    wantedSuit = Suit.CROSS;
-                    break;
-                case 3:
-                    wantedSuit = Suit.TRIANGLE;
-                    break;
-                case 4:
-                    wantedSuit = Suit.STAR;
-                    break;
-                case 5:
-                    wantedSuit = Suit.SQUARE;
-                    break;
-                default:
-                    System.out.println("You made an invalid selection, please select a card you need.");
-                    return;
-            }
-        }catch (InputMismatchException | NumberFormatException e)
-        {
-            input.nextLine();
-            System.out.println("You made an invalid selection, please select a card you need.");
-            return;
-        }
-        if(card != null)
-        {
-            System.out.println("You played: ");
-            System.out.println(card);
-            game.play(card, forceWinner);
-            previousCard = card;
-        }
-
-        System.out.println("You need *** " + wantedSuit + " ***");
-        isComputerTurn = true;
-    }
-
-    /**
-     * prompt user to type what to play during the game
-     * @return int an index of the card he wants to play or an instruction of the game
-     */
-    private int humanSelectCard()
-    {
-        try
-        {
-            System.out.println("You have " + (humanCards.size()) + " cards in your pile.");
-            System.out.println("These are all your cards:");
-            StringBuilder builder = new StringBuilder();
-            if(verbose)
-            {
-                for (int i = 0; i < humanCards.size(); i++)
-                {
-                    String s = ">> " + (i + 1) + " \n";
-                    String c = humanCards.get(i).toString();
-                    builder.append(s).append(c).append("\n");
-                }
-            }else
-            {
-                for (int i = 0; i < humanCards.size(); i++)
-                {
-                    String s = "(" + (i + 1) + ") " +
-                            humanCards.get(i).getFace() + " " + humanCards.get(i).getSuit();
-                    builder.append(s).append(" ");
-                }
-            }
-
-            System.out.println(builder);
-            if(previousCard.isWhot() && previousCard.isFirstCard())
-            {
-                System.out.println("Enter 0 to request a card or 99 to end the game.." );
-            }else
-            {
-                System.out.println("Select the number to play or -1 to pick from pile or 99 to end the game.");
-            }
-            return input.nextInt();
-        }catch (IndexOutOfBoundsException e)
-        {
-            input.nextLine();
-            System.out.println("The selection is not in your card.");
-            return -2;
-        }catch (InputMismatchException | NumberFormatException e)
-        {
-            input.nextLine();
-            System.out.println("Select a valid card number.");
-            return -2;
-        }
-    }
-
-    /**
-     * Call when the previous is normal card
-     * @param index the index of the card user wants to play
-     */
-    private void humanNormalPlay(int index)
-    {
-        try
-        {
-            Card card = humanCards.get(index);
-           if(previousCard.isWhot())
-           {
-               if(card.isWhot())
-               {
-                   humanRequestsCard(card);
-               }else if(!card.isWhot() &&
-                       card.getSuit() == wantedSuit)
-               {
-                   System.out.println("You played: ");
-                   System.out.println(card);
-                   game.play(card, forceWinner);
-                   previousCard = card;
-                   isComputerTurn = !card.isSuspension() && !card.isHoldOn();
-                   wantedSuit = null;
-               }
-            }else if(previousCard.isPickTwo() &&
-                   !previousCard.isCardActionTaken())
-            {
-                humanPickTwo(index);
-            }else if(previousCard.isPickThree()&&
-                   !previousCard.isCardActionTaken())
-           {
-               humanPickThree(index);
-           } else if(previousCard.isGeneralMarket() &&
-                   !previousCard.isCardActionTaken())
-           {
-               System.out.println("Enter -1 to go to market.");
-           } else if(card.getSuit() == previousCard.getSuit() ||
-                   card.getFace() == previousCard.getFace() ||
-                   card.isWhot())
-           {
-               if(card.isWhot())
-               {
-                   humanRequestsCard(card);
-               }else
-               {
-                   System.out.println("You played: ");
-                   System.out.println(card);
-                   game.play(card, forceWinner);
-                   isComputerTurn = !card.isSuspension() && !card.isHoldOn();
-                   previousCard = card;
-               }
-           }
-        } catch (IndexOutOfBoundsException e)
-        {
-            System.out.println("The selection is not in your card.");
-        }catch (InputMismatchException | NumberFormatException e)
-        {
-            System.out.println("Select a valid card number.");
-        }
-    }
-
-    private void humanPickTwo(int index)
-    {
-        Card card = humanCards.get(index);
-        if(card.isPickTwo() &&
-                !previousCard.isCardActionTaken())
-        {
-            game.play(card, forceWinner);
-            card.setCardActionTaken(true);
-            card.setDefendCard(true);
-            System.out.println("You have defended the PICKTWO with.");
-            System.out.println(card);
-            previousCard = card;
-            isComputerTurn = true;
-        }else
-        {
-            System.out.println("You selected an invalid card, draw two cards " +
-                    "from pile or play a fitting card to defend.");
-        }
-    }
-
-    private void humanPickThree(int index)
-    {
-        Card card = humanCards.get(index);
-        if(card.isPickThree() &&
-                !previousCard.isCardActionTaken())
-        {
-            game.play(card, forceWinner);
-            card.setCardActionTaken(true);
-            card.setDefendCard(true);
-            System.out.println("You have defended the PICKTHREE with.");
-            System.out.println(card);
-            previousCard = card;
-            isComputerTurn = true;
-        }else
-        {
-            System.out.println("You selected an invalid card, draw three cards " +
-                    "from pile or play a fitting card to defend.");
-        }
-    }
-
-    /**
-     * Method that handles computer normal play i.e. the play of cards that
-     * are not special cards
-     */
-    private void computerNormalPlay()
-    {
-        boolean computerDrawingFromPile = true;
-        //In Difficult mode, and in the absence of force winner mode, when game is decided by the counts
-        // of players cards
-        //computer has to dispose cards with large face value(numbers) first before lower values.
-        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) && !forceWinner)
-        {
-            computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
-        }
-
-        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
-        {
-            List<Card> longestSequentialList = findLongestSequentialPlayList(previousCard);
-            for (Card card : longestSequentialList)
-            {
-                if ((card.getSuit() == wantedSuit ||
-                        card.getFace() == previousCard.getFace() ||
-                        card.getSuit() == previousCard.getSuit()) &&
-                        !card.isWhot())
-                {
-                    System.out.println("Computer has played:");
-                    System.out.println(card);
-                    computerDrawingFromPile = false;
-                    isComputerTurn = card.isHoldOn() || card.isSuspension();
-                    game.play(card, forceWinner);
-                    previousCard = card;
-                    wantedSuit = null;
-                    break;
-                }else if(card.isWhot() &&
-                        wantedSuit == null &&
-                        computerCards.size() > 10)
-                {
-                    computerRequestsWhot();
-                    System.out.println("Computer has played:");
-                    System.out.println(card);
-                    game.play(card, forceWinner);
-                    System.out.println("Computer needs *** " + wantedSuit + " ***");
-                    previousCard = card;
-                    return;
-                }
-            }
-        }
-
-        if(computerDrawingFromPile)
-        {
-            game.computerDrawFromPile(forceWinner, mode);
-            System.out.println("Computer has drawn from pile.");
-            isComputerTurn = false;
-        }
-    }
-
-    private void computerPickTwo()
-    {
-        boolean twoPicked = true;
-        for (Card card : computerCards)
-        {
-            if (card.isPickTwo() &&
-                    computerCards.size() > 6 &&
-                    !previousCard.isCardActionTaken())
-            {
-                game.play(card, forceWinner);
-                twoPicked = false;
-                System.out.println("Computer has defended the pick two with.");
-                System.out.println(card);
-                card.setCardActionTaken(true);
-                card.setDefendCard(true);
-                previousCard = card;
-                break;
-            }
-        }
-        if (twoPicked &&
-                !previousCard.isDefendCard() &&
-                !previousCard.isCardActionTaken())
-        {
-            game.computerDrawFromPile(forceWinner, mode);
-            game.computerDrawFromPile(forceWinner, mode);
-            previousCard.setCardActionTaken(true);
-            System.out.println("Computer has picked pick two.");
-        }
-        isComputerTurn = false;
-    }
-
-    private void computerPickThree()
-    {
-        boolean threePicked = true;
-        for (Card card : computerCards)
-        {
-            if (card.isPickThree() &&
-                    computerCards.size() > 6 &&
-                    !previousCard.isCardActionTaken())
-            {
-                game.play(card, forceWinner);
-                threePicked = false;
-                System.out.println("Computer has defended the pick three with:");
-                System.out.println(card);
-                card.setDefendCard(true);
-                card.setCardActionTaken(true);
-                previousCard = card;
-                break;
-            }
-        }
-        if (threePicked &&
-                !previousCard.isDefendCard() &&
-                !previousCard.isCardActionTaken())
-        {
-            game.computerDrawFromPile(forceWinner, mode);
-            game.computerDrawFromPile(forceWinner, mode);
-            game.computerDrawFromPile(forceWinner, mode);
-            previousCard.setCardActionTaken(true);
-            System.out.println("Computer has picked pick three.");
-        }
-        isComputerTurn = false;
-    }
-
-    /**
-     * Requests a card for human player to play
-     */
-    private void computerRequestsWhot()
-    {
-        //In Difficult mode, and in the absence of force winner mode, when game is decided by the counts of players cards
-        //computer has to request cards with large face value(numbers) first before lower values.
-        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) && !forceWinner)
-        {
-            computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
-        }
-        ArrayList<Card> nonWhotCards = new ArrayList<>();
-        ArrayList<Card> otherCards = new ArrayList<>();
-        computerCards.forEach(card ->{
-            if (!card.isWhot() &&
-                    card.getSuit() != previousCard.getSuit())
-            {
-                nonWhotCards.add(card);
-            }
-            if(!card.isWhot())
-            {
-                otherCards.add(card);
-            }
-        });
-
-        if(otherCards.isEmpty())
-        {
-            //When computer has only Whot! cards in its pile, it requests any random suit
-            //even though such a suit does not exist in its pile.
-            Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
-            int randIndex = rand.nextInt(suits.length);
-            wantedSuit = suits[randIndex];
-            isComputerTurn = false;
-            return;
-        }
-
-        //In difficult mode, when computer draw  pile is about to be exhausted, computer will have to
-        //request special cards to increase its winning potential and find a card to start with to
-        // give the longest sequential play.
-        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) &&
-                computerCards.size() < 7)
-        {
-            List<Card> specialCards = nonWhotCards.stream().filter(card ->
-                    !card.isNormalCard()).toList();
-            if(!specialCards.isEmpty())
-            {
-                List<Card> longestList = new ArrayList<>();
-                List<Card> nonSeqList = new ArrayList<>();
-                List<Card> list = findLongestSequentialPlayList(specialCards,
-                        0, longestList, nonSeqList);
-                wantedSuit = list.get(0).getSuit();
-                isComputerTurn = false;
-                return;
-            }
-        }
-        List<Card> longestList = new ArrayList<>();
-        List<Card> nonSeqList = new ArrayList<>();
-        List<Card> list = findLongestSequentialPlayList(nonWhotCards,
-                0, longestList, nonSeqList);
-        wantedSuit = list.get(0).getSuit();
-        isComputerTurn = false;
-    }
-
-    /**
-     * Play the Whot! the user requests
-     */
-    private void computerPlaysWhot()
-    {
-        ArrayList<Card> wantedSuits = new ArrayList<>();
-        Card whotCard = null;
-        boolean playedWhot = false;
-        ArrayList<Card> nonWhotCards = new ArrayList<>();
-        for (Card card : computerCards)
-        {
-            if (card.isWhot() && computerCards.size() > 7)
-            {
-                whotCard = card;
-                playedWhot = true;
-                break;
-            } else if(card.getSuit() == wantedSuit)
-            {
-                wantedSuits.add(card);
-            }
-
-            if(!card.isWhot())
-            {
-                nonWhotCards.add(card);
-            }
-        }
-
-        if (playedWhot)
-        {
-            computerRequestsWhot();
-            System.out.println("Computer has played: ");
-            System.out.println(whotCard);
-            game.play(whotCard, forceWinner);
-            System.out.println("Computer needs *** " + wantedSuit + " ***");
-            previousCard = whotCard;
-        }else
-        {
-            if(nonWhotCards.isEmpty())
-            {
-                //When computer has only Whot! cards in its pile, it requests any random suit
-                //even though a card with such a suit does not exist in its pile.
-                Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
-                int randIndex = rand.nextInt(suits.length);
-                wantedSuit = suits[randIndex];
-                System.out.println("Computer needs *** " + wantedSuit + " ***");
-                isComputerTurn = false;
-            }else if(!wantedSuits.isEmpty())
-            {
-                int randomIndex = rand.nextInt(wantedSuits.size());
-                Card neededCard = wantedSuits.get(randomIndex);
-                System.out.println("Computer has played:");
-                System.out.println(neededCard.toString());
-                game.play(neededCard, forceWinner);
-                wantedSuit = null;
-                isComputerTurn = neededCard.isHoldOn() || neededCard.isSuspension();
-                previousCard = neededCard;
-            }else
-            {
-                game.computerDrawFromPile(forceWinner, mode);
-                previousCard.setCardActionTaken(true);
-                System.out.println("Computer has drawn from pile.");
-                isComputerTurn = false;
-            }
-        }
-    }
-
-    private void computerGoMarket()
-    {
-        game.computerDrawFromPile(forceWinner, mode);
-        previousCard.setCardActionTaken(true);
-        System.out.println("Computer has gone to market.");
-        isComputerTurn = false;
-    }
-
-    /**
-     * Computer needs to find the card it will play to get the longest
-     * sequential play. This is necessary to maximize its winning
-     * potential.
-     * @return a list with first part or all, containing cards that should be played in the list
-     * order (from first element to last element) to give the longest sequential play, any
-     * 'non-sequential' cards are also appended to the end of the list.
-     */
-    private List<Card> findLongestSequentialPlayList(List<Card> wantedCardList,
-                                                     int currentIndex, List<Card> longestList,
-                                                     List<Card> nonSeqList)
-    {
-        List<Card> currentLongestList = new ArrayList<>();
-        List<Card> currentList = new ArrayList<>(computerCards);
-        Card currentCard = wantedCardList.get(currentIndex);
-        currentLongestList.add(currentCard);
-        currentList.remove(currentCard);
-        for (int index = 0; index < currentList.size(); index++)
-        {
-            Card card = currentList.get(index);
-            if (!card.isWhot())
-            {
-                if (card.getFace() == currentCard.getFace() ||
-                        card.getSuit() == currentCard.getSuit())
-                {
-                    currentLongestList.add(card);
-                    currentCard = card;
-                    currentList.remove(currentCard);
-                    index = 0;//move the cursor to the first index (start of the list)
-                }
-            }
-        }
-
-        if(currentIndex == wantedCardList.size()-1)
-        {
-            longestList.addAll(nonSeqList);
-            return longestList;
-        }
-        currentIndex += 1;
-        if(currentLongestList.size() > longestList.size())
-        {
-            longestList = currentLongestList;
-            nonSeqList = currentList;
-        }
-        return findLongestSequentialPlayList(wantedCardList, currentIndex, longestList, nonSeqList);
-    }
-
-    /**
-     * Computer needs to find the card it will play to get the longest
-     * sequential play. This is necessary to maximize its winning
-     * potential.
-     * @param currentCard the current card to start the sequential run from
-     * @return a list with first part or all, containing cards that should be played in the list
-     * order (from first element to last element) to give the longest sequential play, any
-     * 'non-sequential' cards are also appended to the end of the list.
-     */
-    private List<Card> findLongestSequentialPlayList(Card currentCard)
-    {
-        List<Card> longestList = new ArrayList<>();
-        List<Card> currentList = new ArrayList<>(computerCards);
-        longestList.add(currentCard);
-        currentList.remove(currentCard);
-        for (int index = 0; index < currentList.size(); index++)
-        {
-            Card card = currentList.get(index);
-            if (!card.isWhot())
-            {
-                if (card.getFace() == currentCard.getFace() ||
-                        card.getSuit() == currentCard.getSuit())
-                {
-                    longestList.add(card);
-                    currentCard = card;
-                    currentList.remove(currentCard);
-                    index = 0;//move the cursor to the first index (start of the list)
-                }
-            }
-        }
-
-        longestList.remove(0);//remove the first element because it is the previousCard played
-        longestList.addAll(currentList);
-        return longestList;
-    }
-
-    /**
      * Write the current statistics of the game to file as comma-separated values (.csv)
      * @param humanPlayedPile a list containing all the computer cards computer has played
      *     //during the course of the game.
@@ -871,10 +167,9 @@ public class GamePlay
      */
     private void writeToCSV(List<Card> humanPlayedPile, List<Card> computerPlayedPile)
     {
-        String name = "whot";
-        String extension = ".csv";
         String id = String.valueOf(System.currentTimeMillis());
-        String fileName = System.getProperty("user.dir") + File.separator + name + id + extension;
+        String name = "whot" + id + ".csv";
+        String fileName = System.getProperty("user.dir") + File.separator + name;
         File file = new File(fileName);
         if(!file.exists())
         {
@@ -977,4 +272,29 @@ public class GamePlay
         }
         return "none";
     }
+
+    public Card getPreviousCard() {
+        return previousCard;
+    }
+
+    public void setPreviousCard(Card previousCard) {
+        this.previousCard = previousCard;
+    }
+
+    public Suit getWantedSuit() {
+        return wantedSuit;
+    }
+
+    public void setWantedSuit(Suit wantedSuit) {
+        this.wantedSuit = wantedSuit;
+    }
+
+    public boolean isIsComputerTurn() {
+        return isComputerTurn;
+    }
+
+    public void setIsComputerTurn(boolean isComputerTurn) {
+        this.isComputerTurn = isComputerTurn;
+    }
+
 }

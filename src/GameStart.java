@@ -17,7 +17,7 @@ public class GameStart
                 This software is licensed by GNU GENERAL PUBLIC LICENSE.
                 Hit Enter key to continue... >>""");
         input.nextLine();
-        System.out.println("Do you want to see a simulated visual display of your cards Y/N?");
+        System.out.println("Use non-verbose mode Y/N?");
         String verbose = input.nextLine();
         System.out.println("Select game mode: Easy or Difficult?");
         String mode = input.nextLine();
@@ -28,7 +28,7 @@ public class GameStart
         try
         {
             GamePlay game = new GamePlay(forceWinner.equalsIgnoreCase("Y"),
-                    mode, dealNum, verbose.equalsIgnoreCase("Y"));
+                    mode, dealNum, !verbose.equalsIgnoreCase("Y"));
             game.start();
         } catch (WhotGameException e)
         {
