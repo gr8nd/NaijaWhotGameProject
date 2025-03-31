@@ -883,19 +883,18 @@ public class GamePlay
      */
     private void writeToCSV(List<Card> humanPlayedPile, List<Card> computerPlayedPile)
     {
-        FileSystem fs = FileSystems.getDefault();
-        String fileName = "whot";
+        String name = "whot";
         String extension = ".csv";
         String id = String.valueOf(System.currentTimeMillis());
-        String path = System.getProperty("user.dir") + File.separator + fileName + id + extension;
-        File file = new File(path);
+        String fileName = System.getProperty("user.dir") + File.separator + name + id + extension;
+        File file = new File(fileName);
         if(!file.exists())
         {
             file.mkdir();
         }
         String s = "id,computersuit,humansuit,computerface,humanface,computertype," +
                 "humantype,computeraction,humanaction,computerdefendcard,humandefendcard," +
-                "computeractiontaken,humanactiontaken,mode,forcewinner,humanwinner";
+                "computeractiontaken,humanactiontaken,mode,forcewinner,humanwinner,computerwinner,tie";
         StringBuilder builder = new StringBuilder();
         builder.append(s);
         builder.append("\n");
@@ -943,6 +942,10 @@ public class GamePlay
             builder.append(forceWinner);
             builder.append(CSV_SEPARATOR);
             builder.append(game.isHumanTheWinner());
+            builder.append(CSV_SEPARATOR);
+            builder.append(game.isComputerTheWinner());
+            builder.append(CSV_SEPARATOR);
+            builder.append(game.isTie());
             builder.append("\n\n");
         }
         try
