@@ -139,8 +139,6 @@ public class GamePlay
         System.out.println("Computer's number of cards' left: " + computerCards.size());
         if(!forceWinner)
         {
-            game.countComputerCards();
-            game.countHumanCards();
             System.out.println("Your cards' face count: " + game.getPlayerCounter());
             System.out.println("Computer's cards' face count: " + game.getComputerCounter());
         }
@@ -184,7 +182,7 @@ public class GamePlay
         long maximum = (Math.max(humanPlayedPile.size(), computerPlayedPile.size()));
         for (int i = 0; i < maximum; i++)
         {
-            builder.append(id);
+            builder.append((i + 1));
             final String CSV_SEPARATOR = ",";
             if(i < humanPlayedPile.size())
             {

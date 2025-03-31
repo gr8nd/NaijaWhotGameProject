@@ -222,7 +222,7 @@ public class Computer
         ArrayList<Card> nonWhotCards = new ArrayList<>();
         for (Card card : computerCards)
         {
-            if (card.isWhot() && computerCards.size() > 7)
+            if (card.isWhot() && computerCards.size() > 5)
             {
                 whotCard = card;
                 playedWhot = true;

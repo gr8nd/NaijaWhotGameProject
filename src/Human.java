@@ -132,8 +132,9 @@ public class Human
     {
         try
         {
-            System.out.println("You have " + (humanCards.size()) + " cards in your pile.");
-            System.out.println("These are all your cards:");
+            System.out.println("You have " + (humanCards.size()>1?humanCards.size()+
+                    " cards":humanCards.size() + " card") + " in your pile.");
+            System.out.println("This is your card list:");
             StringBuilder builder = new StringBuilder();
             if(verbose)
             {
