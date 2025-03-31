@@ -51,12 +51,21 @@ public class Card {
     }
 
     public boolean isNormalCard() {
-        return this.face != 1 &&
+        return  this.face != 1 &&
                 this.face != 2 &&
                 this.face != 5 &&
                 this.face != 8 &&
                 this.face != 14 &&
                 this.face != 20;
+    }
+
+    public boolean isSpecialCard() {
+        return  this.face == 1 ||
+                this.face == 2 ||
+                this.face == 5 ||
+                this.face == 8 ||
+                this.face == 14 ||
+                this.face == 20;
     }
 
     public boolean isDefendCard() {

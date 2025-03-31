@@ -66,8 +66,7 @@ public class WhotGame {
                 //removes it afterward
                 int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
                 //difficult mode
-                List<Card> specialCards = drawPile.stream().filter(card ->
-                        !card.isNormalCard()).toList();
+                List<Card> specialCards = drawPile.stream().filter(Card::isSpecialCard).toList();
                 if(mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) &&
                         probIndex != 3 &&
                         !specialCards.isEmpty())
@@ -131,8 +130,7 @@ public class WhotGame {
     {
         int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
         //difficult mode
-        List<Card> specialCards = drawPile.stream().filter(card ->
-                !card.isNormalCard()).toList();
+        List<Card> specialCards = drawPile.stream().filter(Card::isSpecialCard).toList();
         if(!drawPile.isEmpty() &&
                 mode.equalsIgnoreCase("Difficult") &&
                 probIndex != 3 &&
