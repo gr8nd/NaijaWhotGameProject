@@ -185,7 +185,7 @@ public class GamePlay
         for (int i = 0; i < maximum; i++)
         {
             builder.append(id);
-            String CSV_SEPARATOR = ",";
+            final String CSV_SEPARATOR = ",";
             if(i < humanPlayedPile.size())
             {
                 Card humanCard = humanPlayedPile.get(i);
