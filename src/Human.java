@@ -6,7 +6,7 @@ public class Human
 {
     private final boolean forceWinner;
     private final boolean verbose;
-    private int EXIT_CODE;
+    private final int EXIT_CODE = 99;
     private final WhotGame whotGame;
     private final List<Card> humanCards;
     private final GamePlay gamePlay;
@@ -87,9 +87,10 @@ public class Human
                 gamePlay.getPreviousCard().isFirstCard())
         {
             humanRequestsCard(null);
-        }else if(index == 99)
+        }else if(index == EXIT_CODE)
         {
-            EXIT_CODE = 99;
+            System.out.println("You ended the game.");
+            System.exit(0);
         }else if(index != -2)
         {
             try
@@ -115,12 +116,6 @@ public class Human
         }else
         {
             gamePlay.setIsComputerTurn(false);
-        }
-
-        if(EXIT_CODE == 99)
-        {
-            System.out.println("You ended the game.");
-            System.exit(0);
         }
     }
 
