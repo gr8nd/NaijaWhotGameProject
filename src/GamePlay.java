@@ -26,8 +26,8 @@ public class GamePlay
     private final SecureRandom rand = new SecureRandom();
     private final String mode;//the game mode, easy or difficult are available
     private final String GAME_MODE_EASY = "Easy";
-    private final HumanPlay humanPlay;
-    private final ComputerPlay computerPlay;
+    private final Human human;
+    private final Computer computer;
     private final String GAME_MODE_DIFFICULT = "Difficult";
     private final boolean forceWinner; //If true, it will ensure that there is a winner in the game, draw will not be allowed
     //so the game will run indefinitely until there is a winner.
@@ -51,8 +51,8 @@ public class GamePlay
         this.game = new WhotGame();
         this.humanCards = game.getHumanCardPile();
         this.computerCards = game.getComputerCardPile();
-        this.humanPlay = new HumanPlay(forceWinner, verbose, this.game, this.humanCards, this);
-        this.computerPlay = new ComputerPlay(forceWinner, mode, this.game, this.computerCards, this);
+        this.human = new Human(forceWinner, verbose, this.game, this.humanCards, this);
+        this.computer = new Computer(forceWinner, mode, this.game, this.computerCards, this);
         int DEFAULT_DEAL_NUMBER = 6;
         this.deal(DEFAULT_DEAL_NUMBER);
     }
@@ -71,8 +71,8 @@ public class GamePlay
         this.game = new WhotGame();
         this.humanCards = game.getHumanCardPile();
         this.computerCards = game.getComputerCardPile();
-        this.humanPlay = new HumanPlay(forceWinner, verbose, this.game, this.humanCards, this);
-        this.computerPlay = new ComputerPlay(forceWinner, mode, this.game, this.computerCards, this);
+        this.human = new Human(forceWinner, verbose, this.game, this.humanCards, this);
+        this.computer = new Computer(forceWinner, mode, this.game, this.computerCards, this);
         this.deal(number);
     }
 
@@ -128,10 +128,10 @@ public class GamePlay
         {
             if (isComputerTurn)
             {
-                computerPlay.play();
+                computer.play();
             } else
             {
-                humanPlay.play();
+                human.play();
             }
         }
 

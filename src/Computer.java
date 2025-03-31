@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class ComputerPlay
+public class Computer
 {
     private final boolean forceWinner;
     private final String mode;
@@ -12,8 +12,8 @@ public class ComputerPlay
     private final String GAME_MODE_DIFFICULT = "Difficult";
     private final List<Card> computerCards;
    private final GamePlay gamePlay;
-    public ComputerPlay(boolean forceWinner, String mode, WhotGame whotGame,
-                        List<Card> computerCards, GamePlay gamePlay)
+    public Computer(boolean forceWinner, String mode, WhotGame whotGame,
+                    List<Card> computerCards, GamePlay gamePlay)
     {
         this.forceWinner = forceWinner;
         this.mode = mode;

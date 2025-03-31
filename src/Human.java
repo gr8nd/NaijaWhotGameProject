@@ -2,7 +2,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-public class HumanPlay
+public class Human
 {
     private final boolean forceWinner;
     private final boolean verbose;
@@ -11,8 +11,8 @@ public class HumanPlay
     private final List<Card> humanCards;
     private final GamePlay gamePlay;
     private final Scanner input = new Scanner(System.in);
-    public HumanPlay(boolean forceWinner, boolean verbose,
-                     WhotGame whotGame, List<Card> humanCards, GamePlay gamePlay)
+    public Human(boolean forceWinner, boolean verbose,
+                 WhotGame whotGame, List<Card> humanCards, GamePlay gamePlay)
     {
         this.forceWinner = forceWinner;
         this.verbose = verbose;
