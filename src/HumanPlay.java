@@ -92,18 +92,24 @@ public class HumanPlay
             EXIT_CODE = 99;
         }else if(index != -2)
         {
-            //Specifically handle the last card in the pile
-            Card lastCard = humanCards.get(index-1);
-            if(humanCards.size() == 1 && (lastCard.isWhot() ||
-                    lastCard.getSuit() == gamePlay.getPreviousCard().getSuit() ||
-                    lastCard.getFace() == gamePlay.getPreviousCard().getFace() ||
-                    lastCard.getSuit() == gamePlay.getWantedSuit()))
+            try
             {
-                whotGame.play(lastCard, forceWinner);
-                System.out.println(lastCard);
-                System.out.println("Check!");
-                gamePlay.setPreviousCard(lastCard);
-                return;
+                //Specifically handle the last card in the pile
+                Card lastCard = humanCards.get(index-1);
+                if(humanCards.size() == 1 && (lastCard.isWhot() ||
+                        lastCard.getSuit() == gamePlay.getPreviousCard().getSuit() ||
+                        lastCard.getFace() == gamePlay.getPreviousCard().getFace() ||
+                        lastCard.getSuit() == gamePlay.getWantedSuit()))
+                {
+                    whotGame.play(lastCard, forceWinner);
+                    System.out.println(lastCard);
+                    System.out.println("Check!");
+                    gamePlay.setPreviousCard(lastCard);
+                    return;
+                }
+            }catch (IndexOutOfBoundsException e)
+            {
+                System.out.println("The card number you selected is invalid.");
             }
             humanNormalPlay(index-1);
         }else
