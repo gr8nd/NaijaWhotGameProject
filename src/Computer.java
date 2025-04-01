@@ -98,7 +98,6 @@ public class Computer
      */
     private void computerNormalPlay()
     {
-        boolean computerDrawingFromPile = true;
         //In Difficult mode, and in the absence of force winner mode, when game is decided by the counts
         // of players cards
         //computer has to dispose cards with large face value(numbers) first before lower values.
@@ -119,15 +118,14 @@ public class Computer
                 {
                     System.out.println("Computer has played:");
                     System.out.println(card);
-                    computerDrawingFromPile = false;
                     gamePlay.setIsComputerTurn(card.isHoldOn() || card.isSuspension());
                     whotGame.play(card, forceWinner);
                     gamePlay.setPreviousCard(card);
                     gamePlay.setWantedSuit(null);
-                    break;
+                    return;
                 }else if(card.isWhot() &&
                         gamePlay.getWantedSuit() == null &&
-                        computerCards.size() > 10)
+                        computerCards.size() > 6)
                 {
                     computerRequestsWhot();
                     System.out.println("Computer has played:");
@@ -140,12 +138,9 @@ public class Computer
             }
         }
 
-        if(computerDrawingFromPile)
-        {
-            whotGame.computerDrawFromPile(forceWinner, mode);
-            System.out.println("Computer has drawn from pile.");
-            gamePlay.setIsComputerTurn(false);
-        }
+        whotGame.computerDrawFromPile(forceWinner, mode);
+        System.out.println("Computer has drawn from pile.");
+        gamePlay.setIsComputerTurn(false);
     }
 
     private void computerPickTwo()
@@ -288,7 +283,8 @@ public class Computer
         {
             computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
         }
-        ArrayList<Card> cardArrayList = new ArrayList<>();//cards whose suits are not the same as card
+        ArrayList<Card> cardArrayList = new ArrayList<>();//non-whot cards whose suits are not the same
+        // as a card
         //currently on board i.e. cards whose suits are not the same as the suit of previousCard
         ArrayList<Card> otherCards = new ArrayList<>();
         computerCards.forEach(card ->{
@@ -306,7 +302,7 @@ public class Computer
         if(otherCards.isEmpty())
         {
             //When computer has only Whot! cards in its pile, it requests any random suit
-            //even though such a suit does not exist in its pile.
+            //even though a card with such a suit does not exist in its pile.
             Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
             int randIndex = rand.nextInt(suits.length);
             gamePlay.setWantedSuit(suits[randIndex]);
@@ -392,7 +388,7 @@ public class Computer
         if(currentIndex == wantedCardList.size()-1)
         {
             longestList.addAll(nonSeqList);
-            return !longestList.isEmpty()?longestList:wantedCardList;
+            return longestList;
         }
         currentIndex += 1;
         if(currentLongestList.size() > longestList.size())
@@ -417,6 +413,9 @@ public class Computer
         List<Card> longestList = new ArrayList<>();
         List<Card> currentList = new ArrayList<>(computerCards);
         longestList.add(currentCard);
+        currentList.remove(currentCard);//This may be redundant as currentCard may not
+        //actually be in the currentList list since the very first currentCard is the most
+        //card recently played(i.e. it might have been removed from computerCards or humanCards)
         for (int index = 0; index < currentList.size(); index++)
         {
             Card card = currentList.get(index);
