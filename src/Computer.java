@@ -11,7 +11,7 @@ public class Computer
     private final SecureRandom rand = new SecureRandom();
     private final String GAME_MODE_DIFFICULT = "Difficult";
     private final List<Card> computerCards;
-   private final GamePlay gamePlay;
+    private final GamePlay gamePlay;
     public Computer(boolean forceWinner, String mode, WhotGame whotGame,
                     List<Card> computerCards, GamePlay gamePlay)
     {
@@ -415,7 +415,7 @@ public class Computer
         longestList.add(currentCard);
         currentList.remove(currentCard);//This may be redundant as currentCard may not
         //actually be in the currentList list since the very first currentCard is the most
-        //card recently played(i.e. it might have been removed from computerCards or humanCards)
+        //recently played card(i.e. it might have been removed from computerCards or humanCards)
         for (int index = 0; index < currentList.size(); index++)
         {
             Card card = currentList.get(index);
