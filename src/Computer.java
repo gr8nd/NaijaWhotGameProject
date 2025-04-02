@@ -98,6 +98,17 @@ public class Computer
      */
     private void computerNormalPlay()
     {
+        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
+        {
+            playDifficultMode();
+        }else
+        {
+            playEasyMode();
+        }
+    }
+
+    private void playDifficultMode()
+    {
         //In Difficult mode, and in the absence of force winner mode, when game is decided by the counts
         // of players cards
         //computer has to dispose cards with large face value(numbers) first before lower values.
@@ -105,58 +116,86 @@ public class Computer
         {
             computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
         }
-
-        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
+        Card nonNextTurnCard = null;
+        List<Card> longestSequentialList = findLongestSequentialPlayList(gamePlay.getPreviousCard());
+        for (Card card : longestSequentialList)
         {
-            Card nonNextTurnCard = null;
-            List<Card> longestSequentialList = findLongestSequentialPlayList(gamePlay.getPreviousCard());
-            for (Card card : longestSequentialList)
+            if ((card.getSuit() == gamePlay.getWantedSuit() ||
+                    card.getFace() == gamePlay.getPreviousCard().getFace() ||
+                    card.getSuit() == gamePlay.getPreviousCard().getSuit()) &&
+                    !card.isWhot())
             {
-                if ((card.getSuit() == gamePlay.getWantedSuit() ||
-                        card.getFace() == gamePlay.getPreviousCard().getFace() ||
-                        card.getSuit() == gamePlay.getPreviousCard().getSuit()) &&
-                        !card.isWhot())
+                if(findNextTurnCards(longestSequentialList, card))
                 {
-                    if(findNextTurnCards(longestSequentialList, card))
-                    {
-                        System.out.println("Computer has played:");
-                        System.out.println(card);
-                        gamePlay.setIsComputerTurn(card.isHoldOn() || card.isSuspension());
-                        whotGame.play(card, forceWinner);
-                        gamePlay.setPreviousCard(card);
-                        gamePlay.setWantedSuit(null);
-                        return;
-                    }
-                    nonNextTurnCard = card;
-                }else if(card.isWhot() &&
-                        gamePlay.getWantedSuit() == null &&
-                        computerCards.size() > 6)
-                {
-                    computerRequestsWhot();
                     System.out.println("Computer has played:");
                     System.out.println(card);
+                    gamePlay.setIsComputerTurn(card.isHoldOn() || card.isSuspension());
                     whotGame.play(card, forceWinner);
-                    System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
                     gamePlay.setPreviousCard(card);
+                    gamePlay.setWantedSuit(null);
                     return;
                 }
+                nonNextTurnCard = card;
+            }else if(card.isWhot() &&
+                    gamePlay.getWantedSuit() == null &&
+                    computerCards.size() > 6)
+            {
+                computerRequestsWhot();
+                System.out.println("Computer has played:");
+                System.out.println(card);
+                whotGame.play(card, forceWinner);
+                System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
+                gamePlay.setPreviousCard(card);
+                return;
             }
+        }
 
-            if(nonNextTurnCard != null)
+        if(nonNextTurnCard != null)
+        {
+            System.out.println("Computer has played:");
+            System.out.println(nonNextTurnCard);
+            gamePlay.setIsComputerTurn(nonNextTurnCard.isHoldOn() || nonNextTurnCard.isSuspension());
+            whotGame.play(nonNextTurnCard, forceWinner);
+            gamePlay.setPreviousCard(nonNextTurnCard);
+            gamePlay.setWantedSuit(null);
+            return;
+        }
+
+        draw();
+    }
+
+    private void playEasyMode()
+    {
+        for (Card card : computerCards)
+        {
+            if ((card.getSuit() == gamePlay.getWantedSuit() ||
+                    card.getFace() == gamePlay.getPreviousCard().getFace() ||
+                    card.getSuit() == gamePlay.getPreviousCard().getSuit()) &&
+                    !card.isWhot())
             {
                 System.out.println("Computer has played:");
-                System.out.println(nonNextTurnCard);
-                gamePlay.setIsComputerTurn(nonNextTurnCard.isHoldOn() || nonNextTurnCard.isSuspension());
-                whotGame.play(nonNextTurnCard, forceWinner);
-                gamePlay.setPreviousCard(nonNextTurnCard);
+                System.out.println(card);
+                gamePlay.setIsComputerTurn(card.isHoldOn() || card.isSuspension());
+                whotGame.play(card, forceWinner);
+                gamePlay.setPreviousCard(card);
                 gamePlay.setWantedSuit(null);
+                return;
+            }else if(card.isWhot() &&
+                    gamePlay.getWantedSuit() == null &&
+                    computerCards.size() > 6)
+            {
+                computerRequestsWhot();
+                System.out.println("Computer has played:");
+                System.out.println(card);
+                whotGame.play(card, forceWinner);
+                System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
+                gamePlay.setPreviousCard(card);
                 return;
             }
         }
 
         draw();
     }
-
     private void computerPickTwo()
     {
         boolean twoPicked = true;
