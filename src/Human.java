@@ -28,6 +28,7 @@ public class Human
      */
     protected void play()
     {
+        showStats();
         int index = humanSelectCard();
         if(index == -1)
         {
@@ -126,6 +127,7 @@ public class Human
         }
         humanNormalPlay(index-1);
     }
+
     /**
      * prompt user to type what to play during the game
      * @return int an index of the card he wants to play or an instruction of the game
@@ -268,14 +270,13 @@ public class Human
         if(card.isWhot())
         {
             humanRequestsCard(card);
-        }else
-        {
-            System.out.println("You played: ");
-            System.out.println(card);
-            whotGame.play(card, forceWinner);
-            gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
-            gamePlay.setPreviousCard(card);
+            return;
         }
+        System.out.println("You played: ");
+        System.out.println(card);
+        whotGame.play(card, forceWinner);
+        gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
+        gamePlay.setPreviousCard(card);
     }
 
     private void humanPlaysWhot(Card card)
@@ -308,11 +309,10 @@ public class Human
             System.out.println(card);
             gamePlay.setPreviousCard(card);
             gamePlay.setIsComputerTurn(true);
-        }else
-        {
-            System.out.println("You selected an invalid card, draw two cards " +
-                    "from pile or play a fitting card to defend.");
+            return;
         }
+        System.out.println("You selected an invalid card, draw two cards " +
+                    "from pile or play a fitting card to defend.");
     }
 
     private void humanPickThree(int index)
@@ -328,10 +328,9 @@ public class Human
             System.out.println(card);
             gamePlay.setPreviousCard(card);
             gamePlay.setIsComputerTurn(true);
-        }else
-        {
-            System.out.println("You selected an invalid card, draw three cards " +
-                    "from pile or play a fitting card to defend.");
+            return;
         }
+        System.out.println("You selected an invalid card, draw three cards " +
+                    "from pile or play a fitting card to defend.");
     }
 }

@@ -266,7 +266,8 @@ public class Computer
         }
     }
 
-    private void draw(){
+    private void draw()
+    {
         whotGame.computerDrawFromPile(forceWinner, mode);
         gamePlay.getPreviousCard().setCardActionTaken(true);
         System.out.println("Computer has drawn from pile.");

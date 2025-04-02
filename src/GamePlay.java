@@ -51,8 +51,8 @@ public class GamePlay
         this.game = new WhotGame();
         this.humanCards = game.getHumanCardPile();
         this.computerCards = game.getComputerCardPile();
-        this.human = new Human(forceWinner, verbose, this.game, this.humanCards, this);
-        this.computer = new Computer(forceWinner, mode, this.game, this.computerCards, this);
+        this.human = new Human(forceWinner, verbose, game, humanCards, this);
+        this.computer = new Computer(forceWinner, mode, game, computerCards, this);
         int DEFAULT_DEAL_NUMBER = 6;
         this.deal(DEFAULT_DEAL_NUMBER);
     }
@@ -71,8 +71,8 @@ public class GamePlay
         this.game = new WhotGame();
         this.humanCards = game.getHumanCardPile();
         this.computerCards = game.getComputerCardPile();
-        this.human = new Human(forceWinner, verbose, this.game, this.humanCards, this);
-        this.computer = new Computer(forceWinner, mode, this.game, this.computerCards, this);
+        this.human = new Human(forceWinner, verbose, game, humanCards, this);
+        this.computer = new Computer(forceWinner, mode, game, computerCards, this);
         this.deal(number);
     }
 
@@ -139,7 +139,8 @@ public class GamePlay
         writeToCSV(csv);
     }
 
-private void displayWinner(){
+private void displayWinner()
+{
     System.out.println("Your number of cards' left: " + humanCards.size());
     System.out.println("Computer's number of cards' left: " + computerCards.size());
     if(!forceWinner)
@@ -160,7 +161,7 @@ private void displayWinner(){
     }
 }
     /**
-     * Write the current statistics of the game to file as comma-separated values (.csv)
+     * Build the current statistics of the game as comma-separated values (.csv)
      * @param humanPlayedPile a list containing all the computer cards computer has played
      *     //during the course of the game.
      * @param computerPlayedPile a list containing all the player cards the human player
@@ -256,6 +257,10 @@ private void displayWinner(){
         return builder.toString();
     }
 
+    /**
+     * Write the current statistics of the game to file as comma-separated values (.csv)
+     * @param data the csv file to write to file
+     */
     private void writeToCSV(String data)
     {
         String id = String.valueOf(System.currentTimeMillis());
