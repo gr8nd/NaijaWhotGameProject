@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -24,15 +25,18 @@ public class GameStart
         System.out.println("Play until there is a winner (i.e. no tie) Y/N?");
         String forceWinner = input.nextLine();
         System.out.println("Enter the deal number (between 2 and 26): ");
-        int dealNum = input.nextInt();
         try
         {
-            GamePlay game = new GamePlay(forceWinner.equalsIgnoreCase("Y"),
+        int dealNum = input.nextInt();
+        GamePlay game = new GamePlay(forceWinner.equalsIgnoreCase("Y"),
                     mode, dealNum, !verbose.equalsIgnoreCase("Y"));
-            game.start();
+        game.start();
         } catch (WhotGameException e)
         {
             System.out.println(e.getMessage());
+        }catch (InputMismatchException | NumberFormatException e)
+        {
+            System.out.println("Please enter correct deal number and try again.");
         }
     }
 }
