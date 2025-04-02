@@ -228,7 +228,8 @@ public class WhotGame {
         humanTheWinner = humanCardPile.isEmpty();
     }
 
-    private void refillDrawPile(){
+    private void refillDrawPile()
+    {
         //In force winner mode, which allows continuous play until there is a winner
         //if the draw pile runs out, we need to populate it with cards from the played
         //pile

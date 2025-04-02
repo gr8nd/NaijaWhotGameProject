@@ -170,8 +170,8 @@ private void displayWinner()
     private String buildCSV(List<Card> humanPlayedPile, List<Card> computerPlayedPile)
     {
         String s = "id,humansuit,humanface,humantype,humanaction,humandefendcard,humanactiontaken" +
-                "computersuit,computerface,computertype" +
-                "computeraction,computerdefendcard" +
+                "computersuit,computerface,computertype," +
+                "computeraction,computerdefendcard," +
                 "computeractiontaken,mode,forcewinner,humanwinner,computerwinner,tie";
         StringBuilder builder = new StringBuilder();
         builder.append(s);
