@@ -33,7 +33,7 @@ public class WhotGame {
     private ArrayList<Card> playedPile; //Holds the cards that are played during the course of the game
     private Card startCard;//This is first card that is displayed when the game starts
 
-    public WhotGame()
+    protected WhotGame()
     {
         NaijaWhots whots = new NaijaWhots();//creates a NaijaWhots object
         computerCardPile = new ArrayList<>();
@@ -55,32 +55,16 @@ public class WhotGame {
      * @param mode the game mode, easy or difficult are available
      * @throws WhotGameException an exception that will be thrown when an invalid deal number is provided
      */
-    public void deal(int number, String mode) throws WhotGameException
+    protected void deal(int number, String mode) throws WhotGameException
     {
         boolean isValidDeal = number >= 2 && number <= 26 && number % 2 == 0;
         if (isValidDeal)
         {
             for (int index = 0; index < number; index++)
             {
-                humanCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the playerPile and
-                //removes it afterward
-                int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
-                //difficult mode
-                List<Card> specialCards = drawPile.stream().filter(Card::isSpecialCard).toList();
-                if(mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) &&
-                        probIndex != 3 &&
-                        !specialCards.isEmpty())
-                {
-                    int randIndex = rand.nextInt(specialCards.size());
-                    Card specialCard = specialCards.get(randIndex);
-                    computerCardPile.add(specialCard);
-                    drawPile.remove(specialCard);
-                    continue;
-                }
-                computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
-                //and removes it afterward
+                dealHuman();
+                dealComputer(mode);
             }
-
         } else if (number < 0)
         {
             throw new WhotGameException("You cannot deal a negative number of cards");
@@ -96,12 +80,37 @@ public class WhotGame {
         }
     }
 
+    private void dealHuman()
+    {
+        humanCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the playerPile and
+        //removes it afterward
+    }
+
+    private void dealComputer(String mode)
+    {
+        int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
+        //difficult mode
+        List<Card> specialCards = drawPile.stream().filter(Card::isSpecialCard).toList();
+        if(mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) &&
+                probIndex != 3 &&
+                !specialCards.isEmpty())
+        {
+            int randIndex = rand.nextInt(specialCards.size());
+            Card specialCard = specialCards.get(randIndex);
+            computerCardPile.add(specialCard);
+            drawPile.remove(specialCard);
+            return;
+        }
+        computerCardPile.add(drawPile.remove(0));//adds the first card in the drawPile to the computerPile
+        //and removes it afterward
+    }
+
     /**
      * @param forceWinner if true, run the game till there is a winner
      * @param card the card object that is played, the method attempts to remove a played card from any of the card
      * piles it finds it.
      */
-    public void play(Card card, boolean forceWinner)
+    protected void play(Card card, boolean forceWinner)
     {
         if(computerCardPile.remove(card))
         {
@@ -126,7 +135,7 @@ public class WhotGame {
      * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
      * else there must have been a winner, it therefor sets the winner to true
      */
-    public void computerDrawFromPile(boolean forceWinner, String mode)
+    protected void computerDrawFromPile(boolean forceWinner, String mode)
     {
         int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
         //difficult mode
@@ -151,7 +160,7 @@ public class WhotGame {
      * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
      * else there must have been a winner, it therefor sets thereIsAWinner to true
      */
-    public void humanDrawFromPile(boolean forceWinner)
+    protected void humanDrawFromPile(boolean forceWinner)
     {
         if(!drawPile.isEmpty())
         {
@@ -165,7 +174,7 @@ public class WhotGame {
      * @param card a card to be played or that has been played. The method checks whether the card is one of the six
      * special cards and issues the appropriate rule on the card
      */
-    public void rule(Card card)
+    private void rule(Card card)
     {
         if (card.isHoldOn())
         {
@@ -198,29 +207,13 @@ public class WhotGame {
      * If it is the drawPile that runs out of card, a winner is decided by counting the face values of each player's
      * cards. Any player that has the lowest count wins.
      */
-    public void checkWinner(boolean forceWinner)
+    private void checkWinner(boolean forceWinner)
     {
         if(drawPile.isEmpty())
         {
             if (forceWinner)
             {
-                //In force winner mode, which allows continuous play until there is a winner
-                //if the draw pile runs out, we need to populate it with cards from the played
-                //pile
-                ArrayList<Card> list = new ArrayList<>();
-                for(int i =0; i < playedPile.size()-1; i++)
-                {
-                    Card card = playedPile.get(i);
-                    //first reset all cards but the last played card to their default values
-                    card.setFirstCard(false);
-                    card.setCardActionTaken(false);
-                    card.setDefendCard(false);
-                    list.add(card);
-                }
-                drawPile.addAll(list);
-                Collections.shuffle(drawPile);
-                playedPile.clear();
-                list.clear();
+                refillDrawPile();
             }else
             {
                 countHumanCards();
@@ -229,16 +222,35 @@ public class WhotGame {
                 computerTheWinner = playerCounter > computerCounter;
                 isTie = computerCounter == playerCounter;
             }
-        }else
-        {
-            computerTheWinner = computerCardPile.isEmpty();
-            humanTheWinner = humanCardPile.isEmpty();
+            return;
         }
+        computerTheWinner = computerCardPile.isEmpty();
+        humanTheWinner = humanCardPile.isEmpty();
+    }
+
+    private void refillDrawPile(){
+        //In force winner mode, which allows continuous play until there is a winner
+        //if the draw pile runs out, we need to populate it with cards from the played
+        //pile
+        ArrayList<Card> list = new ArrayList<>();
+        for(int i =0; i < playedPile.size()-1; i++)
+        {
+            Card card = playedPile.get(i);
+            //first reset all cards but the last played card to their default values
+            card.setFirstCard(false);
+            card.setCardActionTaken(false);
+            card.setDefendCard(false);
+            list.add(card);
+        }
+        drawPile.addAll(list);
+        Collections.shuffle(drawPile);
+        playedPile.clear();
+        list.clear();
     }
     /***
      * Count the face values of human cards after the draw pile has been exhausted.
      */
-    public void countHumanCards()
+    private void countHumanCards()
     {
         playerCounter = 0;//reset counter each time it is called
         humanCardPile.forEach(card ->{
@@ -256,7 +268,7 @@ public class WhotGame {
     /***
      * Count the face values of computer cards after the draw pile has been exhausted.
      */
-    public void countComputerCards()
+    private void countComputerCards()
     {
         computerCounter = 0;//reset counter each time it is called
         computerCardPile.forEach(card ->{

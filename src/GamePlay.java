@@ -39,7 +39,7 @@ public class GamePlay
      * @param mode the game mode, easy or difficult are available
      * @param forceWinner if true, run the game till there is a winner
      */
-    public GamePlay(boolean forceWinner, String mode, boolean verbose) throws WhotGameException
+    protected GamePlay(boolean forceWinner, String mode, boolean verbose) throws WhotGameException
     {
         if(!mode.equalsIgnoreCase(GAME_MODE_EASY) && !mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
         {
@@ -60,7 +60,7 @@ public class GamePlay
     /**
      * @param number a deal number
      */
-    public GamePlay(boolean forceWinner, String mode, int number, boolean verbose) throws WhotGameException
+    protected GamePlay(boolean forceWinner, String mode, int number, boolean verbose) throws WhotGameException
     {
         if(!mode.equalsIgnoreCase(GAME_MODE_EASY) && !mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
         {
@@ -134,28 +134,31 @@ public class GamePlay
                 human.play();
             }
         }
-
-        System.out.println("Your number of cards' left: " + humanCards.size());
-        System.out.println("Computer's number of cards' left: " + computerCards.size());
-        if(!forceWinner)
-        {
-            System.out.println("Your cards' face count: " + game.getPlayerCounter());
-            System.out.println("Computer's cards' face count: " + game.getComputerCounter());
-        }
-
-        if(game.isHumanTheWinner())
-        {
-            System.out.println("Game Over!!!\nYou win!");
-        }else if(game.isComputerTheWinner())
-        {
-            System.out.println("Game Over!!!\nYou lose!");
-        }else
-        {
-            System.out.println("Game Over!!!\nIt is a tie!");
-        }
-        this.writeToCSV(game.getHumanPlayedPile(), game.getComputerPlayedPile());
+        displayWinner();
+        String csv =  buildCSV(game.getHumanPlayedPile(), game.getComputerPlayedPile());
+        writeToCSV(csv);
     }
 
+private void displayWinner(){
+    System.out.println("Your number of cards' left: " + humanCards.size());
+    System.out.println("Computer's number of cards' left: " + computerCards.size());
+    if(!forceWinner)
+    {
+        System.out.println("Your cards' face count: " + game.getPlayerCounter());
+        System.out.println("Computer's cards' face count: " + game.getComputerCounter());
+    }
+
+    if(game.isHumanTheWinner())
+    {
+        System.out.println("Game Over!!!\nYou win!");
+    }else if(game.isComputerTheWinner())
+    {
+        System.out.println("Game Over!!!\nYou lose!");
+    }else
+    {
+        System.out.println("Game Over!!!\nIt is a tie!");
+    }
+}
     /**
      * Write the current statistics of the game to file as comma-separated values (.csv)
      * @param humanPlayedPile a list containing all the computer cards computer has played
@@ -163,16 +166,8 @@ public class GamePlay
      * @param computerPlayedPile a list containing all the player cards the human player
      *     //has played during the course of the game.
      */
-    private void writeToCSV(List<Card> humanPlayedPile, List<Card> computerPlayedPile)
+    private String buildCSV(List<Card> humanPlayedPile, List<Card> computerPlayedPile)
     {
-        String id = String.valueOf(System.currentTimeMillis());
-        String name = "whot" + id + ".csv";
-        String fileName = System.getProperty("user.dir") + File.separator + "whots";
-        File file = new File(fileName);
-        if(!file.exists())
-        {
-            file.mkdir();
-        }
         String s = "id,humansuit,humanface,humantype,humanaction,humandefendcard,humanactiontaken" +
                 "computersuit,computerface,computertype" +
                 "computeraction,computerdefendcard" +
@@ -258,11 +253,24 @@ public class GamePlay
             builder.append(game.isTie());
             builder.append("\n\n");
         }
+        return builder.toString();
+    }
+
+    private void writeToCSV(String data)
+    {
+        String id = String.valueOf(System.currentTimeMillis());
+        String name = "whot" + id + ".csv";
+        String fileName = System.getProperty("user.dir") + File.separator + "whots";
+        File file = new File(fileName);
+        if(!file.exists())
+        {
+            file.mkdir();
+        }
         try
         {
             OutputStream fileOutputStream = new FileOutputStream(new
                     File(String.valueOf(file), name));
-            fileOutputStream.write(builder.toString().getBytes());
+            fileOutputStream.write(data.getBytes());
             fileOutputStream.flush();
             fileOutputStream.close();
         }catch (Exception e)

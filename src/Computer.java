@@ -12,7 +12,7 @@ public class Computer
     private final String GAME_MODE_DIFFICULT = "Difficult";
     private final List<Card> computerCards;
     private final GamePlay gamePlay;
-    public Computer(boolean forceWinner, String mode, WhotGame whotGame,
+    protected Computer(boolean forceWinner, String mode, WhotGame whotGame,
                     List<Card> computerCards, GamePlay gamePlay)
     {
         this.forceWinner = forceWinner;
@@ -27,7 +27,7 @@ public class Computer
      * should relinquish
      * turn to the human.
      */
-    public void play()
+    protected void play()
     {
         //Specially handle the last card in the pile
         Card lastCard = computerCards.get(0);
@@ -137,10 +137,7 @@ public class Computer
                 }
             }
         }
-
-        whotGame.computerDrawFromPile(forceWinner, mode);
-        System.out.println("Computer has drawn from pile.");
-        gamePlay.setIsComputerTurn(false);
+        draw();
     }
 
     private void computerPickTwo()
@@ -264,12 +261,16 @@ public class Computer
                 gamePlay.setPreviousCard(neededCard);
             }else
             {
-                whotGame.computerDrawFromPile(forceWinner, mode);
-                gamePlay.getPreviousCard().setCardActionTaken(true);
-                System.out.println("Computer has drawn from pile.");
-                gamePlay.setIsComputerTurn(false);
+                draw();
             }
         }
+    }
+
+    private void draw(){
+        whotGame.computerDrawFromPile(forceWinner, mode);
+        gamePlay.getPreviousCard().setCardActionTaken(true);
+        System.out.println("Computer has drawn from pile.");
+        gamePlay.setIsComputerTurn(false);
     }
 
     /**

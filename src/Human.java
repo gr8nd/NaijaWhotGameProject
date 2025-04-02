@@ -11,7 +11,7 @@ public class Human
     private final List<Card> humanCards;
     private final GamePlay gamePlay;
     private final Scanner input = new Scanner(System.in);
-    public Human(boolean forceWinner, boolean verbose,
+    protected Human(boolean forceWinner, boolean verbose,
                  WhotGame whotGame, List<Card> humanCards, GamePlay gamePlay)
     {
         this.forceWinner = forceWinner;
@@ -26,16 +26,8 @@ public class Human
      * finish playing this method should hand over
      * turn to the computer.
      */
-    public void play()
+    protected void play()
     {
-        System.out.println("The current Draw Pile count: " + whotGame.getDrawPile().size());
-        System.out.println("The card on board is:");
-        System.out.println(gamePlay.getPreviousCard().toString());
-        if(gamePlay.getPreviousCard().isWhot() && gamePlay.getWantedSuit() != null)
-        {
-            System.out.println("The wanted card is: *** " + gamePlay.getWantedSuit() + " ***");
-        }
-
         int index = humanSelectCard();
         if(index == -1)
         {
@@ -93,32 +85,47 @@ public class Human
             System.exit(0);
         }else if(index != -2)
         {
-            try
-            {
-                //Specifically handle the last card in the pile
-                Card lastCard = humanCards.get(index-1);
-                if(humanCards.size() == 1 && (lastCard.isWhot() ||
-                        lastCard.getSuit() == gamePlay.getPreviousCard().getSuit() ||
-                        lastCard.getFace() == gamePlay.getPreviousCard().getFace() ||
-                        lastCard.getSuit() == gamePlay.getWantedSuit()))
-                {
-                    whotGame.play(lastCard, forceWinner);
-                    System.out.println(lastCard);
-                    System.out.println("Check!");
-                    gamePlay.setPreviousCard(lastCard);
-                    return;
-                }
-            }catch (IndexOutOfBoundsException e)
-            {
-                System.out.println("The card number you selected is invalid.");
-            }
-            humanNormalPlay(index-1);
+           playCard(index);
         }else
         {
             gamePlay.setIsComputerTurn(false);
         }
     }
 
+    private void showStats()
+    {
+        System.out.println("The current Draw Pile count: " + whotGame.getDrawPile().size());
+        System.out.println("The card on board is:");
+        System.out.println(gamePlay.getPreviousCard().toString());
+        if(gamePlay.getPreviousCard().isWhot() && gamePlay.getWantedSuit() != null)
+        {
+            System.out.println("The wanted card is: *** " + gamePlay.getWantedSuit() + " ***");
+        }
+    }
+
+    private void playCard(int index)
+    {
+        try
+        {
+            //Specifically handle the last card in the pile
+            Card lastCard = humanCards.get(index-1);
+            if(humanCards.size() == 1 && (lastCard.isWhot() ||
+                    lastCard.getSuit() == gamePlay.getPreviousCard().getSuit() ||
+                    lastCard.getFace() == gamePlay.getPreviousCard().getFace() ||
+                    lastCard.getSuit() == gamePlay.getWantedSuit()))
+            {
+                whotGame.play(lastCard, forceWinner);
+                System.out.println(lastCard);
+                System.out.println("Check!");
+                gamePlay.setPreviousCard(lastCard);
+                return;
+            }
+        }catch (IndexOutOfBoundsException e)
+        {
+            System.out.println("The card number you selected is invalid.");
+        }
+        humanNormalPlay(index-1);
+    }
     /**
      * prompt user to type what to play during the game
      * @return int an index of the card he wants to play or an instruction of the game
@@ -127,29 +134,7 @@ public class Human
     {
         try
         {
-            System.out.println("You have " + (humanCards.size()>1?humanCards.size()+
-                    " cards":humanCards.size() + " card") + " in your pile.");
-            System.out.println("This is your card list:");
-            StringBuilder builder = new StringBuilder();
-            if(verbose)
-            {
-                for (int i = 0; i < humanCards.size(); i++)
-                {
-                    String s = ">> " + (i + 1) + " \n";
-                    String c = humanCards.get(i).toString();
-                    builder.append(s).append(c).append("\n");
-                }
-            }else
-            {
-                for (int i = 0; i < humanCards.size(); i++)
-                {
-                    String s = "(" + (i + 1) + ") " +
-                            humanCards.get(i).getFace() + " " + humanCards.get(i).getSuit();
-                    builder.append(s).append(" ");
-                }
-            }
-
-            System.out.println(builder);
+            System.out.println(displayHumanCards());
             if(gamePlay.getPreviousCard().isWhot() && gamePlay.getPreviousCard().isFirstCard())
             {
                 System.out.println("Enter 0 to request a card or 99 to end the game.." );
@@ -169,6 +154,32 @@ public class Human
             System.out.println("Select a valid card number.");
             return -2;
         }
+    }
+
+    private String displayHumanCards()
+    {
+        System.out.println("You have " + (humanCards.size()>1?humanCards.size()+
+                " cards":humanCards.size() + " card") + " in your pile.");
+        System.out.println("This is your card list:");
+        StringBuilder builder = new StringBuilder();
+        if(verbose)
+        {
+            for (int i = 0; i < humanCards.size(); i++)
+            {
+                String s = ">> " + (i + 1) + " \n";
+                String c = humanCards.get(i).toString();
+                builder.append(s).append(c).append("\n");
+            }
+        }else
+        {
+            for (int i = 0; i < humanCards.size(); i++)
+            {
+                String s = "(" + (i + 1) + ") " +
+                        humanCards.get(i).getFace() + " " + humanCards.get(i).getSuit();
+                builder.append(s).append(" ");
+            }
+        }
+        return builder.toString();
     }
 
     private void humanRequestsCard(Card card)
@@ -210,7 +221,6 @@ public class Human
             whotGame.play(card, forceWinner);
             gamePlay.setPreviousCard(card);
         }
-
         System.out.println("You need *** " + gamePlay.getWantedSuit() + " ***");
         gamePlay.setIsComputerTurn(true);
     }
@@ -226,19 +236,7 @@ public class Human
             Card card = humanCards.get(index);
             if(gamePlay.getPreviousCard().isWhot())
             {
-                if(card.isWhot())
-                {
-                    humanRequestsCard(card);
-                }else if(!card.isWhot() &&
-                        card.getSuit() == gamePlay.getWantedSuit())
-                {
-                    System.out.println("You played: ");
-                    System.out.println(card);
-                    whotGame.play(card, forceWinner);
-                    gamePlay.setPreviousCard(card);
-                    gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
-                    gamePlay.setWantedSuit(null);
-                }
+               humanPlaysWhot(card);
             }else if(gamePlay.getPreviousCard().isPickTwo() &&
                     !gamePlay.getPreviousCard().isCardActionTaken())
             {
@@ -255,17 +253,7 @@ public class Human
                     card.getFace() == gamePlay.getPreviousCard().getFace() ||
                     card.isWhot())
             {
-                if(card.isWhot())
-                {
-                    humanRequestsCard(card);
-                }else
-                {
-                    System.out.println("You played: ");
-                    System.out.println(card);
-                    whotGame.play(card, forceWinner);
-                    gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
-                    gamePlay.setPreviousCard(card);
-                }
+               humanPlayCard(card);
             }
         } catch (IndexOutOfBoundsException e)
         {
@@ -273,6 +261,37 @@ public class Human
         }catch (InputMismatchException | NumberFormatException e)
         {
             System.out.println("Select a valid card number.");
+        }
+    }
+
+    private void humanPlayCard(Card card){
+        if(card.isWhot())
+        {
+            humanRequestsCard(card);
+        }else
+        {
+            System.out.println("You played: ");
+            System.out.println(card);
+            whotGame.play(card, forceWinner);
+            gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
+            gamePlay.setPreviousCard(card);
+        }
+    }
+
+    private void humanPlaysWhot(Card card)
+    {
+        if(card.isWhot())
+        {
+            humanRequestsCard(card);
+        }else if(!card.isWhot() &&
+                card.getSuit() == gamePlay.getWantedSuit())
+        {
+            System.out.println("You played: ");
+            System.out.println(card);
+            whotGame.play(card, forceWinner);
+            gamePlay.setPreviousCard(card);
+            gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
+            gamePlay.setWantedSuit(null);
         }
     }
 

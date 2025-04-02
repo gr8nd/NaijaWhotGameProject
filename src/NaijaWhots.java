@@ -26,8 +26,8 @@ public class NaijaWhots
     {
         //Initialise Circle and Triangle together because they have the same number of
         //faces
-        int[] facesOfCirclesAndTriangles = {1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14};
-        for (int face : facesOfCirclesAndTriangles) {
+        int[] facesOfCircleAndTriangle = {1, 2, 3, 4, 5, 7, 8, 10, 11, 12, 13, 14};
+        for (int face : facesOfCircleAndTriangle) {
             Card circle = new Card(Suit.CIRCLE, face);
             pack.add(circle);
             Card triangle = new Card(Suit.TRIANGLE, face);
@@ -36,8 +36,8 @@ public class NaijaWhots
 
         //Initialise Cross and Square together because they have the same number of
         //faces
-        int[] facesOfCrossesAndSquares = {1, 2, 3, 5, 7, 10, 11, 13, 14};
-        for (int face : facesOfCrossesAndSquares)
+        int[] facesOfCrosAndSquare = {1, 2, 3, 5, 7, 10, 11, 13, 14};
+        for (int face : facesOfCrosAndSquare)
         {
             Card cross = new Card(Suit.CROSS, face);
             pack.add(cross);
@@ -45,11 +45,11 @@ public class NaijaWhots
             pack.add(square);
         }
 
-        //Star is initialised alone because it has its own number of faces
-        int[] facesOfStars = {1, 2, 3, 4, 5, 7, 8};
-        for (int facesOfStar : facesOfStars)
+        //Star is initialised alone because it has its own unique number of faces
+        int[] facesOfStar = {1, 2, 3, 4, 5, 7, 8};
+        for (int faceOfStar : facesOfStar)
         {
-            Card card = new Card(Suit.STAR, facesOfStar);
+            Card card = new Card(Suit.STAR, faceOfStar);
             pack.add(card);
         }
 
