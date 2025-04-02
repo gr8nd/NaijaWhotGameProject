@@ -2,7 +2,6 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * The logic of the Whot game starts here in the WhotGame class

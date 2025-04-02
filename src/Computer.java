@@ -108,6 +108,7 @@ public class Computer
 
         if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT))
         {
+            Card nonNextTurnCard = null;
             List<Card> longestSequentialList = findLongestSequentialPlayList(gamePlay.getPreviousCard());
             for (Card card : longestSequentialList)
             {
@@ -116,13 +117,17 @@ public class Computer
                         card.getSuit() == gamePlay.getPreviousCard().getSuit()) &&
                         !card.isWhot())
                 {
-                    System.out.println("Computer has played:");
-                    System.out.println(card);
-                    gamePlay.setIsComputerTurn(card.isHoldOn() || card.isSuspension());
-                    whotGame.play(card, forceWinner);
-                    gamePlay.setPreviousCard(card);
-                    gamePlay.setWantedSuit(null);
-                    return;
+                    if(findNextTurnCards(longestSequentialList, card))
+                    {
+                        System.out.println("Computer has played:");
+                        System.out.println(card);
+                        gamePlay.setIsComputerTurn(card.isHoldOn() || card.isSuspension());
+                        whotGame.play(card, forceWinner);
+                        gamePlay.setPreviousCard(card);
+                        gamePlay.setWantedSuit(null);
+                        return;
+                    }
+                    nonNextTurnCard = card;
                 }else if(card.isWhot() &&
                         gamePlay.getWantedSuit() == null &&
                         computerCards.size() > 6)
@@ -136,7 +141,19 @@ public class Computer
                     return;
                 }
             }
+
+            if(nonNextTurnCard != null)
+            {
+                System.out.println("Computer has played:");
+                System.out.println(nonNextTurnCard);
+                gamePlay.setIsComputerTurn(nonNextTurnCard.isHoldOn() || nonNextTurnCard.isSuspension());
+                whotGame.play(nonNextTurnCard, forceWinner);
+                gamePlay.setPreviousCard(nonNextTurnCard);
+                gamePlay.setWantedSuit(null);
+                return;
+            }
         }
+
         draw();
     }
 
@@ -350,7 +367,6 @@ public class Computer
         gamePlay.setIsComputerTurn(false);
     }
 
-
     /**
      * Computer needs to find the card it will play to get the longest
      * sequential play. This is necessary to maximize its winning
@@ -434,5 +450,22 @@ public class Computer
         longestList.remove(0);//remove the first element because it is the 'previousCard' played
         longestList.addAll(currentList);
         return longestList;
+    }
+
+    /**
+     * Before playing a card, computer wants to find a card it will play
+     * so that it will be able to play next turn without being forced to draw from pile
+     * so it will need to play a card whose face or suit it still has in its pile.
+     * @param cardToPlay a card computer wants to check if it still has another card with
+     * the same suit or face before playing it.
+     * @param list computer card list to check for the other cards.
+     * @return true if such a card exists, false otherwise.
+     */
+    private boolean findNextTurnCards(List<Card> list, Card  cardToPlay)
+    {
+        List<Card> similarCards = list.stream().filter(card ->
+            card.getFace()==cardToPlay.getFace() || card.getSuit()==cardToPlay.getSuit()
+        ).toList();
+        return !similarCards.isEmpty();
     }
 }
