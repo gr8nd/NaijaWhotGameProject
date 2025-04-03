@@ -140,7 +140,7 @@ public class Computer
                     gamePlay.getWantedSuit() == null &&
                     computerCards.size() > 6)
             {
-                computerRequestsWhot(card, true);
+                computerRequestsWhot(card);
                 return;
             }
         }
@@ -179,7 +179,7 @@ public class Computer
                     gamePlay.getWantedSuit() == null &&
                     computerCards.size() > 6)
             {
-                computerRequestsWhot(card, true);
+                computerRequestsWhot(card);
                 return;
             }
         }
@@ -264,7 +264,6 @@ public class Computer
             {
                 whotCard = card;
                 playedWhot = true;
-                break;
             } else if(card.getSuit() == gamePlay.getWantedSuit())
             {
                 wantedSuits.add(card);
@@ -276,34 +275,32 @@ public class Computer
             }
         }
 
-        if (playedWhot)
+        if(nonWhotCards.isEmpty())
         {
-            computerRequestsWhot(whotCard, false);
+            //When computer has only Whot! cards in its pile, it requests any random suit
+            //even though a card with such a suit does not exist in its pile.
+            Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
+            int randIndex = rand.nextInt(suits.length);
+            gamePlay.setWantedSuit(suits[randIndex]);
+            whotGame.play(nonWhotCards.get(0), forceWinner);
+            System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
+            gamePlay.setIsComputerTurn(false);
+        }else if(!wantedSuits.isEmpty())
+        {
+            int randomIndex = rand.nextInt(wantedSuits.size());
+            Card neededCard = wantedSuits.get(randomIndex);
+            System.out.println("Computer has played:");
+            System.out.println(neededCard.toString());
+            whotGame.play(neededCard, forceWinner);
+            gamePlay.setWantedSuit(null);
+            gamePlay.setIsComputerTurn(neededCard.isHoldOn() || neededCard.isSuspension());
+            gamePlay.setPreviousCard(neededCard);
+        }else if(playedWhot)
+        {
+            computerRequestsWhot(whotCard);
         }else
         {
-            if(nonWhotCards.isEmpty())
-            {
-                //When computer has only Whot! cards in its pile, it requests any random suit
-                //even though a card with such a suit does not exist in its pile.
-                Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
-                int randIndex = rand.nextInt(suits.length);
-                gamePlay.setWantedSuit(suits[randIndex]);
-                System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
-                gamePlay.setIsComputerTurn(false);
-            }else if(!wantedSuits.isEmpty())
-            {
-                int randomIndex = rand.nextInt(wantedSuits.size());
-                Card neededCard = wantedSuits.get(randomIndex);
-                System.out.println("Computer has played:");
-                System.out.println(neededCard.toString());
-                whotGame.play(neededCard, forceWinner);
-                gamePlay.setWantedSuit(null);
-                gamePlay.setIsComputerTurn(neededCard.isHoldOn() || neededCard.isSuspension());
-                gamePlay.setPreviousCard(neededCard);
-            }else
-            {
-                draw();
-            }
+            draw();
         }
     }
 
@@ -318,7 +315,7 @@ public class Computer
     /**
      * Requests a card for human player to play
      */
-    private void computerRequestsWhot(Card whotCard, boolean normal)
+    private void computerRequestsWhot(Card whotCard)
     {
         //In Difficult mode, and in the absence of force winner mode, when game is decided by the counts of players cards
         //computer has to request cards with large face value(numbers) first before lower values.
@@ -391,17 +388,6 @@ public class Computer
             gamePlay.setWantedSuit(cardArrayList.get(0).getSuit());
             gamePlay.setIsComputerTurn(false);
             displayComputerWantedCard(whotCard);
-        }else if(normal)
-        {
-            //If all cards are the same as card on board, computer does not have to waste a Whot
-            //card it will just play any non-Whot card i.e. computer will not request any card
-            //but rather play any available card
-            System.out.println("Computer has played:");
-            Card card = otherCards.get(0);
-            System.out.println(card);
-            whotGame.play(card, forceWinner);
-            gamePlay.setPreviousCard(card);
-            gamePlay.setIsComputerTurn(card.isHoldOn() || card.isSuspension());
         }
     }
 
