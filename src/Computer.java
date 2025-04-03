@@ -297,10 +297,10 @@ public class Computer
             gamePlay.setPreviousCard(neededCard);
         }else if(playedWhot)
         {
-            computerRequestsWhot(whotCard);
-        }else
-        {
-            draw();
+            if(!computerRequestsWhot(whotCard))
+            {
+                draw();
+            }
         }
     }
 
@@ -315,7 +315,7 @@ public class Computer
     /**
      * Requests a card for human player to play
      */
-    private void computerRequestsWhot(Card whotCard)
+    private boolean computerRequestsWhot(Card whotCard)
     {
         //In Difficult mode, and in the absence of force winner mode, when game is decided by the counts of players cards
         //computer has to request cards with large face value(numbers) first before lower values.
@@ -352,7 +352,7 @@ public class Computer
             gamePlay.setPreviousCard(whotCard);
             gamePlay.setWantedSuit(wantedSuit);
             gamePlay.setIsComputerTurn(false);
-            return;
+            return true;
         }
 
         //In difficult mode, when computer draw  pile is about to be exhausted, computer will have to
@@ -371,7 +371,7 @@ public class Computer
                 gamePlay.setWantedSuit(list.get(0).getSuit());
                 gamePlay.setIsComputerTurn(false);
                 displayComputerWantedCard(whotCard);
-                return;
+                return true;
             }
             List<Card> longestList = new ArrayList<>();
             List<Card> nonSeqList = new ArrayList<>();
@@ -380,7 +380,7 @@ public class Computer
             gamePlay.setWantedSuit(list.get(0).getSuit());
             gamePlay.setIsComputerTurn(false);
             displayComputerWantedCard(whotCard);
-            return;
+            return true;
         }
 
         if(!cardArrayList.isEmpty())
@@ -388,7 +388,9 @@ public class Computer
             gamePlay.setWantedSuit(cardArrayList.get(0).getSuit());
             gamePlay.setIsComputerTurn(false);
             displayComputerWantedCard(whotCard);
+            return true;
         }
+        return false;
     }
 
     private void displayComputerWantedCard(Card whotCard)
