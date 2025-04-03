@@ -140,12 +140,7 @@ public class Computer
                     gamePlay.getWantedSuit() == null &&
                     computerCards.size() > 6)
             {
-                computerRequestsWhot();
-                System.out.println("Computer has played:");
-                System.out.println(card);
-                whotGame.play(card, forceWinner);
-                System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
-                gamePlay.setPreviousCard(card);
+                computerRequestsWhot(card, true);
                 return;
             }
         }
@@ -184,12 +179,7 @@ public class Computer
                     gamePlay.getWantedSuit() == null &&
                     computerCards.size() > 6)
             {
-                computerRequestsWhot();
-                System.out.println("Computer has played:");
-                System.out.println(card);
-                whotGame.play(card, forceWinner);
-                System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
-                gamePlay.setPreviousCard(card);
+                computerRequestsWhot(card, true);
                 return;
             }
         }
@@ -288,12 +278,7 @@ public class Computer
 
         if (playedWhot)
         {
-            computerRequestsWhot();
-            System.out.println("Computer has played: ");
-            System.out.println(whotCard);
-            whotGame.play(whotCard, forceWinner);
-            System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
-            gamePlay.setPreviousCard(whotCard);
+            computerRequestsWhot(whotCard, false);
         }else
         {
             if(nonWhotCards.isEmpty())
@@ -333,7 +318,7 @@ public class Computer
     /**
      * Requests a card for human player to play
      */
-    private void computerRequestsWhot()
+    private void computerRequestsWhot(Card whotCard, boolean normal)
     {
         //In Difficult mode, and in the absence of force winner mode, when game is decided by the counts of players cards
         //computer has to request cards with large face value(numbers) first before lower values.
@@ -342,8 +327,7 @@ public class Computer
             computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
         }
         ArrayList<Card> cardArrayList = new ArrayList<>();//non-whot cards whose suits are not the same
-        // as a card
-        //currently on board i.e. cards whose suits are not the same as the suit of previousCard
+        // as a card currently on board i.e. cards whose suits are not the same as the suit of previousCard
         ArrayList<Card> otherCards = new ArrayList<>();
         computerCards.forEach(card ->{
             if (!card.isWhot() &&
@@ -363,7 +347,13 @@ public class Computer
             //even though a card with such a suit does not exist in its pile.
             Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
             int randIndex = rand.nextInt(suits.length);
-            gamePlay.setWantedSuit(suits[randIndex]);
+            Suit wantedSuit = suits[randIndex];
+            System.out.println("Computer has played:");
+            System.out.println(whotCard);
+            whotGame.play(whotCard, forceWinner);
+            System.out.println("Computer needs *** " + wantedSuit + " ***");
+            gamePlay.setPreviousCard(whotCard);
+            gamePlay.setWantedSuit(wantedSuit);
             gamePlay.setIsComputerTurn(false);
             return;
         }
@@ -371,11 +361,11 @@ public class Computer
         //In difficult mode, when computer draw  pile is about to be exhausted, computer will have to
         //request special cards to increase its winning potential and find a card to start with to
         // give the longest sequential play.
-        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) &&
-                computerCards.size() < 7 && !cardArrayList.isEmpty())
+        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT)  && !cardArrayList.isEmpty())
         {
             List<Card> specialCards = cardArrayList.stream().filter(Card::isSpecialCard).toList();
-            if(!specialCards.isEmpty())
+            if(!specialCards.isEmpty() &&
+                    computerCards.size() < 7)
             {
                 List<Card> longestList = new ArrayList<>();
                 List<Card> nonSeqList = new ArrayList<>();
@@ -383,19 +373,45 @@ public class Computer
                         0, longestList, nonSeqList);
                 gamePlay.setWantedSuit(list.get(0).getSuit());
                 gamePlay.setIsComputerTurn(false);
+                displayComputerWantedCard(whotCard);
                 return;
             }
-        }
-
-        if(!cardArrayList.isEmpty())
-        {
             List<Card> longestList = new ArrayList<>();
             List<Card> nonSeqList = new ArrayList<>();
             List<Card> list = findLongestSequentialPlayList(cardArrayList,
                     0, longestList, nonSeqList);
             gamePlay.setWantedSuit(list.get(0).getSuit());
             gamePlay.setIsComputerTurn(false);
+            displayComputerWantedCard(whotCard);
+            return;
         }
+
+        if(!cardArrayList.isEmpty())
+        {
+            gamePlay.setWantedSuit(cardArrayList.get(0).getSuit());
+            gamePlay.setIsComputerTurn(false);
+            displayComputerWantedCard(whotCard);
+        }else if(normal)
+        {
+            //If all cards are the same as card on board, computer does not have to waste a Whot
+            //card it will just play any non-Whot card i.e. computer will not request any card
+            //but rather play any available card
+            System.out.println("Computer has played:");
+            Card card = otherCards.get(0);
+            System.out.println(card);
+            whotGame.play(card, forceWinner);
+            gamePlay.setPreviousCard(card);
+            gamePlay.setIsComputerTurn(card.isHoldOn() || card.isSuspension());
+        }
+    }
+
+    private void displayComputerWantedCard(Card whotCard)
+    {
+        System.out.println("Computer has played:");
+        System.out.println(whotCard);
+        whotGame.play(whotCard, forceWinner);
+        System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
+        gamePlay.setPreviousCard(whotCard);
     }
 
     private void computerGoMarket()
