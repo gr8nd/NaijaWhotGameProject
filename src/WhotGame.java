@@ -44,8 +44,7 @@ public class WhotGame {
         Card[] pack = new Card[54];
         pack = whots.getPack().toArray(pack);//gets the initialised and shuffled pack from the NaijaWhots class
         Collections.addAll(drawPile, pack);
-        startCard = drawPile.get(0);//get the first card as the start card
-        playedPile.add(startCard);
+        startCard = drawPile.remove(0);//get the first card as the start card and remove it
     }
 
     /**
@@ -123,9 +122,10 @@ public class WhotGame {
         {
             System.out.println("Last card!");
         }
+
         rule(card);
-        checkWinner(forceWinner);
         playedPile.add(card);
+        checkWinner(forceWinner);
     }
 
     /**

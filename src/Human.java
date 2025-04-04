@@ -67,7 +67,7 @@ public class Human
                 gamePlay.getPreviousCard().isWhot() &&
                 gamePlay.getPreviousCard().isFirstCard())
         {
-            humanRequestsCard(null);
+            humanRequestsCard(gamePlay.getPreviousCard());
         }else if(index == EXIT_CODE)
         {
             System.out.println("You ended the game.");
@@ -206,13 +206,8 @@ public class Human
             System.out.println("You made an invalid selection, please select a card you need.");
             return;
         }
-        if(card != null)
-        {
-            System.out.println("You played: ");
-            System.out.println(card);
-            whotGame.play(card, forceWinner);
-            gamePlay.setPreviousCard(card);
-        }
+
+        System.out.println("You played: ");
         whotGame.play(card, forceWinner);
         System.out.println("You need *** " + gamePlay.getWantedSuit() + " ***");
         gamePlay.setPreviousCard(card);
