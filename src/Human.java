@@ -225,6 +225,7 @@ public class Human
             whotGame.play(card, forceWinner);
             gamePlay.setPreviousCard(card);
         }
+        whotGame.play(card, forceWinner);
         System.out.println("You need *** " + gamePlay.getWantedSuit() + " ***");
         gamePlay.setPreviousCard(card);
         gamePlay.setIsComputerTurn(true);
