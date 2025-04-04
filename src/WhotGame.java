@@ -244,7 +244,7 @@ public class WhotGame {
             list.add(card);
         }
         drawPile.addAll(list);
-        Collections.shuffle(drawPile);
+        Collections.shuffle(drawPile);//shuffle the draw pile again after refilling it
         playedPile.clear();
         list.clear();
     }
