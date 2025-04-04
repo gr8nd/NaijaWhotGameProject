@@ -289,13 +289,11 @@ public class Human
         if(card.isWhot())
         {
             humanRequestsCard(card);
-        }else if(!card.isWhot() &&
-                card.getSuit() == gamePlay.getWantedSuit())
+        }else if(card.getSuit() == gamePlay.getWantedSuit())
         {
             System.out.println("You played: ");
             System.out.println(card);
             whotGame.play(card, forceWinner);
-            card.setCardActionTaken(true);
             gamePlay.setPreviousCard(card);
             gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
             gamePlay.setWantedSuit(null);
