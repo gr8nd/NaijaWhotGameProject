@@ -16,7 +16,7 @@ public class GameStart
                 This console game is a fully functional Naija Whot! game \s
                 played via CLI (Command Line Interface).
                 This software is licensed by GNU GENERAL PUBLIC LICENSE.
-                Hit Enter key to continue... >>""");
+                Hit Enter key to continue... >>\s""");
         input.nextLine();
         System.out.println("Use non-verbose mode Y/N?");
         String verbose = input.nextLine();
@@ -27,10 +27,10 @@ public class GameStart
         System.out.println("Enter the deal number (between 2 and 26): ");
         try
         {
-        int dealNum = input.nextInt();
-        GamePlay game = new GamePlay(forceWinner.equalsIgnoreCase("Y"),
-                    mode, dealNum, !verbose.equalsIgnoreCase("Y"));
-        game.start();
+            int dealNum = input.nextInt();
+            GamePlay game = new GamePlay(forceWinner.equalsIgnoreCase("Y"),
+                        mode, dealNum, !verbose.equalsIgnoreCase("Y"));
+            game.start();
         } catch (WhotGameException e)
         {
             System.out.println(e.getMessage());

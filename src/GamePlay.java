@@ -118,7 +118,7 @@ public class GamePlay
     /**
      * The start method starts the game,
      * the game runs until
-     * there is a winner, rotating turn between computer and human.
+     * there is a winner or a tie, rotating turn between computer and human.
      */
     private void startGame()
     {
@@ -139,27 +139,27 @@ public class GamePlay
         writeToCSV(csv);
     }
 
-private void displayWinner()
-{
-    System.out.println("Your number of cards' left: " + humanCards.size());
-    System.out.println("Computer's number of cards' left: " + computerCards.size());
-    if(!forceWinner)
+    private void displayWinner()
     {
-        System.out.println("Your cards' face count: " + game.getPlayerCounter());
-        System.out.println("Computer's cards' face count: " + game.getComputerCounter());
-    }
+        System.out.println("Your number of cards' left: " + humanCards.size());
+        System.out.println("Computer's number of cards' left: " + computerCards.size());
+        if(!forceWinner)
+        {
+            System.out.println("Your cards' face count: " + game.getPlayerCounter());
+            System.out.println("Computer's cards' face count: " + game.getComputerCounter());
+        }
 
-    if(game.isHumanTheWinner())
-    {
-        System.out.println("Game Over!!!\nYou win!");
-    }else if(game.isComputerTheWinner())
-    {
-        System.out.println("Game Over!!!\nYou lose!");
-    }else
-    {
-        System.out.println("Game Over!!!\nIt is a tie!");
+        if(game.isHumanTheWinner())
+        {
+            System.out.println("Game Over!!!\nYou win!");
+        }else if(game.isComputerTheWinner())
+        {
+            System.out.println("Game Over!!!\nYou lose!");
+        }else
+        {
+            System.out.println("Game Over!!!\nIt is a tie!");
+        }
     }
-}
     /**
      * Build the current statistics of the game as comma-separated values (.csv)
      * @param humanPlayedPile a list containing all the computer cards computer has played

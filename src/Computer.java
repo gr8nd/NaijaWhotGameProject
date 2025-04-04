@@ -112,7 +112,7 @@ public class Computer
         //In Difficult mode, and in the absence of force winner mode, when game is decided by the counts
         // of players cards
         //computer has to dispose cards with large face value(numbers) first before lower values.
-        if(this.mode.equalsIgnoreCase(GAME_MODE_DIFFICULT) && !forceWinner)
+        if(!forceWinner)
         {
             computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
         }
@@ -125,6 +125,9 @@ public class Computer
                     card.getSuit() == gamePlay.getPreviousCard().getSuit()) &&
                     !card.isWhot())
             {
+                //For each card in computer's pile, check whether there is another card with the
+                //same face or suit, so computer will play next turn without being forced to
+                //draw from pile.
                 if(findNextTurnCards(longestSequentialList, card))
                 {
                     System.out.println("Computer has played:");
@@ -186,6 +189,7 @@ public class Computer
 
         draw();
     }
+
     private void computerPickTwo()
     {
         boolean twoPicked = true;
@@ -197,7 +201,7 @@ public class Computer
             {
                 whotGame.play(card, forceWinner);
                 twoPicked = false;
-                System.out.println("Computer has defended the pick two with.");
+                System.out.println("Computer has defended the PICK TWO with.");
                 System.out.println(card);
                 card.setCardActionTaken(true);
                 card.setDefendCard(true);
@@ -228,7 +232,7 @@ public class Computer
             {
                 whotGame.play(card, forceWinner);
                 threePicked = false;
-                System.out.println("Computer has defended the pick three with:");
+                System.out.println("Computer has defended the PICK THREE with:");
                 System.out.println(card);
                 card.setDefendCard(true);
                 card.setCardActionTaken(true);
@@ -297,6 +301,8 @@ public class Computer
             gamePlay.setPreviousCard(neededCard);
         }else if(playedWhot)
         {
+            //If computer does not find any reason to request a card
+            //with Whot card, it will just draw from pile
             if(!computerRequestsWhot(whotCard))
             {
                 draw();
@@ -314,6 +320,8 @@ public class Computer
 
     /**
      * Requests a card for human player to play
+     * @param whotCard a Whot card
+     * @return true if it requests a card, false otherwise
      */
     private boolean computerRequestsWhot(Card whotCard)
     {
@@ -390,6 +398,7 @@ public class Computer
             displayComputerWantedCard(whotCard);
             return true;
         }
+
         return false;
     }
 
@@ -464,33 +473,34 @@ public class Computer
      * Computer needs to find the card it will play to get the longest
      * sequential play. This is necessary to maximize its winning
      * potential.
-     * @param currentCard the current card to start the sequential run from
+     * @param previousCard the current card to start the sequential run from
      * @return a list with first part or all, containing cards that should be played in the list
      * order (from first element to last element) to give the longest sequential play, any
      * 'non-sequential' cards are also appended to the end of the list.
      */
-    private List<Card> findLongestSequentialPlayList(Card currentCard)
+    private List<Card> findLongestSequentialPlayList(Card previousCard)
     {
         List<Card> longestList = new ArrayList<>();
         List<Card> currentList = new ArrayList<>(computerCards);
-        longestList.add(currentCard);
-        currentList.remove(currentCard);//This may be redundant as currentCard may not
-        //actually be in the currentList list since the very first currentCard is the most
+        longestList.add(previousCard);
+        currentList.remove(previousCard);//This may be redundant as previousCard may not
+        //actually be in the currentList list since the very first previousCard is the most
         //recently played card(i.e. it might have been removed from computerCards or humanCards)
         for (int index = 0; index < currentList.size(); index++)
         {
             Card card = currentList.get(index);
-            if (!card.isWhot() && (card.getFace() == currentCard.getFace() ||
-                    card.getSuit() == currentCard.getSuit()))
+            if (!card.isWhot() && (card.getFace() == previousCard.getFace() ||
+                    card.getSuit() == previousCard.getSuit()))
             {
                 longestList.add(card);
-                currentCard = card;
-                currentList.remove(currentCard);
+                previousCard = card;
+                currentList.remove(previousCard);
                 index = 0;//move the cursor to the first index (start of the list)
             }
         }
 
         longestList.remove(0);//remove the first element because it is the 'previousCard' played
+        //card of the game
         longestList.addAll(currentList);
         return longestList;
     }

@@ -154,6 +154,7 @@ public class WhotGame {
         }
         checkWinner(forceWinner);
     }
+
     /**
      * @param forceWinner if true, run the game till there is a winner
      * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
@@ -247,6 +248,7 @@ public class WhotGame {
         playedPile.clear();
         list.clear();
     }
+
     /***
      * Count the face values of human cards after the draw pile has been exhausted.
      */

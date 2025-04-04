@@ -186,11 +186,13 @@ public class Human
 
     private void humanRequestsCard(Card card)
     {
-        try {
+        try
+        {
             System.out.printf("1. %s%n2. %s%n3. %s%n4. %s%n5. %s%n",
                     Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE);
             int want = input.nextInt();
-            switch (want) {
+            switch (want)
+            {
                 case 1:
                     gamePlay.setWantedSuit(Suit.CIRCLE);
                     break;
@@ -266,7 +268,8 @@ public class Human
         }
     }
 
-    private void humanPlayCard(Card card){
+    private void humanPlayCard(Card card)
+    {
         if(card.isWhot())
         {
             humanRequestsCard(card);
@@ -305,7 +308,7 @@ public class Human
             whotGame.play(card, forceWinner);
             card.setCardActionTaken(true);
             card.setDefendCard(true);
-            System.out.println("You have defended the PICKTWO with.");
+            System.out.println("You have defended the PICK TWO with.");
             System.out.println(card);
             gamePlay.setPreviousCard(card);
             gamePlay.setIsComputerTurn(true);
@@ -324,7 +327,7 @@ public class Human
             whotGame.play(card, forceWinner);
             card.setCardActionTaken(true);
             card.setDefendCard(true);
-            System.out.println("You have defended the PICKTHREE with.");
+            System.out.println("You have defended the PICK THREE with.");
             System.out.println(card);
             gamePlay.setPreviousCard(card);
             gamePlay.setIsComputerTurn(true);
