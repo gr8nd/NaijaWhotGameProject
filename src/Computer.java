@@ -258,7 +258,7 @@ public class Computer
      */
     private void computerPlaysWhot()
     {
-        ArrayList<Card> wantedSuits = new ArrayList<>();
+        ArrayList<Card> wantedCardsList = new ArrayList<>();
         Card whotCard = null;
         boolean playedWhot = false;
         ArrayList<Card> nonWhotCards = new ArrayList<>();
@@ -270,7 +270,7 @@ public class Computer
                 playedWhot = true;
             } else if(card.getSuit() == gamePlay.getWantedSuit())
             {
-                wantedSuits.add(card);
+                wantedCardsList.add(card);
             }
 
             if(!card.isWhot())
@@ -289,10 +289,10 @@ public class Computer
             whotGame.play(nonWhotCards.get(0), forceWinner);
             System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
             gamePlay.setIsComputerTurn(false);
-        }else if(!wantedSuits.isEmpty())
+        }else if(!wantedCardsList.isEmpty())
         {
-            int randomIndex = rand.nextInt(wantedSuits.size());
-            Card neededCard = wantedSuits.get(randomIndex);
+            int randomIndex = rand.nextInt(wantedCardsList.size());
+            Card neededCard = wantedCardsList.get(randomIndex);
             System.out.println("Computer has played:");
             System.out.println(neededCard.toString());
             whotGame.play(neededCard, forceWinner);

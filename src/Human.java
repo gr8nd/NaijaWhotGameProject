@@ -204,11 +204,10 @@ public class Human
             }
         }catch (InputMismatchException | NumberFormatException e)
         {
-            input.nextLine();
             System.out.println("You made an invalid selection, please select a card you need.");
             return;
         }
-
+        input.nextLine();
         System.out.println("You played: ");
         System.out.println(card);
         whotGame.play(card, forceWinner);
