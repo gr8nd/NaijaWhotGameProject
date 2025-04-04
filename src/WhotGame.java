@@ -131,41 +131,88 @@ public class WhotGame {
     /**
      * @param mode the game mode, easy or difficult are available
      * @param forceWinner if true, run the game till there is a winner
-     * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
-     * else there must have been a winner, it therefor sets the winner to true
+     * This draws a card from the draw pile and adds it to the computer pile if the
+     * draw contains at least one card else there must have been a winner.
+     * If the draw pile is empty refill it first if the game is played under force winner mode.
      */
     protected void computerDrawFromPile(boolean forceWinner, String mode)
     {
+        if(!drawPile.isEmpty())
+        {
+            if(mode.equalsIgnoreCase("Difficult"))
+            {
+                drawSpecialCards(drawPile);
+            }else
+            {
+                computerCardPile.add(drawPile.remove(0));
+            }
+        }else if(forceWinner)
+        {
+            refillDrawPile();
+            if(mode.equalsIgnoreCase("Difficult"))
+            {
+                drawSpecialCards(drawPile);
+            }else
+            {
+                computerCardPile.add(drawPile.remove(0));
+            }
+        }else
+        {
+            Collections.shuffle(playedPile);//computer is going to draw from playedPile instead
+            if(mode.equalsIgnoreCase("Difficult"))
+            {
+                drawSpecialCards(playedPile);
+            }else
+            {
+                computerCardPile.add(playedPile.remove(0));
+            }
+        }
+
+        checkWinner(forceWinner);
+    }
+
+    /**
+     * Computer has 4/5 (80%) probability of getting special cards in difficult mode
+     * @param cardList list to draw from
+     */
+    private void drawSpecialCards(List<Card> cardList)
+    {
         int probIndex = rand.nextInt(5);//Computer has 4/5 (80%) probability of getting special cards in
         //difficult mode
-        List<Card> specialCards = drawPile.stream().filter(Card::isSpecialCard).toList();
-        if(!drawPile.isEmpty() &&
-                mode.equalsIgnoreCase("Difficult") &&
-                probIndex != 3 &&
+        List<Card> specialCards = cardList.stream().filter(Card::isSpecialCard).toList();
+        if(probIndex != 3 &&
                 !specialCards.isEmpty())
         {
             int randIndex = rand.nextInt(specialCards.size());
             Card specialCard = specialCards.get(randIndex);
             computerCardPile.add(specialCard);
-            drawPile.remove(specialCard);
+            cardList.remove(specialCard);
         }else
         {
-            computerCardPile.add(drawPile.remove(0));
+            computerCardPile.add(cardList.remove(0));
         }
-        checkWinner(forceWinner);
     }
 
     /**
-     * @param forceWinner if true, run the game till there is a winner
-     * This draws a card from the draw pile and adds it to the computer pile if the draw contains at least one card
-     * else there must have been a winner, it therefor sets thereIsAWinner to true
+     * @param forceWinner if true, run the game till there is a winner.
+     * This draws a card from the draw pile and adds it to the human cards pile
+     * if the draw pile is empty refill it first if game is played under force winner mode
      */
     protected void humanDrawFromPile(boolean forceWinner)
     {
         if(!drawPile.isEmpty())
         {
             humanCardPile.add(drawPile.remove(0));
+        }else if(forceWinner)
+        {
+            refillDrawPile();
+            humanCardPile.add(drawPile.remove(0));
+        }else
+        {
+            Collections.shuffle(playedPile);//human is going to draw from playedPile instead
+            humanCardPile.add(playedPile.remove(0));
         }
+
         checkWinner(forceWinner);
     }
 
@@ -209,19 +256,13 @@ public class WhotGame {
      */
     private void checkWinner(boolean forceWinner)
     {
-        if(drawPile.isEmpty())
+        if(drawPile.isEmpty() && !forceWinner)
         {
-            if (forceWinner)
-            {
-                refillDrawPile();
-            }else
-            {
-                countHumanCards();
-                countComputerCards();
-                humanTheWinner = computerCounter > playerCounter;
-                computerTheWinner = playerCounter > computerCounter;
-                isTie = computerCounter == playerCounter;
-            }
+            countHumanCards();
+            countComputerCards();
+            humanTheWinner = computerCounter > playerCounter;
+            computerTheWinner = playerCounter > computerCounter;
+            isTie = computerCounter == playerCounter;
             return;
         }
         computerTheWinner = computerCardPile.isEmpty();

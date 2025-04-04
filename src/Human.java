@@ -33,7 +33,8 @@ public class Human
         if(index == -1)
         {
             if(gamePlay.getPreviousCard().isPickThree() &&
-                    !gamePlay.getPreviousCard().isCardActionTaken())
+                    !gamePlay.getPreviousCard().isCardActionTaken() &&
+                    !gamePlay.getPreviousCard().isDefendCard())
             {
                 whotGame.humanDrawFromPile(forceWinner);
                 whotGame.humanDrawFromPile(forceWinner);
@@ -42,7 +43,8 @@ public class Human
                 System.out.println("You have picked three.");
                 gamePlay.setIsComputerTurn(true);
             }else if(gamePlay.getPreviousCard().isPickTwo() &&
-                    !gamePlay.getPreviousCard().isCardActionTaken())
+                    !gamePlay.getPreviousCard().isCardActionTaken() &&
+                    !gamePlay.getPreviousCard().isDefendCard())
             {
                 whotGame.humanDrawFromPile(forceWinner);
                 whotGame.humanDrawFromPile(forceWinner);
@@ -227,11 +229,13 @@ public class Human
             {
                humanPlaysWhot(card);
             }else if(gamePlay.getPreviousCard().isPickTwo() &&
-                    !gamePlay.getPreviousCard().isCardActionTaken())
+                    !gamePlay.getPreviousCard().isCardActionTaken() &&
+                    !gamePlay.getPreviousCard().isDefendCard())
             {
                 humanPickTwo(index);
-            }else if(gamePlay.getPreviousCard().isPickThree()&&
-                    !gamePlay.getPreviousCard().isCardActionTaken())
+            }else if(gamePlay.getPreviousCard().isPickThree() &&
+                    !gamePlay.getPreviousCard().isCardActionTaken() &&
+                    !gamePlay.getPreviousCard().isDefendCard())
             {
                 humanPickThree(index);
             } else if(gamePlay.getPreviousCard().isGeneralMarket() &&

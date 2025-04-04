@@ -42,12 +42,14 @@ public class Computer
             gamePlay.setPreviousCard(lastCard);
             return;
         }
+
         if ((gamePlay.getPreviousCard().isNormalCard()))
         {
             computerNormalPlay();
         } else if (gamePlay.getPreviousCard().isPickTwo())
         {
-            if(!gamePlay.getPreviousCard().isCardActionTaken())
+            if(!gamePlay.getPreviousCard().isCardActionTaken()&&
+                    !gamePlay.getPreviousCard().isDefendCard())
             {
                 computerPickTwo();
             }else
@@ -56,18 +58,16 @@ public class Computer
             }
         } else if (gamePlay.getPreviousCard().isPickThree())
         {
-            if(!gamePlay.getPreviousCard().isCardActionTaken())
+            if(!gamePlay.getPreviousCard().isCardActionTaken()&&
+                    !gamePlay.getPreviousCard().isDefendCard())
             {
                 computerPickThree();
             }else
             {
                 computerNormalPlay();
             }
-        } else if (gamePlay.getPreviousCard().isHoldOn())
-        {
-            gamePlay.getPreviousCard().setCardActionTaken(true);
-            computerNormalPlay();
-        }else if(gamePlay.getPreviousCard().isSuspension())
+        } else if (gamePlay.getPreviousCard().isHoldOn() ||
+                gamePlay.getPreviousCard().isSuspension())
         {
             gamePlay.getPreviousCard().setCardActionTaken(true);
             computerNormalPlay();
@@ -203,7 +203,7 @@ public class Computer
                 twoPicked = false;
                 System.out.println("Computer has defended the PICK TWO with.");
                 System.out.println(card);
-                gamePlay.getPreviousCard().setCardActionTaken(true);
+                card.setCardActionTaken(true);
                 card.setDefendCard(true);
                 gamePlay.setPreviousCard(card);
                 break;
@@ -234,7 +234,7 @@ public class Computer
                 threePicked = false;
                 System.out.println("Computer has defended the PICK THREE with:");
                 System.out.println(card);
-                gamePlay.getPreviousCard().setCardActionTaken(true);
+                card.setCardActionTaken(true);
                 card.setDefendCard(true);
                 gamePlay.setPreviousCard(card);
                 break;
