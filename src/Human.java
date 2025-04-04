@@ -293,8 +293,8 @@ public class Human
             System.out.println("You played: ");
             System.out.println(card);
             whotGame.play(card, forceWinner);
+            card.setCardActionTaken(true);
             gamePlay.setPreviousCard(card);
-            gamePlay.getPreviousCard().setCardActionTaken(true);
             gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
             gamePlay.setWantedSuit(null);
         }
