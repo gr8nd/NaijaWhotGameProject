@@ -56,18 +56,6 @@ public class Human
                 gamePlay.getPreviousCard().setCardActionTaken(true);
                 System.out.println("You have gone to market.");
                 gamePlay.setIsComputerTurn(true);
-            }else if(gamePlay.getPreviousCard().isHoldOn())
-            {
-                whotGame.humanDrawFromPile(forceWinner);
-                gamePlay.getPreviousCard().setCardActionTaken(true);
-                System.out.println("You have drawn from pile.");
-                gamePlay.setIsComputerTurn(true);
-            }else if(gamePlay.getPreviousCard().isSuspension())
-            {
-                whotGame.humanDrawFromPile(forceWinner);
-                gamePlay.getPreviousCard().setCardActionTaken(true);
-                System.out.println("You have drawn from pile.");
-                gamePlay.setIsComputerTurn(true);
             }else
             {
                 whotGame.humanDrawFromPile(forceWinner);
@@ -307,7 +295,7 @@ public class Human
                 !gamePlay.getPreviousCard().isCardActionTaken())
         {
             whotGame.play(card, forceWinner);
-            card.setCardActionTaken(true);
+            gamePlay.getPreviousCard().setCardActionTaken(true);
             card.setDefendCard(true);
             System.out.println("You have defended the PICK TWO with.");
             System.out.println(card);
@@ -326,7 +314,7 @@ public class Human
                 !gamePlay.getPreviousCard().isCardActionTaken())
         {
             whotGame.play(card, forceWinner);
-            card.setCardActionTaken(true);
+            gamePlay.getPreviousCard().setCardActionTaken(true);
             card.setDefendCard(true);
             System.out.println("You have defended the PICK THREE with.");
             System.out.println(card);

@@ -203,7 +203,7 @@ public class Computer
                 twoPicked = false;
                 System.out.println("Computer has defended the PICK TWO with.");
                 System.out.println(card);
-                card.setCardActionTaken(true);
+                gamePlay.getPreviousCard().setCardActionTaken(true);
                 card.setDefendCard(true);
                 gamePlay.setPreviousCard(card);
                 break;
@@ -234,8 +234,8 @@ public class Computer
                 threePicked = false;
                 System.out.println("Computer has defended the PICK THREE with:");
                 System.out.println(card);
+                gamePlay.getPreviousCard().setCardActionTaken(true);
                 card.setDefendCard(true);
-                card.setCardActionTaken(true);
                 gamePlay.setPreviousCard(card);
                 break;
             }
