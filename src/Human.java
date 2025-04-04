@@ -226,6 +226,7 @@ public class Human
             gamePlay.setPreviousCard(card);
         }
         System.out.println("You need *** " + gamePlay.getWantedSuit() + " ***");
+        gamePlay.setPreviousCard(card);
         gamePlay.setIsComputerTurn(true);
     }
 
