@@ -294,6 +294,7 @@ public class Human
             System.out.println(card);
             whotGame.play(card, forceWinner);
             gamePlay.setPreviousCard(card);
+            gamePlay.getPreviousCard().setCardActionTaken(true);
             gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
             gamePlay.setWantedSuit(null);
         }
