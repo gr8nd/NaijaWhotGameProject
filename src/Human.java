@@ -178,7 +178,7 @@ public class Human
     {
         try
         {
-            System.out.printf("1. %s%n2. %s%n3. %s%n4. %s%n5. %s%n",
+            System.out.printf("Select Suit number to request:\n1. %s%n2. %s%n3. %s%n4. %s%n5. %s%n",
                     Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE);
             int want = input.nextInt();
             switch (want)
@@ -210,6 +210,7 @@ public class Human
         }
 
         System.out.println("You played: ");
+        System.out.println(card);
         whotGame.play(card, forceWinner);
         System.out.println("You need *** " + gamePlay.getWantedSuit() + " ***");
         gamePlay.setPreviousCard(card);
