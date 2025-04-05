@@ -356,13 +356,7 @@ public class Computer
             Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
             int randIndex = rand.nextInt(suits.length);
             Suit wantedSuit = suits[randIndex];
-            System.out.println("Computer has played:");
-            System.out.println(whotCard);
-            whotGame.play(whotCard, forceWinner);
-            System.out.println("Computer needs *** " + wantedSuit + " ***");
-            gamePlay.setPreviousCard(whotCard);
-            gamePlay.setWantedSuit(wantedSuit);
-            gamePlay.setIsComputerTurn(false);
+            displayComputerWantedCard(whotCard, wantedSuit);
             return true;
         }
 
@@ -379,39 +373,35 @@ public class Computer
                 List<Card> nonSeqList = new ArrayList<>();
                 List<Card> list = findLongestSequentialPlayList(specialCards,
                         0, longestList, nonSeqList);
-                gamePlay.setWantedSuit(list.get(0).getSuit());
-                gamePlay.setIsComputerTurn(false);
-                displayComputerWantedCard(whotCard);
+                displayComputerWantedCard(whotCard, list.get(0).getSuit());
                 return true;
             }
             List<Card> longestList = new ArrayList<>();
             List<Card> nonSeqList = new ArrayList<>();
             List<Card> list = findLongestSequentialPlayList(cardArrayList,
                     0, longestList, nonSeqList);
-            gamePlay.setWantedSuit(list.get(0).getSuit());
-            gamePlay.setIsComputerTurn(false);
-            displayComputerWantedCard(whotCard);
+            displayComputerWantedCard(whotCard, list.get(0).getSuit());
             return true;
         }
 
         if(!cardArrayList.isEmpty())
         {
-            gamePlay.setWantedSuit(cardArrayList.get(0).getSuit());
-            gamePlay.setIsComputerTurn(false);
-            displayComputerWantedCard(whotCard);
+            displayComputerWantedCard(whotCard, cardArrayList.get(0).getSuit());
             return true;
         }
 
         return false;
     }
 
-    private void displayComputerWantedCard(Card whotCard)
+    private void displayComputerWantedCard(Card whotCard, Suit wantedSuit)
     {
         System.out.println("Computer has played:");
         System.out.println(whotCard);
         whotGame.play(whotCard, forceWinner);
         System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
         gamePlay.setPreviousCard(whotCard);
+        gamePlay.setIsComputerTurn(false);
+        gamePlay.setWantedSuit(wantedSuit);
     }
 
     private void computerGoMarket()
