@@ -398,10 +398,10 @@ public class Computer
         System.out.println("Computer has played:");
         System.out.println(whotCard);
         whotGame.play(whotCard, forceWinner);
+        gamePlay.setWantedSuit(wantedSuit);
         System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
         gamePlay.setPreviousCard(whotCard);
         gamePlay.setIsComputerTurn(false);
-        gamePlay.setWantedSuit(wantedSuit);
     }
 
     private void computerGoMarket()

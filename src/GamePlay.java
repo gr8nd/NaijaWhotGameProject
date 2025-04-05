@@ -126,6 +126,11 @@ public class GamePlay
                 !game.isComputerTheWinner() &&
                 !game.isTie())
         {
+            int totalCards = game.getComputerCardPile().size() + game.getHumanCardPile().size() +
+                    game.getDrawPile().size() + game.getPlayedPile().size();
+            //make sure total number of cards remain 54 and none is lost
+            //due to bugs during game play
+            assert totalCards == 54;
             if (isComputerTurn)
             {
                 computer.play();
