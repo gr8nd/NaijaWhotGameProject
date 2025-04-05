@@ -275,6 +275,7 @@ public class WhotGame {
         //if the draw pile runs out, we need to populate it with cards from the played
         //pile
         ArrayList<Card> list = new ArrayList<>();
+        Card lastCard = playedPile.get(playedPile.size()-1);
         for(int i =0; i < playedPile.size()-1; i++)
         {
             Card card = playedPile.get(i);
@@ -287,6 +288,7 @@ public class WhotGame {
         drawPile.addAll(list);
         Collections.shuffle(drawPile);//shuffle the draw pile again after refilling it
         playedPile.clear();
+        playedPile.add(lastCard);
         list.clear();
     }
 

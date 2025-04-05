@@ -129,20 +129,18 @@ public class Human
             System.out.println(displayHumanCards());
             if(gamePlay.getPreviousCard().isWhot() && gamePlay.getPreviousCard().isFirstCard())
             {
-                System.out.println("Enter 0 to request a card or 99 to end the game.." );
+                System.out.print("Enter 0 to request a card or 99 to end the game. >> " );
             }else
             {
-                System.out.println("Select the number to play or -1 to pick from pile or 99 to end the game.");
+                System.out.print("Select the number to play or -1 to pick from pile or 99 to end the game. >> ");
             }
             return input.nextInt();
         }catch (IndexOutOfBoundsException e)
         {
-            input.nextLine();
             System.out.println("The selection is not in your card.");
             return -2;
         }catch (InputMismatchException | NumberFormatException e)
         {
-            input.nextLine();
             System.out.println("Select a valid card number.");
             return -2;
         }
@@ -207,7 +205,6 @@ public class Human
             System.out.println("You made an invalid selection, please select a card you need.");
             return;
         }
-        input.nextLine();
         System.out.println("You played: ");
         System.out.println(card);
         whotGame.play(card, forceWinner);

@@ -286,7 +286,7 @@ public class Computer
             Suit[] suits = {Suit.CIRCLE, Suit.CROSS, Suit.TRIANGLE, Suit.STAR, Suit.SQUARE};
             int randIndex = rand.nextInt(suits.length);
             gamePlay.setWantedSuit(suits[randIndex]);
-            whotGame.play(nonWhotCards.get(0), forceWinner);
+            whotGame.play(computerCards.get(0), forceWinner);
             System.out.println("Computer needs *** " + gamePlay.getWantedSuit() + " ***");
             gamePlay.setIsComputerTurn(false);
         }else if(!wantedCardsList.isEmpty())
@@ -307,6 +307,9 @@ public class Computer
             {
                 draw();
             }
+        }else
+        {
+            draw();
         }
     }
 
