@@ -5,7 +5,8 @@
  * Any card that is not a special card is a normal card, and there is no rule on it.
  * the toString method returns the String representation of the card object.
  */
-public class Card {
+public class Card
+{
     private final int face;//an integer that represents the number on the card
     private final Suit suit;//an enumeration that represents the shape on the card
     private boolean isDefendCard;//Computer uses this to check if the PICK TWO/PICK THREE
@@ -19,38 +20,40 @@ public class Card {
         this.suit = suit;
         this.face = face;
     }
-    public int getFace() {
+
+    protected int getFace() {
         return this.face;
     }
-    public Suit getSuit() {
+
+    protected Suit getSuit() {
         return this.suit;
     }
 
-    public boolean isHoldOn() {
+    protected boolean isHoldOn() {
         return this.face == 1;
     }
 
-    public boolean isSuspension() {
+    protected boolean isSuspension() {
         return this.face == 8;
     }
 
-    public boolean isPickTwo() {
+    protected boolean isPickTwo() {
         return this.face == 2;
     }
 
-    public boolean isGeneralMarket() {
+    protected boolean isGeneralMarket() {
         return this.face == 14;
     }
 
-    public boolean isPickThree() {
+    protected boolean isPickThree() {
         return this.face == 5;
     }
 
-    public boolean isWhot() {
+    protected boolean isWhot() {
         return this.face == 20;
     }
 
-    public boolean isNormalCard() {
+    protected boolean isNormalCard() {
         return  this.face != 1 &&
                 this.face != 2 &&
                 this.face != 5 &&
@@ -59,7 +62,7 @@ public class Card {
                 this.face != 20;
     }
 
-    public boolean isSpecialCard() {
+    protected boolean isSpecialCard() {
         return  this.face == 1 ||
                 this.face == 2 ||
                 this.face == 5 ||
@@ -68,27 +71,27 @@ public class Card {
                 this.face == 20;
     }
 
-    public boolean isDefendCard() {
+    protected boolean isDefendCard() {
         return isDefendCard;
     }
 
-    public void setDefendCard(boolean defendCard) {
+    protected void setDefendCard(boolean defendCard) {
         isDefendCard = defendCard;
     }
 
-    public boolean isCardActionTaken() {
+    protected boolean isCardActionTaken() {
         return cardActionTaken;
     }
 
-    public void setCardActionTaken(boolean cardActionTaken) {
+    protected void setCardActionTaken(boolean cardActionTaken) {
         this.cardActionTaken = cardActionTaken;
     }
 
-    public boolean isFirstCard() {
+    protected boolean isFirstCard() {
         return isFirstCard;
     }
 
-    public void setFirstCard(boolean firstCard) {
+    protected void setFirstCard(boolean firstCard) {
         isFirstCard = firstCard;
     }
 

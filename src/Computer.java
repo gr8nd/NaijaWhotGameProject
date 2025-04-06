@@ -254,7 +254,7 @@ public class Computer
     }
 
     /**
-     * Play the Whot! the user requests
+     * Play the Whot! the human requests
      */
     private void computerPlaysWhot()
     {

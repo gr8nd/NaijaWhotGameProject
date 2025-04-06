@@ -16,6 +16,8 @@ public class GamePlay
     //human turn
     private final WhotGame game;
     private Suit wantedSuit;
+    private final String CSV_SEPARATOR = ",";
+    private final int DEFAULT_DEAL_NUMBER = 6;
     private boolean validDeal = true;//Used in checking if a valid deal number is provided.
     private final List<Card> humanCards;//A list containing all player's cards
     private final List<Card> computerCards;//A list containing all computer's cards
@@ -34,10 +36,13 @@ public class GamePlay
 
     /**
      * The GamePlay has two overloaded constructors. This constructor without
-     * a parameter is used when no deal number
+     * a 'number' parameter is used when no deal number
      * is provided, it therefore uses the default deal number of 6.
      * @param mode the game mode, easy or difficult are available
      * @param forceWinner if true, run the game till there is a winner
+     * @param verbose if true, show a simulated visual display of
+     * human cards, but can make the game hard to play when card list
+     * is much.
      */
     protected GamePlay(boolean forceWinner, String mode, boolean verbose) throws WhotGameException
     {
@@ -53,11 +58,15 @@ public class GamePlay
         this.computerCards = game.getComputerCardPile();
         this.human = new Human(forceWinner, verbose, game, humanCards, this);
         this.computer = new Computer(forceWinner, mode, game, computerCards, this);
-        int DEFAULT_DEAL_NUMBER = 6;
         this.deal(DEFAULT_DEAL_NUMBER);
     }
 
     /**
+     * @param mode the game mode, easy or difficult are available
+     * @param forceWinner if true, run the game till there is a winner
+     * @param verbose if true, show a simulated visual display of
+     * human cards, but can make the game hard to play when card list
+     * is much.
      * @param number a deal number
      */
     protected GamePlay(boolean forceWinner, String mode, int number, boolean verbose) throws WhotGameException
@@ -98,7 +107,8 @@ public class GamePlay
         }
     }
 
-    public void start()
+    //An API that should call to start the game
+    protected void start()
     {
         if (validDeal)
         {
@@ -139,6 +149,11 @@ public class GamePlay
                 human.play();
             }
         }
+        int totalCards = game.getComputerCardPile().size() + game.getHumanCardPile().size() +
+                game.getDrawPile().size() + game.getPlayedPile().size();
+        //make sure total number of cards remain 54 and none is lost
+        //due to bugs at the end of the game play
+        assert totalCards == 54;
         displayWinner();
         String csv =  buildCSV(game.getHumanPlayedPile(), game.getComputerPlayedPile());
         writeToCSV(csv);
@@ -148,10 +163,13 @@ public class GamePlay
     {
         System.out.println("Your number of cards' left: " + humanCards.size());
         System.out.println("Computer's number of cards' left: " + computerCards.size());
-        if(!forceWinner)
+        game.countHumanCards();
+        game.countComputerCards();
+        int a = Math.min(game.getHumanCardsCount(), game.getComputerCardsCount());
+        if(!forceWinner && a != 0)
         {
-            System.out.println("Your cards' face count: " + game.getPlayerCounter());
-            System.out.println("Computer's cards' face count: " + game.getComputerCounter());
+            System.out.println("Your cards' face count: " + game.getHumanCardsCount());
+            System.out.println("Computer's cards' face count: " + game.getComputerCardsCount());
         }
 
         if(game.isHumanTheWinner())
@@ -162,9 +180,10 @@ public class GamePlay
             System.out.println("Game Over!!!\nYou lose!");
         }else
         {
-            System.out.println("Game Over!!!\nIt is a tie!");
+            System.out.println("Game Over!!!\nIt's a tie!");
         }
     }
+
     /**
      * Build the current statistics of the game as comma-separated values (.csv)
      * @param humanPlayedPile a list containing all the computer cards computer has played
@@ -185,7 +204,6 @@ public class GamePlay
         for (int i = 0; i < maximum; i++)
         {
             builder.append((i + 1));
-            final String CSV_SEPARATOR = ",";
             if(i < humanPlayedPile.size())
             {
                 Card humanCard = humanPlayedPile.get(i);
@@ -268,7 +286,7 @@ public class GamePlay
      */
     private void writeToCSV(String data)
     {
-        String id = String.valueOf(System.currentTimeMillis());
+        long id = System.currentTimeMillis();
         String name = "whot" + id + ".csv";
         String fileName = System.getProperty("user.dir") + File.separator + "whots";
         File file = new File(fileName);
@@ -283,6 +301,7 @@ public class GamePlay
             fileOutputStream.write(data.getBytes());
             fileOutputStream.flush();
             fileOutputStream.close();
+            System.out.println("Game statistics saved at: " + file.getAbsolutePath());
         }catch (Exception e)
         {
             System.out.println(e.getMessage());
@@ -318,27 +337,27 @@ public class GamePlay
         return "None";
     }
 
-    public Card getPreviousCard() {
+    protected Card getPreviousCard() {
         return previousCard;
     }
 
-    public void setPreviousCard(Card previousCard) {
+    protected void setPreviousCard(Card previousCard) {
         this.previousCard = previousCard;
     }
 
-    public Suit getWantedSuit() {
+    protected Suit getWantedSuit() {
         return wantedSuit;
     }
 
-    public void setWantedSuit(Suit wantedSuit) {
+    protected void setWantedSuit(Suit wantedSuit) {
         this.wantedSuit = wantedSuit;
     }
 
-    public boolean isIsComputerTurn() {
+    protected boolean isIsComputerTurn() {
         return isComputerTurn;
     }
 
-    public void setIsComputerTurn(boolean isComputerTurn) {
+    protected void setIsComputerTurn(boolean isComputerTurn) {
         this.isComputerTurn = isComputerTurn;
     }
 

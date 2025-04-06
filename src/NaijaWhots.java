@@ -11,7 +11,7 @@ public class NaijaWhots
 {
     private final List<Card> pack = new ArrayList<>(54);//The pack as an array containing 54 cards
 
-    public NaijaWhots()
+    protected NaijaWhots()
     {
         initializeCards();//The pack is initialised with 54 card objects at the  point of instantiation of NaijaWhot object
         shuffleCards();//After initialising the pack, this private method shuffles the pack to make it ready for use.
@@ -76,7 +76,7 @@ public class NaijaWhots
      *
      * @return pack, the initialised and shuffled arrays containing card objects
      */
-    public List<Card>  getPack()
+    protected List<Card>  getPack()
     {
         return this.pack;
     }

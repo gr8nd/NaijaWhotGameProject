@@ -299,7 +299,7 @@ public class Human
             gamePlay.setIsComputerTurn(true);
             return;
         }
-        System.out.println("You selected an invalid card, draw two cards " +
+        System.out.println("You selected an invalid card, enter -1 to draw two cards " +
                     "from pile or play a fitting card to defend.");
     }
 
@@ -318,7 +318,7 @@ public class Human
             gamePlay.setIsComputerTurn(true);
             return;
         }
-        System.out.println("You selected an invalid card, draw three cards " +
+        System.out.println("You selected an invalid card, enter -1 to draw three cards " +
                     "from pile or play a fitting card to defend.");
     }
 }

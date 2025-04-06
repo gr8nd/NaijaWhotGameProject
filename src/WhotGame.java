@@ -27,8 +27,8 @@ public class WhotGame {
     //during the course of the game.
     private ArrayList<Card> humanPlayedPile;//a list containing all the player cards the human player
     //has played during the course of the game.
-    private int computerCounter;//keeps record of the computer's face count when scoring by counting faces.
-    private int playerCounter;//keeps record of the player's face count when scoring by counting faces.
+    private int computerCardsCount;//keeps record of the computer's face count when scoring by counting faces.
+    private int humanCardsCount;//keeps record of the player's face count when scoring by counting faces.
     private ArrayList<Card> playedPile; //Holds the cards that are played during the course of the game
     private Card startCard;//This is first card that is displayed when the game starts
 
@@ -246,13 +246,15 @@ public class WhotGame {
 
     /**
      * @param forceWinner if true, run the game till there is a winner
-     * The method checks for a winner and therefore should be called each time a card is played either by the computer
+     * The method checks for a winner and therefore should be called each time a card is
+     * played either by the computer
      * or by human. There is a winner when any of the following occurs during the game play:
      * 1. The drawPile runs out of cards (i.e. when it becomes empty).
-     * 2. The computerDrawPile runs of cards or
-     * 3. The playerDrawPile runs out of cards
-     * If it is the drawPile that runs out of card, a winner is decided by counting the face values of each player's
-     * cards. Any player that has the lowest count wins.
+     * 2. The computerCardPile runs of cards or
+     * 3. The humanCardPile runs out of cards
+     * If it is the drawPile that runs out of card, a winner is decided by counting the
+     * face values of each player's
+     * cards is forceWinner is disabled. Any player that has the lowest count wins.
      */
     private void checkWinner(boolean forceWinner)
     {
@@ -260,9 +262,9 @@ public class WhotGame {
         {
             countHumanCards();
             countComputerCards();
-            humanTheWinner = computerCounter > playerCounter;
-            computerTheWinner = playerCounter > computerCounter;
-            isTie = computerCounter == playerCounter;
+            humanTheWinner = computerCardsCount > humanCardsCount;
+            computerTheWinner = humanCardsCount > computerCardsCount;
+            isTie = computerCardsCount == humanCardsCount;
             return;
         }
         computerTheWinner = computerCardPile.isEmpty();
@@ -295,17 +297,17 @@ public class WhotGame {
     /***
      * Count the face values of human cards after the draw pile has been exhausted.
      */
-    private void countHumanCards()
+    protected void countHumanCards()
     {
-        playerCounter = 0;//reset counter each time it is called
+        humanCardsCount = 0;//reset counter each time it is called
         humanCardPile.forEach(card ->{
             if (card.getSuit().equals(Suit.STAR))
             {
                 //face value of STAR suit is doubled during counting
-                playerCounter += card.getFace() * 2;
+                humanCardsCount += card.getFace() * 2;
             } else
             {
-                playerCounter += card.getFace();
+                humanCardsCount += card.getFace();
             }
         });
     }
@@ -313,17 +315,17 @@ public class WhotGame {
     /***
      * Count the face values of computer cards after the draw pile has been exhausted.
      */
-    private void countComputerCards()
+    protected void countComputerCards()
     {
-        computerCounter = 0;//reset counter each time it is called
+        computerCardsCount = 0;//reset counter each time it is called
         computerCardPile.forEach(card ->{
             if (card.getSuit().equals(Suit.STAR))
             {
                 //face value of STAR suit is doubled during counting
-                computerCounter += card.getFace() * 2;
+                computerCardsCount += card.getFace() * 2;
             } else
             {
-                computerCounter += card.getFace();
+                computerCardsCount += card.getFace();
             }
         });
     }
@@ -332,7 +334,7 @@ public class WhotGame {
      *
      * @return returns the draw pile
      */
-    public ArrayList<Card> getDrawPile() {
+    protected ArrayList<Card> getDrawPile() {
         return drawPile;
     }
 
@@ -341,7 +343,7 @@ public class WhotGame {
      * @param drawPile draw pile where each player can pick cards from
      *
      */
-    public void setDrawPile(ArrayList<Card> drawPile) {
+    protected void setDrawPile(ArrayList<Card> drawPile) {
         this.drawPile = drawPile;
     }
 
@@ -349,7 +351,7 @@ public class WhotGame {
      *
      * @return the computer card pile
      */
-    public ArrayList<Card> getComputerCardPile() {
+    protected ArrayList<Card> getComputerCardPile() {
         return computerCardPile;
     }
 
@@ -357,7 +359,7 @@ public class WhotGame {
      *
      * @param computerCardPile a list of computer cards
      */
-    public void setComputerCardPile(ArrayList<Card> computerCardPile) {
+    protected void setComputerCardPile(ArrayList<Card> computerCardPile) {
         this.computerCardPile = computerCardPile;
     }
 
@@ -365,7 +367,7 @@ public class WhotGame {
      *
      * @return  a list containing the player's cards
      */
-    public ArrayList<Card> getHumanCardPile() {
+    protected ArrayList<Card> getHumanCardPile() {
         return humanCardPile;
     }
 
@@ -373,7 +375,7 @@ public class WhotGame {
      *
      * @param humanCardPile list containing player's cards
      */
-    public void setHumanCardPile(ArrayList<Card> humanCardPile) {
+    protected void setHumanCardPile(ArrayList<Card> humanCardPile) {
         this.humanCardPile = humanCardPile;
     }
 
@@ -381,7 +383,7 @@ public class WhotGame {
      *
      * @return Card the first card used at the start of the game
      */
-    public Card getStartCard() {
+    protected Card getStartCard() {
         return startCard;
     }
 
@@ -389,71 +391,71 @@ public class WhotGame {
      *
      * @param startCard may be used to set the start card
      */
-    public void setStartCard(Card startCard) {
+    protected void setStartCard(Card startCard) {
         this.startCard = startCard;
     }
 
-    public ArrayList<Card> getPlayedPile() {
+    protected ArrayList<Card> getPlayedPile() {
         return playedPile;
     }
 
-    public void setPlayedPile(ArrayList<Card> playedPile) {
+    protected void setPlayedPile(ArrayList<Card> playedPile) {
         this.playedPile = playedPile;
     }
 
-    public boolean isComputerTheWinner() {
+    protected boolean isComputerTheWinner() {
         return computerTheWinner;
     }
 
-    public void setComputerTheWinner(boolean computerTheWinner) {
+    protected void setComputerTheWinner(boolean computerTheWinner) {
         this.computerTheWinner = computerTheWinner;
     }
 
-    public boolean isHumanTheWinner() {
+    protected boolean isHumanTheWinner() {
         return humanTheWinner;
     }
 
-    public void setHumanTheWinner(boolean humanTheWinner) {
+    protected void setHumanTheWinner(boolean humanTheWinner) {
         this.humanTheWinner = humanTheWinner;
     }
 
-    public boolean isTie() {
+    protected boolean isTie() {
         return isTie;
     }
 
-    public void setTie(boolean tie) {
+    protected void setTie(boolean tie) {
         isTie = tie;
     }
 
-    public int getComputerCounter() {
-        return computerCounter;
+    protected int getComputerCardsCount() {
+        return computerCardsCount;
     }
 
-    public void setComputerCounter(int computerCounter) {
-        this.computerCounter = computerCounter;
+    protected void setComputerCardsCount(int computerCardsCount) {
+        this.computerCardsCount = computerCardsCount;
     }
 
-    public int getPlayerCounter() {
-        return playerCounter;
+    protected int getHumanCardsCount() {
+        return humanCardsCount;
     }
 
-    public void setPlayerCounter(int playerCounter) {
-        this.playerCounter = playerCounter;
+    protected void setHumanCardsCount(int humanCardsCount) {
+        this.humanCardsCount = humanCardsCount;
     }
 
-    public ArrayList<Card> getComputerPlayedPile() {
+    protected ArrayList<Card> getComputerPlayedPile() {
         return computerPlayedPile;
     }
 
-    public void setComputerPlayedPile(ArrayList<Card> computerPlayedPile) {
+    protected void setComputerPlayedPile(ArrayList<Card> computerPlayedPile) {
         this.computerPlayedPile = computerPlayedPile;
     }
 
-    public ArrayList<Card> getHumanPlayedPile() {
+    protected ArrayList<Card> getHumanPlayedPile() {
         return humanPlayedPile;
     }
 
-    public void setHumanPlayedPile(ArrayList<Card> humanPlayedPile) {
+    protected void setHumanPlayedPile(ArrayList<Card> humanPlayedPile) {
         this.humanPlayedPile = humanPlayedPile;
     }
 }
