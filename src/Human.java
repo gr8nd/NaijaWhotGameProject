@@ -32,44 +32,44 @@ public class Human
         int index = humanSelectCard();
         if(index == -1)
         {
-            if(gamePlay.getPreviousCard().isPickThree() &&
-                    !gamePlay.getPreviousCard().isCardActionTaken() &&
-                    !gamePlay.getPreviousCard().isDefendCard())
+            if(gamePlay.getCallCard().isPickThree() &&
+                    !gamePlay.getCallCard().isCardActionTaken() &&
+                    !gamePlay.getCallCard().isDefendCard())
             {
                 whotGame.humanDrawFromPile(forceWinner);
                 whotGame.humanDrawFromPile(forceWinner);
                 whotGame.humanDrawFromPile(forceWinner);
-                gamePlay.getPreviousCard().setCardActionTaken(true);
+                gamePlay.getCallCard().setCardActionTaken(true);
                 System.out.println("You have picked three.");
                 gamePlay.setIsComputerTurn(true);
-            }else if(gamePlay.getPreviousCard().isPickTwo() &&
-                    !gamePlay.getPreviousCard().isCardActionTaken() &&
-                    !gamePlay.getPreviousCard().isDefendCard())
+            }else if(gamePlay.getCallCard().isPickTwo() &&
+                    !gamePlay.getCallCard().isCardActionTaken() &&
+                    !gamePlay.getCallCard().isDefendCard())
             {
                 whotGame.humanDrawFromPile(forceWinner);
                 whotGame.humanDrawFromPile(forceWinner);
-                gamePlay.getPreviousCard().setCardActionTaken(true);
+                gamePlay.getCallCard().setCardActionTaken(true);
                 System.out.println("You have picked two.");
                 gamePlay.setIsComputerTurn(true);
-            }else if(gamePlay.getPreviousCard().isGeneralMarket()
-                    && !gamePlay.getPreviousCard().isCardActionTaken())
+            }else if(gamePlay.getCallCard().isGeneralMarket()
+                    && !gamePlay.getCallCard().isCardActionTaken())
             {
                 whotGame.humanDrawFromPile(forceWinner);
-                gamePlay.getPreviousCard().setCardActionTaken(true);
+                gamePlay.getCallCard().setCardActionTaken(true);
                 System.out.println("You have gone to market.");
                 gamePlay.setIsComputerTurn(true);
             }else
             {
                 whotGame.humanDrawFromPile(forceWinner);
                 System.out.println("You have drawn from pile.");
-                gamePlay.getPreviousCard().setCardActionTaken(true);
+                gamePlay.getCallCard().setCardActionTaken(true);
                 gamePlay.setIsComputerTurn(true);
             }
         }else if(index == 0 &&
-                gamePlay.getPreviousCard().isWhot() &&
-                gamePlay.getPreviousCard().isFirstCard())
+                gamePlay.getCallCard().isWhot() &&
+                gamePlay.getCallCard().isCallCard())
         {
-            humanRequestsCard(gamePlay.getPreviousCard());
+            humanRequestsCard(gamePlay.getCallCard());
         }else if(index == EXIT_CODE)
         {
             System.out.println("You ended the game.");
@@ -86,9 +86,9 @@ public class Human
     private void showStats()
     {
         System.out.println("The current Draw Pile count: " + whotGame.getDrawPile().size());
-        System.out.println("The card on board is:");
-        System.out.println(gamePlay.getPreviousCard().toString());
-        if(gamePlay.getPreviousCard().isWhot() && gamePlay.getWantedSuit() != null)
+        System.out.println("The call card is:");
+        System.out.println(gamePlay.getCallCard().toString());
+        if(gamePlay.getCallCard().isWhot() && gamePlay.getWantedSuit() != null)
         {
             System.out.println("The wanted card is: *** " + gamePlay.getWantedSuit() + " ***");
         }
@@ -101,14 +101,14 @@ public class Human
             //Specifically handle the last card in the pile
             Card lastCard = humanCards.get(index-1);
             if(humanCards.size() == 1 && (lastCard.isWhot() ||
-                    lastCard.getSuit() == gamePlay.getPreviousCard().getSuit() ||
-                    lastCard.getFace() == gamePlay.getPreviousCard().getFace() ||
+                    lastCard.getSuit() == gamePlay.getCallCard().getSuit() ||
+                    lastCard.getFace() == gamePlay.getCallCard().getFace() ||
                     lastCard.getSuit() == gamePlay.getWantedSuit()))
             {
                 whotGame.play(lastCard, forceWinner);
                 System.out.println(lastCard);
-                System.out.println("Check!");
-                gamePlay.setPreviousCard(lastCard);
+                System.out.println("Check up");
+                gamePlay.setCallCard(lastCard);
                 return;
             }
         }catch (IndexOutOfBoundsException e)
@@ -127,7 +127,7 @@ public class Human
         try
         {
             System.out.println(displayHumanCards());
-            if(gamePlay.getPreviousCard().isWhot() && gamePlay.getPreviousCard().isFirstCard())
+            if(gamePlay.getCallCard().isWhot() && gamePlay.getCallCard().isCallCard())
             {
                 System.out.print("Enter 0 to request a card or 99 to end the game. >> " );
             }else
@@ -209,7 +209,7 @@ public class Human
         System.out.println(card);
         whotGame.play(card, forceWinner);
         System.out.println("You need *** " + gamePlay.getWantedSuit() + " ***");
-        gamePlay.setPreviousCard(card);
+        gamePlay.setCallCard(card);
         gamePlay.setIsComputerTurn(true);
     }
 
@@ -222,25 +222,25 @@ public class Human
         try
         {
             Card card = humanCards.get(index);
-            if(gamePlay.getPreviousCard().isWhot())
+            if(gamePlay.getCallCard().isWhot())
             {
                humanPlaysWhot(card);
-            }else if(gamePlay.getPreviousCard().isPickTwo() &&
-                    !gamePlay.getPreviousCard().isCardActionTaken() &&
-                    !gamePlay.getPreviousCard().isDefendCard())
+            }else if(gamePlay.getCallCard().isPickTwo() &&
+                    !gamePlay.getCallCard().isCardActionTaken() &&
+                    !gamePlay.getCallCard().isDefendCard())
             {
                 humanPickTwo(index);
-            }else if(gamePlay.getPreviousCard().isPickThree() &&
-                    !gamePlay.getPreviousCard().isCardActionTaken() &&
-                    !gamePlay.getPreviousCard().isDefendCard())
+            }else if(gamePlay.getCallCard().isPickThree() &&
+                    !gamePlay.getCallCard().isCardActionTaken() &&
+                    !gamePlay.getCallCard().isDefendCard())
             {
                 humanPickThree(index);
-            } else if(gamePlay.getPreviousCard().isGeneralMarket() &&
-                    !gamePlay.getPreviousCard().isCardActionTaken())
+            } else if(gamePlay.getCallCard().isGeneralMarket() &&
+                    !gamePlay.getCallCard().isCardActionTaken())
             {
                 System.out.println("Enter -1 to go to market.");
-            } else if(card.getSuit() == gamePlay.getPreviousCard().getSuit() ||
-                    card.getFace() == gamePlay.getPreviousCard().getFace() ||
+            } else if(card.getSuit() == gamePlay.getCallCard().getSuit() ||
+                    card.getFace() == gamePlay.getCallCard().getFace() ||
                     card.isWhot())
             {
                humanPlayCard(card);
@@ -265,7 +265,7 @@ public class Human
         System.out.println(card);
         whotGame.play(card, forceWinner);
         gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
-        gamePlay.setPreviousCard(card);
+        gamePlay.setCallCard(card);
     }
 
     private void humanPlaysWhot(Card card)
@@ -278,7 +278,7 @@ public class Human
             System.out.println("You played: ");
             System.out.println(card);
             whotGame.play(card, forceWinner);
-            gamePlay.setPreviousCard(card);
+            gamePlay.setCallCard(card);
             gamePlay.setIsComputerTurn(!card.isSuspension() && !card.isHoldOn());
             gamePlay.setWantedSuit(null);
         }
@@ -288,14 +288,14 @@ public class Human
     {
         Card card = humanCards.get(index);
         if(card.isPickTwo() &&
-                !gamePlay.getPreviousCard().isCardActionTaken())
+                !gamePlay.getCallCard().isCardActionTaken())
         {
             whotGame.play(card, forceWinner);
-            gamePlay.getPreviousCard().setCardActionTaken(true);
+            gamePlay.getCallCard().setCardActionTaken(true);
             card.setDefendCard(true);
             System.out.println("You have defended the PICK TWO with.");
             System.out.println(card);
-            gamePlay.setPreviousCard(card);
+            gamePlay.setCallCard(card);
             gamePlay.setIsComputerTurn(true);
             return;
         }
@@ -307,14 +307,14 @@ public class Human
     {
         Card card = humanCards.get(index);
         if(card.isPickThree() &&
-                !gamePlay.getPreviousCard().isCardActionTaken())
+                !gamePlay.getCallCard().isCardActionTaken())
         {
             whotGame.play(card, forceWinner);
-            gamePlay.getPreviousCard().setCardActionTaken(true);
+            gamePlay.getCallCard().setCardActionTaken(true);
             card.setDefendCard(true);
             System.out.println("You have defended the PICK THREE with.");
             System.out.println(card);
-            gamePlay.setPreviousCard(card);
+            gamePlay.setCallCard(card);
             gamePlay.setIsComputerTurn(true);
             return;
         }

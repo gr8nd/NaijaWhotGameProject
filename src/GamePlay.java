@@ -21,7 +21,7 @@ public class GamePlay
     private boolean validDeal = true;//Used in checking if a valid deal number is provided.
     private final List<Card> humanCards;//A list containing all player's cards
     private final List<Card> computerCards;//A list containing all computer's cards
-    private Card previousCard;//Initially the previousCard is the startCard in the WhotGame game class. Thereafter, it takes
+    private Card callCard;//Initially the previousCard is the startCard in the WhotGame game class. Thereafter, it takes
     //the most recent card played during the game. Each player's play must be valid if the card played has the same
     // Suit or the face(number) as the previousCard. The Whot card can be played at any time except during HOLDON,
     //SUSPENSION, PICKTWO, PICKTHREE or GENERAL MARKET.
@@ -95,8 +95,8 @@ public class GamePlay
         try
         {
             game.deal(number, mode);
-            previousCard = game.getStartCard();
-            previousCard.setFirstCard(true);
+            callCard = game.getCallCard();
+            callCard.setCallCard(true);
             System.out.println("Your initial Pile count: " + game.getHumanCardPile().size());
             System.out.println("Computer's initial Pile count: " + game.getComputerCardPile().size());
             System.out.println("Initial Draw Pile count: " + game.getDrawPile().size());
@@ -118,9 +118,9 @@ public class GamePlay
 
     private void startCardPlay()
     {
-        System.out.println("The start card is:");
-        System.out.println(previousCard.toString());
-        game.play(previousCard, forceWinner);
+        System.out.println("The call card is:");
+        System.out.println(callCard.toString());
+        game.play(callCard, forceWinner);
 
         startGame();
     }
@@ -337,12 +337,12 @@ public class GamePlay
         return "None";
     }
 
-    protected Card getPreviousCard() {
-        return previousCard;
+    protected Card getCallCard() {
+        return callCard;
     }
 
-    protected void setPreviousCard(Card previousCard) {
-        this.previousCard = previousCard;
+    protected void setCallCard(Card callCard) {
+        this.callCard = callCard;
     }
 
     protected Suit getWantedSuit() {

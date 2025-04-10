@@ -30,7 +30,7 @@ public class WhotGame {
     private int computerCardsCount;//keeps record of the computer's face count when scoring by counting faces.
     private int humanCardsCount;//keeps record of the player's face count when scoring by counting faces.
     private ArrayList<Card> playedPile; //Holds the cards that are played during the course of the game
-    private Card startCard;//This is first card that is displayed when the game starts
+    private Card callCard;//This is first card that is displayed when the game starts
 
     protected WhotGame()
     {
@@ -42,9 +42,9 @@ public class WhotGame {
         computerPlayedPile = new ArrayList<>();
         humanPlayedPile = new ArrayList<>();
         Card[] pack = new Card[54];
-        pack = whots.getPack().toArray(pack);//gets the initialised and shuffled pack from the NaijaWhots class
+        pack = whots.getDeck().toArray(pack);//gets the initialised and shuffled pack from the NaijaWhots class
         Collections.addAll(drawPile, pack);
-        startCard = drawPile.remove(0);//get the first card as the start card and remove it
+        callCard = drawPile.remove(0);//get the first card as the start card and remove it
     }
 
     /**
@@ -282,7 +282,7 @@ public class WhotGame {
         {
             Card card = playedPile.get(i);
             //first reset all cards but the last played card to their default values
-            card.setFirstCard(false);
+            card.setCallCard(false);
             card.setCardActionTaken(false);
             card.setDefendCard(false);
             list.add(card);
@@ -383,16 +383,16 @@ public class WhotGame {
      *
      * @return Card the first card used at the start of the game
      */
-    protected Card getStartCard() {
-        return startCard;
+    protected Card getCallCard() {
+        return callCard;
     }
 
     /**
      *
-     * @param startCard may be used to set the start card
+     * @param callCard may be used to set the start card
      */
-    protected void setStartCard(Card startCard) {
-        this.startCard = startCard;
+    protected void setCallCard(Card callCard) {
+        this.callCard = callCard;
     }
 
     protected ArrayList<Card> getPlayedPile() {

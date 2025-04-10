@@ -14,7 +14,7 @@ public class Card
     private boolean cardActionTaken; //True or false depending on whether action has been taken by of
     //the players on a special card.
     //private boolean isStartCard; //If the card is the start card of the game.
-    private boolean isFirstCard;//Holds the very first card of the game
+    private boolean callCard;//Holds the very first card of the game
     protected Card(Suit suit, int face)
     {
         this.suit = suit;
@@ -87,12 +87,12 @@ public class Card
         this.cardActionTaken = cardActionTaken;
     }
 
-    protected boolean isFirstCard() {
-        return isFirstCard;
+    protected boolean isCallCard() {
+        return callCard;
     }
 
-    protected void setFirstCard(boolean firstCard) {
-        isFirstCard = firstCard;
+    protected void setCallCard(boolean callCard) {
+        this.callCard = callCard;
     }
 
     @Override

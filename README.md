@@ -98,5 +98,5 @@ play: this method will display the card which a player plays and automatically r
 
 Create a class called NaijaWhotGamePlay, this class contains the main method for playing the card, it will use the already created classes to play the game.
 
-This description may not be complete, as you model the game, you may see needs for more methods and data
-More details about the Whot can be extracted from www.pagat.com/com/whot.html
+This description may not be complete, as you model the game, you may see needs for more methods and data.
+You can read more details about the Whot! game from Wikipedia https://en.wikipedia.org/wiki/Whot! and this web page www.pagat.com/com/whot.html
