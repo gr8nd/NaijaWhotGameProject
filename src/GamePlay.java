@@ -107,7 +107,7 @@ public class GamePlay
         }
     }
 
-    //An API that should call to start the game
+    //An API that should be called to start the game
     protected void start()
     {
         if (validDeal)
