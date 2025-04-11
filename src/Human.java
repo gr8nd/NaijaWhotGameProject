@@ -214,7 +214,7 @@ public class Human
     }
 
     /**
-     * Call when the previous is normal card
+     * Called when the callCard is normal card
      * @param index the index of the card user wants to play
      */
     private void humanNormalPlay(int index)

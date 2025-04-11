@@ -14,7 +14,7 @@ public class NaijaWhots
     protected NaijaWhots()
     {
         initializeCards();//The deck is initialised with 54 card objects at the  point of instantiation of NaijaWhot object
-        shuffleCards();//After initialising the pack, this private method shuffles the deck to make it ready for use.
+        shuffleCards();//After initialising the deck, this private method shuffles the deck to make it ready for use.
     }
 
     /**

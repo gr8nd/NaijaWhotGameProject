@@ -335,7 +335,7 @@ public class Computer
             computerCards.sort(Comparator.comparing(o -> String.valueOf(o.getFace())));
         }
         ArrayList<Card> cardArrayList = new ArrayList<>();//non-whot cards whose suits are not the same
-        // as a card currently on board i.e. cards whose suits are not the same as the suit of previousCard
+        // as a card currently on board i.e. cards whose suits are not the same as the suit of callCard
         ArrayList<Card> otherCards = new ArrayList<>();
         computerCards.forEach(card ->{
             if (!card.isWhot() &&
