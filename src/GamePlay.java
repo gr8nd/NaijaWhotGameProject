@@ -21,9 +21,9 @@ public class GamePlay
     private boolean validDeal = true;//Used in checking if a valid deal number is provided.
     private final List<Card> humanCards;//A list containing all player's cards
     private final List<Card> computerCards;//A list containing all computer's cards
-    private Card callCard;//Initially the previousCard is the startCard in the WhotGame game class. Thereafter, it takes
+    private Card callCard;//Initially the callCard is the callCard in the WhotGame game class. Thereafter, it takes
     //the most recent card played during the game. Each player's play must be valid if the card played has the same
-    // Suit or the face(number) as the previousCard. The Whot card can be played at any time except during HOLDON,
+    // Suit or the face(number) as the callCard. The Whot card can be played at any time except during HOLDON,
     //SUSPENSION, PICKTWO, PICKTHREE or GENERAL MARKET.
     private final SecureRandom rand = new SecureRandom();
     private final String mode;//the game mode, easy or difficult are available

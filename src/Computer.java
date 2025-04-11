@@ -466,33 +466,33 @@ public class Computer
      * Computer needs to find the card it will play to get the longest
      * sequential play. This is necessary to maximize its winning
      * potential.
-     * @param previousCard the current card to start the sequential run from
+     * @param callCard the current card to start the sequential run from
      * @return a list with first part or all, containing cards that should be played in the list
      * order (from first element to last element) to give the longest sequential play, any
      * 'non-sequential' cards are also appended to the end of the list.
      */
-    private List<Card> findLongestSequentialPlayList(Card previousCard)
+    private List<Card> findLongestSequentialPlayList(Card callCard)
     {
         List<Card> longestList = new ArrayList<>();
         List<Card> currentList = new ArrayList<>(computerCards);
-        longestList.add(previousCard);
-        currentList.remove(previousCard);//This may be redundant as previousCard may not
-        //actually be in the currentList list since the very first previousCard is the most
+        longestList.add(callCard);
+        currentList.remove(callCard);//This may be redundant as callCard may not
+        //actually be in the currentList list since the very first callCard is the most
         //recently played card(i.e. it might have been removed from computerCards or humanCards)
         for (int index = 0; index < currentList.size(); index++)
         {
             Card card = currentList.get(index);
-            if (!card.isWhot() && (card.getFace() == previousCard.getFace() ||
-                    card.getSuit() == previousCard.getSuit()))
+            if (!card.isWhot() && (card.getFace() == callCard.getFace() ||
+                    card.getSuit() == callCard.getSuit()))
             {
                 longestList.add(card);
-                previousCard = card;
-                currentList.remove(previousCard);
+                callCard = card;
+                currentList.remove(callCard);
                 index = 0;//move the cursor to the first index (start of the list)
             }
         }
 
-        longestList.remove(0);//remove the first element because it is the 'previousCard' played
+        longestList.remove(0);//remove the first element because it is the 'callCard' played
         //card of the game
         longestList.addAll(currentList);
         return longestList;
